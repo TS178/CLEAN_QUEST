@@ -299,6 +299,7 @@
     binEl.classList.add("gulp");
     ui.toast(`+${r.points} たんけんたいメダル`);
     render();
+    if (BCT.coinFly) BCT.coinFly.from(binEl); // ゴミばこから メダルが とぶ
     ui.refreshHeader();
     BCT.home.render();
     if (r.cleaned) {
@@ -321,9 +322,9 @@
     const go = await ui.modal(
       `<h3>ビーチが ピカピカに なったね！</h3>
        <div class="reward-preview">${pets.renderState(s, { face: "happy" })}</div>
-       <p class="lead" style="color:var(--ink)">「${ui.esc(s.pet.name)}」が いってるよ：<br>
-         「うみの ことを もっと しりたいな！ いっしょに うみクイズに ちょうせん しよう！」</p>
-       <p class="note" style="text-align:center">クイズに せいかい すると ボーナスの たんけんたいメダルが もらえるよ</p>`,
+       <p class="lead" style="color:var(--ink);text-align:center">「${ui.esc(s.pet.name)}」が いってるよ：<br>
+         「うみの ことを もっと しりたいな！<br>いっしょに うみクイズに ちょうせん しよう！」</p>
+       <p class="note" style="text-align:center;word-break:keep-all">クイズに せいかい すると<br>ボーナスの たんけんたいメダルが もらえるよ</p>`,
       [{ label: "あとで", cls: "ghost", value: false }, { label: "クイズへ", cls: "peach", value: true }]
     );
     if (go) ui.show("mission");

@@ -34,10 +34,13 @@
     // すべて：ごはん ＋ ほかの カテゴリの アイテム ぜんぶ
     const items = cat === "all" ? BCT.SLOTS.filter((c) => c.key !== "food").flatMap((c) => game.shopItems(s, c.key)) : game.shopItems(s, cat);
     const coins = game.coins(s);
+    // ← ホーム・メダル・カテゴリ は スクロールしても 上に のこす（エクセルの ウィンドウ枠の 固定の ように）
     $("shopBody").innerHTML = `
-      ${BCT.medal.wallet(coins)}
-      <div class="chips cats cats1">${CATS.map((c) =>
-        `<button class="chip ${c.key === cat ? "on" : ""}" data-cat="${c.key}">${c.key === "all" ? `<span class="cat-all" aria-hidden="true">✦</span>` : BCT.art.icon(c.key)}<span>${c.name}</span></button>`).join("")}</div>
+      <div class="shop-sticky">
+        <div class="sub-head shop-head"><button class="btn small ghost home-back" data-shop-home>← ホーム</button>${BCT.medal.wallet(coins)}</div>
+        <div class="chips cats cats1">${CATS.map((c) =>
+          `<button class="chip ${c.key === cat ? "on" : ""}" data-cat="${c.key}">${c.key === "all" ? `<span class="cat-all" aria-hidden="true">✦</span>` : BCT.art.icon(c.key)}<span>${c.name}</span></button>`).join("")}</div>
+      </div>
       ${cat === "look" ? `<p class="note">${ui.esc(pets.TYPES[s.pet.type].motif)}の ようせい せんようの みためだよ。</p>` : ""}
       ${cat === "toy" ? `<p class="note">おもちゃは ホームの「あそぶ」で つかうよ。おなじ おもちゃで ${BCT.CONFIG.toyUnlockPlays}かい あそぶと、しゃしんの ポーズを おぼえるよ。</p>` : ""}
       ${cat === "home" ? `<p class="note">${ui.esc(BCT.HABITATS[s.pet.type])}（${ui.esc(pets.TYPES[s.pet.type].motif)}の すみか）に おく アイテムだよ。おくと ようせいが そばで あそぶよ。</p>` : ""}
@@ -54,6 +57,7 @@
         <button class="btn ghost" data-go-dress>${BCT.art.icon("dress")} きせかえ</button>
         <button class="btn ghost" data-go-mission>${BCT.art.icon("mission")} ミッション</button>
       </div>`;
+    $("shopBody").querySelector("[data-shop-home]").onclick = () => ui.show("home");
     document.querySelectorAll("#shopBody [data-cat]").forEach((b) => (b.onclick = () => { cat = b.dataset.cat; render(); }));
     document.querySelectorAll("#shopBody [data-item]").forEach((b) => (b.onclick = () => detail(b.dataset.item)));
     document.querySelectorAll("#shopBody [data-food-item]").forEach((b) => (b.onclick = () => foodDetail(b.dataset.foodItem)));
@@ -148,15 +152,23 @@
     );
     if (act === "buy") buyFood(id);
   }
-  function buyFood(id) {
+  async function buyFood(id) {
     const r = game.buyFood(id);
     if (!r.ok) {
       ui.toast(r.err === "coins" ? `たんけんたいメダルが あと ${r.need}枚 たりないよ` : "かえなかったよ");
       return;
     }
-    ui.toast(`${r.food.name}を かったよ！（もってる ${r.stock}こ）`);
     ui.refreshHeader();
     render();
+    // ほかの アイテムと おなじ「かったよ！」の おしらせ
+    const go = await ui.modal(
+      `<h3>${BCT.art.icon("shop")} かったよ！</h3>
+       <div class="detail-prev food-prev">${BCT.homeArt.dropSvg(id)}</div>
+       <p style="text-align:center;font-weight:800;font-size:19px;margin:4px 0">${ui.esc(r.food.name)}</p>
+       <p class="lead" style="text-align:center">もってる ${r.stock}こ<br>のこり ${BCT.medal.amount(game.coins(BCT.store.get()))}</p>`,
+      [{ label: "あとで", cls: "ghost", value: false }, { label: "ホームで あげる", cls: "mint", value: true }]
+    );
+    if (go) ui.show("home");
   }
 
   BCT.screens.shop = {

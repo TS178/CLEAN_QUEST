@@ -10,11 +10,11 @@
   const { $, ui } = BCT;
   const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
   const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
-  const DEFAULT_VIEW = { center: [36.5, 137.5], zoom: 5 }; // 記録が無いときは 日本全体
+  // ひらいた ときは いつも 志賀町の あたり（北は 穴水町・南は 羽咋市・東は 七尾市 まで 入る 縮尺）
+  const DEFAULT_VIEW = { center: [37.01, 136.77], zoom: 10 };
 
   let map = null, tiles = null, layer = null;
   let tileOk = 0, tileNg = 0;
-  let fitted = false;
   let shared = [];
   const photoUrls = [];
 
@@ -108,11 +108,7 @@
       });
       m.addTo(layer);
     });
-    if (!fitted && pts.length) {
-      fitted = true;
-      const b = L.latLngBounds(pts.map((r) => [r.lat, r.lng]));
-      map.fitBounds(b.pad(0.3), { maxZoom: 17 });
-    }
+    // 記録が あっても さいしょの 位置は かえない（志賀町の あたり）
     areaTip();
   }
 

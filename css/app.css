@@ -680,3 +680,92 @@ body .habitat-shortcut .shortcut-circle { width: 72px; height: 72px; }
 @keyframes popBelow { from { transform: translate(-50%, 0) scale(0.5); opacity: 0; } }
 /* 吹き出しは 池の 左上の 丸い ボタン（ようせい・すみか）より 手前（数秒で きえる・タップは したの ボタンに とおる） */
 #pond .bubble { z-index: 9; }
+
+/* ---------- 名前の 画面：「たんけん スタート！」を 1行に ---------- */
+#nameForm .btn-row > .btn.mint { flex: 2; white-space: nowrap; }
+#nameForm .btn-row > #nameBack { flex: 1; }
+
+/* ---------- メダルが とぶ 演出（js/coin-fly.js。SHIKA COLLECTION と おなじ） ---------- */
+.coinfly { position: fixed; inset: 0; z-index: 95; pointer-events: none; overflow: visible; }
+.coinfly__coin { position: absolute; left: 0; top: 0; width: 26px; height: 26px; opacity: 0; will-change: transform; filter: drop-shadow(0 2px 3px rgba(120, 80, 0, 0.35)); }
+#tbCoin.is-bump { animation: coinBump 0.22s ease-out; }
+#tbCoin.is-bump .medal-icon { animation: coinIconBump 0.22s ease-out; }
+@keyframes coinBump { 0% { transform: scale(1); } 40% { transform: scale(1.1); box-shadow: 0 0 0 3px rgba(242, 182, 50, 0.35); } 100% { transform: scale(1); } }
+@keyframes coinIconBump { 0% { transform: rotate(0); } 50% { transform: rotate(-14deg) scale(1.15); } 100% { transform: rotate(0); } }
+
+/* ---------- カメラの きょかの しかた（js/camera-permission.js） ---------- */
+.perm-steps { text-align: left; font-size: 13px; line-height: 1.7; padding-left: 1.4em; margin: 8px 0; }
+.perm-steps li { margin: 4px 0; }
+
+/* ---------- ひろう：見出しを「← ホーム」の よこへ ---------- */
+.sub-head { display: flex; align-items: center; gap: 10px; }
+.sub-title { font-size: 15px; font-weight: 800; line-height: 1.3; min-width: 0; }
+
+/* ---------- ショップ：← ホーム・メダル・カテゴリを 上に かためる（エクセルの ウィンドウ枠の 固定） ---------- */
+#shopBody .shop-sticky { position: sticky; top: var(--topbar-h, 60px); z-index: 12; background: #fbfaf6; margin: -8px -20px 0; padding: 8px 20px 2px; }
+#shopBody .shop-head { margin: 0 0 6px; gap: 8px; }
+#shopBody .shop-head .medal-wallet { flex: 1; min-width: 0; margin: 0; padding: 6px 12px; gap: 10px; justify-content: flex-start; border-radius: 18px; }
+#shopBody .shop-head .medal-wallet > .medal-icon { width: 40px; height: 40px; }
+#shopBody .shop-head .medal-wallet-label { font-size: 11px; }
+#shopBody .shop-head .medal-wallet-value { margin: 0; }
+#shopBody .shop-head .medal-wallet-value b { font-size: 22px; }
+
+/* ---------- さつえい：スクロール なし（写真の わくの 大きさは js/photo.js の fitPhoto）。ポーズ・フレームは よこ 1れつ ---------- */
+#scr-photo .ph-top { margin-bottom: 8px; }
+#scr-photo .ph-stage { min-width: 0; }
+#scr-photo .chips { flex-wrap: nowrap; overflow-x: auto; margin: 2px 0 6px; padding-bottom: 2px; }
+#scr-photo .chips .chip { flex: none; }
+#scr-photo .ph-label { margin-top: 4px; }
+#scr-photo .ph-shoot { margin: 6px 0 2px; }
+
+/* ---------- きせかえ：ちいさく・アイテムは 3れつ・スクロール なし ---------- */
+#dressBody .dress-preview { width: min(170px, 42vw); margin: 0 auto 8px; }
+#dressBody .chips.cats { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 2px 0 8px; }
+#dressBody .chips.cats .chip { min-height: 0; padding: 5px 2px; gap: 2px; border-radius: 12px; font-size: 11px; }
+#dressBody .chips.cats .chip .expedition-icon, #dressBody .chips.cats .chip .ui-icon { width: 26px; height: 26px; }
+#dressBody .shop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+#dressBody .shop-item { min-width: 0; padding: 4px 3px 6px; }
+#dressBody .shop-item .art { width: min(56px, 100%); height: auto; aspect-ratio: 1; }
+#dressBody .shop-item .nm { font-size: 11px; line-height: 1.3; word-break: keep-all; overflow-wrap: anywhere; }
+#dressBody .shop-item .pr { font-size: 10px; }
+#dressBody .note { margin: 4px 0; font-size: 11px; }
+#dressBody .btn-row { margin-top: 8px !important; }
+#dressBody .shop-item { min-height: 0; gap: 1px; border-radius: 12px; }
+#dressBody .shop-item.worn { padding: 3px 2px 5px; }
+#dressBody .shop-item .art { width: min(50px, 100%); padding: 2px; border-radius: 10px; }
+#dressBody .shop-item .nm { min-height: 0; }
+#dressBody .shop-item .pr { min-height: 0; padding: 0 8px; }
+#dressBody .shop-item .pr:empty { display: none; }
+#dressBody .dress-preview { margin: 2px auto 8px; }
+#dressBody .dress-preview > svg { padding: 4px; }
+
+/* ---------- かったよ！：ドロップも ほかの アイテムと おなじ 大きさ。名前は ことばの きれめで おりかえす ---------- */
+.detail-prev.food-prev { width: min(170px, 60%); }
+#modalBox .detail-prev + p { word-break: keep-all; overflow-wrap: anywhere; }
+/* たかさが ひくい スマホ：ジャンルは アイコンと 名前を よこならび、アイテムの 絵も すこし ちいさく */
+@media (max-height: 760px) {
+  #dressBody .chips.cats .chip { flex-direction: row; justify-content: center; padding: 4px 2px; gap: 3px; }
+  #dressBody .chips.cats .chip .expedition-icon, #dressBody .chips.cats .chip .ui-icon { width: 20px; height: 20px; }
+  #dressBody .shop-item .art { width: min(42px, 100%); }
+  #dressBody .note { margin: 2px 0; }
+  #dressBody .btn-row { margin-top: 6px !important; }
+  #dressBody .btn-row .btn { padding-top: 9px; padding-bottom: 9px; }
+}
+/* きせかえ：「← ホーム」の よこの あいた ところに 見本を あげて、たかさを つめる */
+#scr-dress > .sub-head { height: 0; margin: 0; align-items: flex-start; position: relative; z-index: 2; }
+#dressBody .dress-preview { margin-top: 0; }
+@media (max-height: 760px) {
+  #dressBody .dress-toy-note { display: none; }
+}
+#dressBody .chips.cats { margin: 0 0 4px; padding-bottom: 4px; }
+#shopBody .shop-sticky .chips.cats { margin-bottom: 4px; padding-bottom: 6px; }
+
+/* ---------- ホーム：池の 最低の 高さ（css/ui-design.css の 320px を 上書き。高さ 667px 以下の スマホでも スクロール なし。利用者 了承ずみ） ---------- */
+body #scr-home .pond { min-height: 145px; }
+
+/* ---------- 設定：データの バックアップ・新しい バージョン ---------- */
+.set-sub { font-size: 13px; font-weight: 800; margin: 14px 0 6px; }
+.set-backup { margin: 0 0 4px; gap: 8px; }
+.set-backup .btn { flex: 1; min-width: 0; padding-left: 6px; padding-right: 6px; word-break: keep-all; }
+.app-update { text-align: center; margin: 0 0 12px; }
+#settingsBody .parent, #modalBox .keep { word-break: keep-all; overflow-wrap: anywhere; }

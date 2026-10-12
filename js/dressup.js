@@ -27,7 +27,6 @@
     const noneLabel = slot === "look" ? BCT.LOOK_DEFAULT[s.pet.type] : "なし";
     const noneIcon = slot === "look" ? BCT.art.render({ type: s.pet.type, stage: 2 }) : `<svg viewBox="0 0 100 100"><text x="50" y="62" font-size="40" text-anchor="middle" fill="#9aa8b8">✕</text></svg>`;
     $("dressBody").innerHTML = `
-      <p class="eyebrow">YOUR LITTLE COMPANION</p><h2>きせかえ</h2>
       <div class="dress-preview" id="dressPreview">${previewHtml(s)}</div>
       <div class="chips cats">${SLOT_LIST.map((c) =>
         `<button class="chip ${c.key === slot ? "on" : ""}" data-slot="${c.key}">${BCT.art.icon(c.key)} ${c.name}</button>`).join("")}</div>
@@ -40,7 +39,7 @@
           <span class="pr">${cur === it.id ? "つけてる" : ""}</span></button>`).join("")}
       </div>
       ${owned.length ? "" : `<p class="lead">まだ もっていないよ。ショップで さがしてみよう！</p>`}
-      <p class="note">おもちゃは ホームの「あそぶ」で つかうよ。</p>
+      <p class="note dress-toy-note">おもちゃは ホームの「あそぶ」で つかうよ。</p>
       <div class="btn-row" style="margin-top:12px">
         <button class="btn ghost" data-go-shop>${BCT.art.icon("shop")} ショップ</button>
         <button class="btn lilac" data-go-photo>${BCT.art.icon("capture")} さつえい</button>
@@ -49,7 +48,21 @@
     document.querySelectorAll("#dressBody [data-eq]").forEach((b) => (b.onclick = () => wear(slot, b.dataset.eq || null)));
     $("dressBody").querySelector("[data-go-shop]").onclick = () => ui.show("shop", slot);
     $("dressBody").querySelector("[data-go-photo]").onclick = () => ui.show("photo");
+    fit();
   }
+
+  // スクロール なしで 1画面に おさめる：はみだした ぶんだけ 上の 見本を ちいさく する（いちばん ちいさくて 96px）
+  function fit() {
+    const box = $("dressPreview");
+    if (!box || !$("scr-dress").classList.contains("active")) return;
+    box.style.width = "";
+    const over = document.scrollingElement.scrollHeight - window.innerHeight;
+    if (over <= 0) return;
+    const r = box.getBoundingClientRect();
+    const scale = Math.max(96, r.height - over) / r.height;
+    box.style.width = Math.max(96, Math.floor(r.width * scale)) + "px";
+  }
+  window.addEventListener("resize", () => requestAnimationFrame(fit));
 
   async function wear(sl, id) {
     if (moving) return;

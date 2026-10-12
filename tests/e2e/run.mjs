@@ -71,6 +71,11 @@ try {
   await sleep(300);
   await clickModal("これに する");
   await sleep(300);
+  await b.send("Emulation.setDeviceMetricsOverride", { width: 360, height: 640, deviceScaleFactor: 2, mobile: true });
+  await sleep(200);
+  check("名前の 画面：「たんけん スタート！」は 1行（360px でも）", await ev(`(()=>{const b=document.querySelector('#nameForm .btn.mint');const r=document.createRange();r.selectNodeContents(b);const t=[...r.getClientRects()].filter(x=>x.width>0).map(x=>x.top);return t.length>0&&Math.max(...t)-Math.min(...t)<4})()`));
+  await b.send("Emulation.setDeviceMetricsOverride", { width: 412, height: 900, deviceScaleFactor: 2, mobile: true });
+  await sleep(200);
   await ev(`document.getElementById('inTeam').value='テストたい';document.getElementById('nameForm').requestSubmit()`);
   await sleep(3000);
   check("名前を入れないと 初期名", await st(`s.pet.name==='ウミガメのようせい'`));
@@ -111,9 +116,12 @@ try {
   check("まちがえても へらない", await st(`g.xp(s)===0 && g.coins(s)===0`));
   await shot("04-quiz-wrong");
   await ev(`document.querySelector('[data-retry]').click()`);
+  await ev(`window.__coinSeen=false;window.__coinObs=new MutationObserver(()=>{if(document.querySelector('.coinfly .coinfly__coin'))window.__coinSeen=true});window.__coinObs.observe(document.body,{childList:true,subtree:true});true`);
   await ev(`(()=>{const q=BCT.QUIZ[0];const c=document.querySelector('.choice[data-idx="'+q.a+'"]');c.click();c.click();document.querySelector('.choice:not([data-idx="'+q.a+'"])').click()})()`);
   await sleep(300);
   check("せいかいで ポイント20（けいけんちは エサだけ・連打でも1回）", await st(`g.xp(s)===0 && g.coins(s)===20`), await st(`[g.xp(s),g.coins(s)]+''`));
+  check("せいかいで メダルが 右上へ とんで、とどくと 20 に なる", await waitFor(`window.__coinSeen`, 2000) && (await waitFor(`!document.querySelector('.coinfly') && document.querySelector('#tbCoin .medal-amount b').textContent==='20'`, 5000)));
+  await ev(`window.__coinObs.disconnect();true`);
   await shot("05-quiz-right");
   await drain();
   await ev(`BCT.mission.openQuiz('q01')`);
@@ -335,6 +343,12 @@ try {
   await ev(`document.getElementById('phCam').click()`);
   await sleep(500);
   check("カメラ拒否 → 理由と かわりの方法", await ev(`document.getElementById('phMsg').textContent.includes('きょか') && !document.getElementById('phSource').hidden`));
+  check("カメラの きょかが ない → きょかの しかたの おしらせ", await waitFor(`document.getElementById('modal').classList.contains('show') && document.getElementById('modalBox').textContent.includes('カメラを つかわせてね') && !!document.querySelector('#modalBox .perm-steps')`, 3000));
+  await clickModal("もういちど ためす");
+  await sleep(300);
+  check("もういちど ためしても だめなら また おしらせ（きょかが 出るまで）", await waitFor(`document.getElementById('modal').classList.contains('show') && document.getElementById('modalBox').textContent.includes('カメラを つかわせてね')`, 3000));
+  await clickModal("あとで");
+  await sleep(300);
   await shot("20-photo-denied");
   await ev(`document.getElementById('phSea').click()`);
   await sleep(600);
@@ -397,12 +411,50 @@ try {
   check("ショップ：長い なまえは 区切りの ところで おりかえす（「シェルター｜クッション」）", await ev(`(()=>{const e=[...document.querySelectorAll('#shopBody [data-item] .nm')].find(n=>n.textContent.includes('シェルター'));if(!e)return true;
     const r=document.createRange();const t=e.firstChild;const i=t.textContent.indexOf('クッション');r.setStart(t,i);r.setEnd(t,i+5);return r.getClientRects().length===1})()`));
   check("ショップ：すべて には ごはん も ほかの アイテム も ならぶ", await ev(`!!document.querySelector('#shopBody [data-food-item]') && !!document.querySelector('#shopBody [data-item]')`));
+  check("ショップ：「← ホーム」の よこに メダル（よこに ちぢめる）", await ev(`(()=>{const h=document.querySelector('#shopBody .home-back').getBoundingClientRect(),w=document.querySelector('#shopBody .medal-wallet').getBoundingClientRect();return w.left>h.right&&w.top<h.bottom&&w.bottom>h.top&&w.height<=80})()`));
+  await ev(`window.scrollTo(0,700);true`);
+  await sleep(300);
+  check("ショップ：すべて の ときは スクロールしても ← ホーム・メダル・カテゴリが 上に のこる", await ev(`(()=>{const tb=document.querySelector('.topbar').getBoundingClientRect().bottom;const st=document.querySelector('#shopBody .shop-sticky').getBoundingClientRect();const c=document.querySelector('#shopBody [data-cat=all]').getBoundingClientRect();return scrollY>300&&Math.abs(st.top-tb)<=2&&c.top>=tb&&c.bottom<=st.bottom})()`));
+  await shot("21d-shop-sticky");
+  await ev(`window.scrollTo(0,0);true`);
+  // きせかえ・さつえいは スクロール なし（いちばん アイテムの おおい あたま）
+  await ev(`BCT.ui.show('dress',{slot:'head'})`);
+  await sleep(400);
+  check("きせかえ：アイテムは 3れつ・英語の 見出し なし・スクロール なし", await ev(`getComputedStyle(document.querySelector('#dressBody .shop-grid')).gridTemplateColumns.split(' ').length===3 && !/YOUR LITTLE/i.test(document.getElementById('scr-dress').textContent) && document.scrollingElement.scrollHeight<=innerHeight+1`));
+  await ev(`BCT.ui.show('photo')`);
+  await sleep(800);
+  check("いっしょに さつえい：スクロール なし", await ev(`document.scrollingElement.scrollHeight<=innerHeight+1`));
+  // もどる：ブラウザ・スマホの「もどる」と はしからの スワイプ
+  await ev(`BCT.ui.show('home');BCT.ui.show('shop');true`);
+  await sleep(300);
+  await ev(`history.back();true`);
+  check("スマホの「もどる」で ひとつ まえの 画面へ", await waitFor(`BCT.ui.current()==='home'`, 2000));
+  await ev(`BCT.ui.show('mission');true`);
+  await sleep(300);
+  const swipe = (x0, x1) => ev(`(()=>{const mk=(x)=>new Touch({identifier:1,target:document.body,clientX:x,clientY:400});const t0=mk(${x0}),t1=mk(${x1});document.body.dispatchEvent(new TouchEvent('touchstart',{touches:[t0],changedTouches:[t0],bubbles:true}));document.body.dispatchEvent(new TouchEvent('touchmove',{touches:[t1],changedTouches:[t1],bubbles:true}));document.body.dispatchEvent(new TouchEvent('touchend',{touches:[],changedTouches:[t1],bubbles:true}));return true})()`);
+  await swipe(4, 150);
+  check("左の はしから スワイプで ひとつ まえの 画面へ", await waitFor(`BCT.ui.current()==='home'`, 2000));
+  await ev(`BCT.ui.show('capture');true`);
+  await sleep(300);
+  await swipe(408, 250);
+  check("右の はしから スワイプでも もどる", await waitFor(`BCT.ui.current()==='home'`, 2000));
+  await ev(`BCT.ui.show('shop');true`);
+  await sleep(300);
+  await swipe(200, 360);
+  check("まんなかからの スワイプでは もどらない", await ev(`BCT.ui.current()==='shop'`));
   await shot("21c-shop");
 
   // ---------- 12. ちず・再読み込み・外部通信 ----------
   await ev(`BCT.ui.show('capture','map')`);
   await sleep(3500);
   check("ちずに ピン", await ev(`BCT.mapDebug().pins>=1`));
+  check("ちずは いつも 志賀町の あたりから（縮尺 10）", await ev(`(()=>{const m=BCT.mapDebug().map,c=m.getCenter();return m.getZoom()===10&&Math.abs(c.lat-37.01)<0.01&&Math.abs(c.lng-136.77)<0.01})()`));
+  check("ひろう：「← ホーム」の よこに「クリーンマップ」", await ev(`(()=>{const h=document.querySelector('#scr-capture .home-back').getBoundingClientRect(),t=document.getElementById('capTitle');const r=t.getBoundingClientRect();return t.textContent==='クリーンマップ'&&r.left>h.right&&Math.abs((r.top+r.height/2)-(h.top+h.height/2))<=6&&!document.querySelector('#scr-capture h2')})()`));
+  await ev(`document.querySelector('#scr-capture [data-sub=rec]').click();true`);
+  await sleep(200);
+  check("ひろう：きろく する では「ゴミを みつけたら きろくしよう」", await ev(`document.getElementById('capTitle').textContent==='ゴミを みつけたら きろくしよう'`));
+  await ev(`document.querySelector('#scr-capture [data-sub=map]').click();true`);
+  await sleep(300);
   const before = await st(`JSON.stringify({o:s.owned,e:s.equip,c:s.claims,a:s.affection,t:s.toys})`);
   await b.goto(BASE + "index.html");
   check("再読み込みしても 育成・購入・装着が のこる", (await st(`JSON.stringify({o:s.owned,e:s.equip,c:s.claims,a:s.affection,t:s.toys})`)) === before && (await ev(`BCT.ui.current()==='home'`)));

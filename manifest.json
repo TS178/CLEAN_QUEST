@@ -1,7 +1,8 @@
 {
-  "name": "ビーチクリーン探検隊",
-  "short_name": "探検隊",
-  "description": "はまべの ゴミを ひろって、うみの ようせいを そだてよう。",
+  "id": "./index.html",
+  "name": "クリーンクエスト",
+  "short_name": "クリーンクエスト",
+  "description": "ビーチクリーン探検隊：はまべの ゴミを ひろって、うみの ようせいを そだてよう。",
   "lang": "ja",
   "start_url": "./index.html",
   "scope": "./",
@@ -23,16 +24,10 @@
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ]
 }

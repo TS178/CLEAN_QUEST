@@ -131,7 +131,8 @@
     }, wait);
   }
   function wander() {
-    if (ui.current() !== "habitat" || dragging) return;
+    // アイテムへ むかっている・あそんでいる あいだは じゃましない（タップした すぐあとに 自分で うごきだして やめて しまわない）
+    if (ui.current() !== "habitat" || dragging || acting) return;
     const s = BCT.store.get();
     // 自分で うごくときは、向きを かえて よい 時間に なるまで 前に ある アイテムだけ
     const ids = Object.keys(s.habitat).filter((id) => turnOk() || (spotOf(s, id) && ahead(spotOf(s, id))));

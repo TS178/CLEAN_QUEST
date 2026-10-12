@@ -183,6 +183,7 @@
     document.querySelectorAll("#scr-capture .seg button").forEach((b) => b.classList.toggle("on", b.dataset.sub === name));
     $("subRec").hidden = name !== "rec";
     $("subMap").hidden = name !== "map";
+    $("capTitle").textContent = name === "map" ? "クリーンマップ" : "ゴミを みつけたら きろくしよう";
     if (name === "map") BCT.screens.map.show();
     else locate();
   }

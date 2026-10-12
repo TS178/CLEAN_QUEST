@@ -7,11 +7,14 @@
   <meta name="description" content="はまべの ゴミを ひろって、うみの ようせいを そだてよう。親子で参加するビーチクリーンイベント用のアプリです。">
   <meta name="theme-color" content="#fbfaf6">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="icons/favicon-16.png" type="image/png" sizes="16x16">
+  <link rel="icon" href="icons/favicon-48.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
+  <meta name="application-name" content="クリーンクエスト">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="探検隊">
+  <meta name="apple-mobile-web-app-title" content="クリーンクエスト">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/collection.css">
@@ -107,13 +110,12 @@
 
       <!-- ひろう（きろく と ちず） -->
       <section class="screen" id="scr-capture">
-        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button><b class="sub-title" id="capTitle">ゴミを みつけたら きろくしよう</b></div>
         <div class="seg" role="tablist">
           <button class="on" data-sub="rec" role="tab"><span data-ui-icon-slot="camera"></span> きろく する</button>
           <button data-sub="map" role="tab"><span data-ui-icon-slot="map"></span> ちず</button>
         </div>
         <div id="subRec">
-          <h2>ゴミを みつけたら きろくしよう</h2>
           <div class="card">
             <h3>① しゃしんを とる</h3>
             <label class="shot-btn" id="shotBtn">
@@ -136,7 +138,6 @@
           <button class="btn block mint" id="recBtn" disabled>きろく する！</button>
         </div>
         <div id="subMap" hidden>
-          <h2>クリーンマップ</h2>
           <div id="map"></div>
           <div class="map-off" id="mapOff">
             <div class="ico">📡</div>
@@ -158,7 +159,6 @@
 
       <!-- ショップ -->
       <section class="screen" id="scr-shop">
-        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
         <div id="shopBody"></div>
       </section>
 
@@ -334,6 +334,11 @@
   <script src="js/badges.js"></script>
   <script src="js/share.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/coin-fly.js"></script>
+  <script src="js/camera-permission.js"></script>
+  <script src="js/swipe-back.js"></script>
+  <script src="js/update.js"></script>
+  <script src="js/backup.js"></script>
   <script src="js/egg.js"></script>
   <script src="js/home.js"></script>
   <script src="js/beach.js"></script>

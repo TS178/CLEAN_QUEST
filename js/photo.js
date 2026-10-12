@@ -42,7 +42,35 @@
     $("phResult").hidden = mode !== "result";
     stage.hidden = mode === "result";
     petEl.hidden = mode === "start" && !source;
+    requestAnimationFrame(fitPhoto);
   }
+
+  // スクロール なしで おさまる よう、したの ぶぶん（ボタンなど）の 高さを はかって 写真の わくの 大きさを きめる（3:4）
+  function fitPhoto() {
+    const scr = $("scr-photo");
+    if (!scr || !scr.classList.contains("active")) return;
+    const cs = getComputedStyle(scr);
+    const padY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+    const padX = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+    const outer = (el) => {
+      if (!el || el.hidden) return 0;
+      const c = getComputedStyle(el);
+      return el.offsetHeight + parseFloat(c.marginTop) + parseFloat(c.marginBottom);
+    };
+    const top = scr.querySelector(".ph-top");
+    const result = !$("phResult").hidden;
+    const used = outer(top) + (result
+      ? [...$("phResult").children].filter((e) => e.id !== "phResultImg").reduce((n, e) => n + outer(e), 0) + 12
+      : outer($("phSource")) + outer($("phControls")));
+    const avail = window.innerHeight - padY - used - 4;
+    const w = Math.max(180, Math.min(scr.clientWidth - padX, avail * 0.75));
+    const box = result ? $("phResultImg") : stage;
+    box.style.width = w + "px";
+    // はかりきれない すきまの ぶん、まだ はみだして いれば その ぶん ちいさく する（たて:よこ = 4:3）
+    const over = document.scrollingElement.scrollHeight - window.innerHeight;
+    if (over > 0) box.style.width = Math.max(180, Math.floor(w - over * 0.75) - 1) + "px";
+  }
+  window.addEventListener("resize", () => requestAnimationFrame(fitPhoto));
   function message(html) {
     const m = $("phMsg");
     m.innerHTML = html || "";
@@ -126,7 +154,10 @@
         audio: false,
       });
     } catch (e) {
-      return fallback(CAM_ERR[e.name] || "カメラを うごかせませんでした（" + e.name + "）。");
+      fallback(CAM_ERR[e.name] || "カメラを うごかせませんでした（" + e.name + "）。");
+      // きょかが ない ときは、きょかの しかたを 出す（ゆるされるまで「もういちど ためす」で なんども。js/camera-permission.js）
+      if (BCT.cameraPermission && BCT.cameraPermission.isPermissionError(e) && ui.current() === "photo") BCT.cameraPermission.ask(startCamera);
+      return;
     }
     // とちゅうで 画面を はなれていたら すぐ止める
     if (token !== camToken || ui.current() !== "photo") {

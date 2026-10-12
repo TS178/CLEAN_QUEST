@@ -152,11 +152,18 @@ try {
   check("ごはんを タップ → 説明と「とじる」「かう」", (await modalText()).includes("けいけんち") &&
     (await ev(`[...document.querySelectorAll('#modalBox button')].map(b=>b.textContent.trim()).some(t=>t==='とじる') && [...document.querySelectorAll('#modalBox button')].some(b=>b.textContent.includes('かう'))`)));
   await clickModal("かう");
-  await sleep(200);
+  await sleep(300);
+  // かった あとは ほかの アイテムと おなじ「かったよ！」（絵・なまえ・もってる数・のこり）
+  check("ごはんを かうと ほかの アイテムと おなじ「かったよ！」", (await modalText()).includes("かったよ") &&
+    (await ev(`!!document.querySelector('#modalBox .detail-prev svg') && document.getElementById('modalBox').textContent.includes('もってる 1こ') && [...document.querySelectorAll('#modalBox button')].some(b=>b.textContent.includes('ホームで あげる'))`)));
+  await clickModal("あとで");
+  await sleep(300);
   await ev(`document.querySelector('[data-food-item=drop_rainbow]').click()`);
   await sleep(200);
   await clickModal("かう");
-  await sleep(200);
+  await sleep(300);
+  await clickModal("あとで");
+  await sleep(300);
   check("エサを かうと ポイントが へる", await st(`g.foodStock(s,'drop_blue')===1 && g.foodStock(s,'drop_rainbow')===1 && g.coins(s)===315-150`), String(await st(`g.coins(s)`)));
 
   // ---------- 8. エサを あげる（ドラッグ・タップ）→ 進化 ----------

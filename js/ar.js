@@ -730,8 +730,11 @@
       }
     } catch (e) {
       console.warn("AR カメラ", e.name, e.message);
-      return cameraFailed(e.name === "NotAllowedError" || e.name === "SecurityError"
+      cameraFailed(e.name === "NotAllowedError" || e.name === "SecurityError"
         ? "カメラの きょかが ありません。" : "カメラを うごかせませんでした。");
+      // きょかが ない ときは、きょかの しかたを 出す（ゆるされるまで「もういちど ためす」で なんども。js/camera-permission.js）
+      if (BCT.cameraPermission && BCT.cameraPermission.isPermissionError(e) && ui.current() === "ar") BCT.cameraPermission.ask(startCamera);
+      return;
     }
     if (ui.current() !== "ar") { stopStream(); return; }
     startMsg("");

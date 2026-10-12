@@ -318,7 +318,19 @@
       emit();
       await clearPhotos();
     },
+    // バックアップから もどす：中身を たしかめて まるごと おきかえる（保存できなければ もとの まま。false を かえす）
+    replace(next) {
+      const before = state;
+      state = sanitize(next);
+      if (!writeDisk()) {
+        state = before;
+        return false;
+      }
+      emit();
+      return true;
+    },
     putPhoto,
     getPhoto,
+    clearPhotos,
   };
 })();

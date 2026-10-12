@@ -183,6 +183,8 @@
       if (!ok && i === idx) b.classList.add("wrong");
     });
     game.quizAnswered(ok);
+    const picked = document.querySelector(`.choice[data-idx="${idx}"]`);
+    if (ok && picked && BCT.coinFly) BCT.coinFly.from(picked); // こたえの ボタンから メダルが とぶ
     let gain = "";
     let claimed = null;
     if (ok && !wasDone) {

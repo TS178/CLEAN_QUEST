@@ -1,5 +1,6 @@
 /*
- * 設定（ヘッダー 右の はぐるま）：おうちの かたへ（うごきを へらす・このアプリについて・さいしょから）・バージョン
+ * 設定（ヘッダー 右の はぐるま）：おうちの かたへ（うごきを へらす・このアプリについて・データの バックアップ・さいしょから）・バージョン
+ * バージョンは「1.○○」（service-worker.js の APP_VERSION）。新しい 版が まっている ときは「こうしん する」ボタン（js/update.js）。
  * バージョンを 7かい つづけて タップすると 管理者モード（js/admin.js）。
  */
 (function () {
@@ -8,15 +9,8 @@
   let back = "home";      // もどる さき（はぐるまを おした ときの 画面）
   let taps = 0, tapTimer = null;
 
-  // いまの 版（Service Worker の 保存先の なまえ ＝ service-worker.js の APP_VERSION）
-  async function version() {
-    try {
-      const ks = (await caches.keys()).filter((k) => k.startsWith("bct-"));
-      return ks.sort().pop() || "—";
-    } catch (e) {
-      return "—";
-    }
-  }
+  // いまの 版（service-worker.js の APP_VERSION。例「1.15」）
+  const version = () => (BCT.update ? BCT.update.version() : Promise.resolve("—"));
 
   function render() {
     const reduce = !!BCT.prefs.get().reduceMotion;
@@ -26,19 +20,35 @@
         <h3>おうちの かたへ</h3>
         <label class="ph-check" style="margin-bottom:10px"><input type="checkbox" id="setReduce" ${reduce ? "checked" : ""}> うごきを へらす（アニメーションを みじかく する）</label>
         <button class="btn small ghost block" id="setAbout" style="margin-bottom:10px">このアプリについて（無料・ライセンス）</button>
+        <h4 class="set-sub">データの バックアップ</h4>
+        <div class="btn-row set-backup">
+          <button class="btn small ghost" id="setBackup">バックアップを ほぞん</button>
+          <button class="btn small ghost" id="setRestore">バックアップから もどす</button>
+        </div>
+        <p class="note">きろくは この 端末の 中だけに あります。ファイルに ほぞん しておくと、機種変更や ブラウザの データを けした ときに もどせます（写真も ふくみます）。</p>
         <button class="btn small ghost block" id="setReset">さいしょから やりなおす</button>
         <p class="note" style="margin-bottom:0">育成・記録・写真・位置情報は、この端末のブラウザの中だけに保存されています。
           ブラウザのデータを消したり、別のスマホ・別のブラウザで開いたりすると、引き継がれません。
           イベント終了QRには位置情報を含めていません。記念撮影の写真・カメラ映像はどこにも送信しません。</p>
       </div>
-      <p class="app-version"><button class="ver-btn" id="setVer" aria-label="バージョン">バージョン …</button></p>`;
+      <p class="app-version"><button class="ver-btn" id="setVer" aria-label="バージョン">バージョン …</button></p>
+      <p class="app-update" id="setUpdate" hidden><button class="btn small mint" id="setUpdateGo">🔄 あたらしい バージョンに こうしん する</button></p>`;
     $("setBack").onclick = () => ui.show(back);
     $("setReduce").onchange = (e) => BCT.prefs.set("reduceMotion", e.target.checked);
     $("setAbout").onclick = () => BCT.profile.about();
     $("setReset").onclick = () => BCT.profile.resetAll();
     $("setVer").onclick = tapVersion;
+    $("setBackup").onclick = () => BCT.backup.save();
+    $("setRestore").onclick = () => BCT.backup.restore();
+    $("setUpdateGo").onclick = () => BCT.update.apply();
+    showUpdate();
     version().then((v) => { if ($("setVer")) $("setVer").textContent = `バージョン ${v}`; });
   }
+  function showUpdate() {
+    const u = $("setUpdate");
+    if (u) u.hidden = !(BCT.update && BCT.update.hasUpdate());
+  }
+  if (BCT.update) BCT.update.onChange(showUpdate);
 
   // バージョンを 7かい つづけて タップ → 管理者モード（SHIKA COLLECTION と おなじ 入りかた）
   async function tapVersion() {

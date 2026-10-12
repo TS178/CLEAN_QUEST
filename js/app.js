@@ -12,16 +12,63 @@
     return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
-  function show(name, arg) {
+  // ---------------- もどる（ひとつ まえの 画面）----------------
+  // 画面を うつる たびに 記録し、ブラウザの「もどる」の 記録にも 1つずつ つむ。
+  // Android の もどる・iPhone の Safari の 左はしからの スワイプ・js/swipe-back.js の はしからの スワイプ で 1つ まえへ。
+  // たまご・なまえ・たんじょう には もどらない。おしらせ（ウィンドウ）が ひらいて いる ときは まず それを とじる
+  const NO_BACK = ["egg", "name", "hatch"];
+  let stack = [];
+  function back() {
+    if ($("modal").classList.contains("show")) {
+      closeModal();
+      if (BCT._modalResolve) BCT._modalResolve(null);
+      return true;
+    }
+    if (stack.length) {
+      show(stack.pop(), undefined, { back: true });
+      return true;
+    }
+    return false;
+  }
+  window.addEventListener("popstate", () => {
+    const wasModal = $("modal").classList.contains("show");
+    if (back() && wasModal) {
+      try { history.pushState({ bct: stack.length }, ""); } catch (e) { /* なし */ }
+    }
+  });
+  // スワイプで もどる とき：ブラウザの 記録が あれば それで（記録と ずれない）、なければ アプリの 中で
+  function swipeBack() {
+    if ($("modal").classList.contains("show")) return back();
+    if (!stack.length) return false;
+    try { history.back(); } catch (e) { back(); }
+    return true;
+  }
+  // ヘッダーの 高さ（ショップの 上の 部分を かためる ときに つかう）
+  function topbarVar() {
+    const t = document.querySelector(".topbar");
+    if (t && t.offsetHeight) document.documentElement.style.setProperty("--topbar-h", t.offsetHeight + "px");
+  }
+  window.addEventListener("resize", topbarVar);
+
+  function show(name, arg, opts) {
     const prev = current;
     if (prev && prev !== name && screens[prev] && screens[prev].hide) {
       try { screens[prev].hide(); } catch (e) { console.error(e); }
+    }
+    if (!(opts && opts.back) && prev && prev !== name) {
+      if (NO_BACK.includes(name) || NO_BACK.includes(prev)) stack = [];
+      else {
+        stack.push(prev);
+        if (stack.length > 30) stack.shift();
+        try { history.pushState({ bct: stack.length }, ""); } catch (e) { /* なし */ }
+      }
     }
     current = name;
     document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("active", el.id === "scr-" + name));
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", b.dataset.go === name));
     $("app").classList.toggle("no-tabs", NO_TABS.includes(name));
     window.scrollTo(0, 0);
+    requestAnimationFrame(topbarVar);
     const s = screens[name];
     if (s && s.show) s.show(arg);
   }
@@ -29,8 +76,12 @@
   function refreshHeader() {
     const s = BCT.store.get();
     $("tbLv").textContent = "Lv" + BCT.game.level(s);
-    $("tbCoin").innerHTML = BCT.medal.amount(BCT.game.coins(s));
-    $("tbCoin").title = BCT.medal.name;
+    // ふえた ときは メダルが とんで 数が ふえる（js/coin-fly.js。SHIKA COLLECTION と おなじ 演出）
+    if (BCT.coinFly) BCT.coinFly.update(BCT.game.coins(s));
+    else {
+      $("tbCoin").innerHTML = BCT.medal.amount(BCT.game.coins(s));
+      $("tbCoin").title = BCT.medal.name;
+    }
     $("tbTeam").textContent = [s.team.name, s.pet ? s.pet.name : ""].filter(Boolean).join(" ／ ");
   }
 
@@ -151,15 +202,10 @@
     });
     refreshHeader();
     show(s.pet ? "home" : "egg");
-
-    if ("serviceWorker" in navigator && location.protocol !== "file:") {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js").catch((e) => console.warn("SW", e));
-      });
-    }
+    // Service Worker の 登録と 更新の おしらせは js/update.js
   }
 
-  BCT.ui = { show, toast, modal, closeModal, esc, gainHtml, refreshHeader, current: () => current, reducedMotion };
+  BCT.ui = { show, toast, modal, closeModal, esc, gainHtml, refreshHeader, current: () => current, reducedMotion, back, swipeBack, canBack: () => stack.length > 0 };
   BCT.prefs = { get: prefs, set: setPref };
   BCT.screens = screens;
   BCT.afterGain = afterGain;

@@ -246,7 +246,10 @@ try {
   await ev(`document.getElementById('arCam').click()`);
   await sleep(500);
   check("カメラ拒否 → 理由と『カメラを つかわない』", await ev(`document.getElementById('arStartMsg').textContent.includes('きょか')`));
+  check("カメラの きょかが ない → きょかの しかたの おしらせ", await waitFor(`document.getElementById('modal').classList.contains('show') && !!document.querySelector('#modalBox .perm-steps')`, 3000));
   await shot("ar11-denied");
+  await ev(`[...document.querySelectorAll('#modalBox button')].find(b=>b.textContent.includes('あとで')).click()`);
+  await sleep(300);
   await ev(`document.getElementById('arNoCam').click()`);
   await sleep(400);
   check("カメラを つかわない → ホームで いつもの あそびかた（おもちゃを えらぶ）", (await ev(`BCT.ui.current()==='home'`)) &&
