@@ -1,0 +1,194 @@
+{
+  "badge_first": {
+    "width": 420,
+    "height": 387,
+    "file": "assets/collection/badge_first.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      32,
+      26,
+      434,
+      400
+    ]
+  },
+  "badge_plahunter": {
+    "width": 373,
+    "height": 406,
+    "file": "assets/collection/badge_plahunter.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      504,
+      24,
+      373,
+      406
+    ]
+  },
+  "badge_hakase": {
+    "width": 416,
+    "height": 397,
+    "file": "assets/collection/badge_hakase.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      873,
+      34,
+      416,
+      397
+    ]
+  },
+  "badge_perfect": {
+    "width": 400,
+    "height": 405,
+    "file": "assets/collection/badge_perfect.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      1322,
+      24,
+      400,
+      405
+    ]
+  },
+  "badge_tantei": {
+    "width": 420,
+    "height": 378,
+    "file": "assets/collection/badge_tantei.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      51,
+      451,
+      422,
+      380
+    ]
+  },
+  "badge_meijin": {
+    "width": 378,
+    "height": 404,
+    "file": "assets/collection/badge_meijin.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      492,
+      440,
+      378,
+      404
+    ]
+  },
+  "badge_sodate": {
+    "width": 418,
+    "height": 383,
+    "file": "assets/collection/badge_sodate.webp",
+    "source": "assets/art-source/ui-collection/badges.png",
+    "rect": [
+      890,
+      454,
+      418,
+      383
+    ]
+  },
+  "bin_plastic": {
+    "width": 274,
+    "height": 420,
+    "file": "assets/collection/bin_plastic.webp",
+    "source": "assets/art-source/ui-collection/tall-bins/plastic.png",
+    "rect": [
+      31,
+      38,
+      960,
+      1470
+    ]
+  },
+  "bin_canbin": {
+    "width": 274,
+    "height": 420,
+    "file": "assets/collection/bin_canbin.webp",
+    "source": "assets/art-source/ui-collection/tall-bins/canbin.png",
+    "rect": [
+      31,
+      40,
+      958,
+      1466
+    ]
+  },
+  "bin_burn": {
+    "width": 267,
+    "height": 420,
+    "file": "assets/collection/bin_burn.webp",
+    "source": "assets/art-source/ui-collection/tall-bins/burn.png",
+    "rect": [
+      39,
+      61,
+      922,
+      1452
+    ]
+  },
+  "b_bottle": {
+    "width": 249,
+    "height": 372,
+    "file": "assets/collection/b_bottle.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      82,
+      450,
+      249,
+      372
+    ]
+  },
+  "b_bag": {
+    "width": 306,
+    "height": 346,
+    "file": "assets/collection/b_bag.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      487,
+      480,
+      306,
+      346
+    ]
+  },
+  "b_can": {
+    "width": 272,
+    "height": 328,
+    "file": "assets/collection/b_can.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      882,
+      490,
+      272,
+      328
+    ]
+  },
+  "b_glass": {
+    "width": 318,
+    "height": 360,
+    "file": "assets/collection/b_glass.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      73,
+      849,
+      318,
+      360
+    ]
+  },
+  "b_wood": {
+    "width": 269,
+    "height": 344,
+    "file": "assets/collection/b_wood.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      493,
+      851,
+      269,
+      344
+    ]
+  },
+  "b_rope": {
+    "width": 328,
+    "height": 339,
+    "file": "assets/collection/b_rope.webp",
+    "source": "assets/art-source/ui-collection/sorting.png",
+    "rect": [
+      865,
+      860,
+      328,
+      339
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-11",
+  "tool": "built-in image_gen",
+  "status": "Review assets; not integrated into game. Generated from canonical artwork, not pixel-identical decompositions. Hidden attachment roots are inferred.",
+  "layout": "Three rows: stages1-3. Dolphin and turtle:6 columns; hermit:7 columns. See manifest for actual pixel rectangles.",
+  "assets": [
+    {
+      "type": "dolphin",
+      "reference": "../evolution-dolphin.png",
+      "file": "dolphin-parts-v1.png",
+      "prompt": "Use case: precise-object-edit, identity-preserve.\nAsset type: transparent cut-out animation parts atlas for the EXISTING approved character, not a redesign.\nInput image 1 is the canonical approved design: three growth stages in three columns, open-eyed top row; closed-eyed duplicates below. Use ONLY the top row.\nPreserve exact painted illustration style, color gradients, fine colored contours, white glints, eye/cheek/mouth shapes, body proportions, markings and age differences. Never change the character into a new design or generic creature.\nLayout: wide high-resolution atlas, ideally 3072 pixels wide. EXACTLY THREE equally tall rows. Row1 baby stage from upper left reference, row2 middle stage from upper middle reference, row3 final stage from upper right reference. Columns are equal width with generous transparent gutters. One isolated part per cell. Each part drawn at the SAME proportional scale relative to its body's row, NOT individually enlarged to fill cells. No parts touching, no clipping, no shadows, no labels/text/numbers/grid/background. Actual transparent alpha.\nCRUCIAL cut-out production requirements: main torso completely WITHOUT the listed detached moving appendages; inpaint the small areas the removed appendages once covered, matching adjacent paint. Every detached appendage includes a short rounded proximal root tab painted in the same skin color, extending about 15% beneath the body when assembled, so rotation leaves no holes. Roots are smoothly closed and natural, no mechanical joints or black cut lines. Parts have same original front three-quarter perspective/orientation as reference. Do not rotate or mirror asymmetric parts. Keep original face on main body; no extra eyes or faces on other parts.\nEXACTLY SIX COLUMNS, left to right:\n1. Head + main torso as one uninterrupted blue/ivory body with original open eyes, cheeks and smile; REMOVE BOTH pectoral flippers, dorsal fin, entire slender tail stem and terminal fluke. Complete the smooth flank behind those removed parts.\n2. NEAR pectoral flipper (original viewer-left), with full rounded shoulder root.\n3. FAR pectoral flipper (original viewer-right), with full rounded shoulder root, perspective correct.\n4. The single dorsal fin, including the mature form's original connected flowing crest silhouette; complete hidden base.\n5. The tapered lower tail stem ONLY, blue and ivory where appropriate, with rounded overlapping root; no end fluke or extra fins.\n6. The complete two-lobed horizontal terminal tail fluke as ONE connected piece, including a short central root. NOT two separate fins.\nStage1: tiny stubby round flippers, little dorsal fin, short body and tail. Stage2: longer natural fins and curved tapering torso. Stage3: EXACT original enlarged flowing blue-cyan-ivory fin silhouettes and gradient tips, do not invent extra lobes or ornamental fins. The six parts of each row must visually reconstruct that reference stage in the original pose. No whole assembled dolphin duplicates."
+    },
+    {
+      "type": "turtle",
+      "reference": "../evolution-turtle.png",
+      "file": "turtle-parts-v1.png",
+      "prompt": "Use case: precise-object-edit, identity-preserve.\nAsset type: transparent cut-out animation parts atlas for the EXISTING approved character, not a redesign.\nInput image 1 is the canonical approved design: three growth stages in three columns, open-eyed top row; closed-eyed duplicates below. Use ONLY the top row.\nPreserve exact painted illustration style, color gradients, fine colored contours, white glints, eye/cheek/mouth shapes, body proportions, markings and age differences. Never change the character into a new design or generic creature.\nLayout: wide high-resolution atlas, ideally 3072 pixels wide. EXACTLY THREE equally tall rows. Row1 baby stage from upper left reference, row2 middle stage from upper middle reference, row3 final stage from upper right reference. Columns are equal width with generous transparent gutters. One isolated part per cell. Each part drawn at the SAME proportional scale relative to its body's row, NOT individually enlarged to fill cells. No parts touching, no clipping, no shadows, no labels/text/numbers/grid/background. Actual transparent alpha.\nCRUCIAL cut-out production requirements: main torso completely WITHOUT the listed detached moving appendages; inpaint the small areas the removed appendages once covered, matching adjacent paint. Every detached appendage includes a short rounded proximal root tab painted in the same skin color, extending about 15% beneath the body when assembled, so rotation leaves no holes. Roots are smoothly closed and natural, no mechanical joints or black cut lines. Parts have same original front three-quarter perspective/orientation as reference. Do not rotate or mirror asymmetric parts. Keep original face on main body; no extra eyes or faces on other parts.\nEXACTLY SIX COLUMNS, left to right:\n1. Main body combining head, neck, plastron and complete shell, original face; REMOVE all four swimming flippers and tiny tail. Complete pale cream-mint skin/plastron behind removed limbs; preserve the entire exact shell gradient, scute shapes and cream scalloped rim.\n2. NEAR FRONT swimming flipper with complete broad rounded shoulder root, original viewer-bottom/right large flipper.\n3. FAR FRONT swimming flipper with complete rounded shoulder root, original far-side foreflipper, drawn independently even where source occluded it; preserve stage-specific size.\n4. NEAR REAR swimming flipper, complete root and same original spotted skin.\n5. FAR REAR swimming flipper, complete root and same original spotted skin.\n6. Tiny tapered tail with rounded hidden root, pale mint.\nExactly FOUR separate swimming flippers in columns2-5: no hands, no feet or fingers, no extra limbs. Baby has short soft rounded flippers, middle has longer leaf-like front flippers, final has very large elongated front flippers with the original teal spot pattern; rear flippers stay shorter. Main shell color must remain original stage1 pale mint, stage2 turquoise gradient, stage3 lime/mint to deep teal/blue. No new decoration. The six parts of each row must reconstruct the reference stage."
+    },
+    {
+      "type": "hermit",
+      "reference": "../evolution-hermit.png",
+      "file": "hermit-parts-v2.png",
+      "prompt": "添付画像と同じ、かわいいヤドカリのゲーム用パーツ図を描いてください。透明背景。色、貝殻、目、顔、グラデーション、絵のタッチは添付画像を厳密に参照してください。\n横7列×縦3段。上段は添付左の第1形態、中段は中央の第2形態、下段は右の第3形態。それぞれのマスに1パーツだけを描き、透明な余白で十分に離してください。\n第1列：貝殻と顔が一体になった本体。手足を別パーツにするため、本体には手足を付けない。\n第2列：画面左側のハサミ。丸い付け根からハサミまで、ひとつながりの1パーツ。\n第3列：画面右側のハサミ。第3形態だけは元絵どおり大きいハサミ。このマスに小さなハサミを追加しない。大きいハサミはひとつだけ。\n第4列：手前側の前脚。細い「く」の字形で、関節から足先まで細くなる歩くための脚。ハサミではない。\n第5列：手前側の後脚。第4列と同じく細い「く」の字形の脚。太いハサミや丸い手にしない。\n第6列：奥側の前脚。細い「く」の字形の脚。\n第7列：奥側の後脚。細い「く」の字形の脚。\n歩脚4本はどれも細長く、先が尖った同系統の形で揃えてください。各パーツの付け根は、本体の下へ重ねられる丸い形で描いてください。添付のキャラクターを再構成するための素材です。各成長形態の本体と手足の比率を保つ。別キャラクターにしない。文字、枠、飾り、影、背景は不要です。透明な余白に色のゴミや白い縁を残さないでください。"
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "file": "hermit-parts-v1.png",
+      "reason": "A walking leg resembles a pincer; final large claw has an extra claw-like lobe. Do not use."
+    }
+  ],
+  "turnarounds": {
+    "status": "Existing viewpoint references, not newly generated or independently rigged.",
+    "files": [
+      "../turnarounds/dolphin-side-back-v1.png",
+      "../turnarounds/turtle-side-back-v1.png",
+      "../turnarounds/hermit-side-back-v1.png"
+    ]
+  }
+}

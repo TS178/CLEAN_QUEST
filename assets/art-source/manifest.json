@@ -1,0 +1,549 @@
+[
+  {
+    "id": "dolphin-1-normal",
+    "source": "evolution-dolphin",
+    "rect": [
+      0,
+      0,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "dolphin-2-normal",
+    "source": "evolution-dolphin",
+    "rect": [
+      470,
+      0,
+      462,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "dolphin-3-normal",
+    "source": "evolution-dolphin",
+    "rect": [
+      932,
+      0,
+      604,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "dolphin-1-happy",
+    "source": "evolution-dolphin",
+    "rect": [
+      0,
+      512,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "dolphin-2-happy",
+    "source": "evolution-dolphin",
+    "rect": [
+      470,
+      512,
+      462,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "dolphin-3-happy",
+    "source": "evolution-dolphin",
+    "rect": [
+      932,
+      512,
+      604,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-1-normal",
+    "source": "evolution-turtle",
+    "rect": [
+      0,
+      0,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-2-normal",
+    "source": "evolution-turtle",
+    "rect": [
+      470,
+      0,
+      500,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-3-normal",
+    "source": "evolution-turtle",
+    "rect": [
+      970,
+      0,
+      566,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-1-happy",
+    "source": "evolution-turtle",
+    "rect": [
+      0,
+      512,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-2-happy",
+    "source": "evolution-turtle",
+    "rect": [
+      470,
+      512,
+      500,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "turtle-3-happy",
+    "source": "evolution-turtle",
+    "rect": [
+      970,
+      512,
+      566,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-1-normal",
+    "source": "evolution-hermit",
+    "rect": [
+      0,
+      0,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-2-normal",
+    "source": "evolution-hermit",
+    "rect": [
+      470,
+      0,
+      500,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-3-normal",
+    "source": "evolution-hermit",
+    "rect": [
+      970,
+      0,
+      566,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-1-happy",
+    "source": "evolution-hermit",
+    "rect": [
+      0,
+      512,
+      470,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-2-happy",
+    "source": "evolution-hermit",
+    "rect": [
+      470,
+      512,
+      500,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "hermit-3-happy",
+    "source": "evolution-hermit",
+    "rect": [
+      970,
+      512,
+      566,
+      512
+    ],
+    "folder": "pets"
+  },
+  {
+    "id": "head_straw",
+    "source": "items",
+    "rect": [
+      0,
+      35,
+      350,
+      300
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "head_marine",
+    "source": "items",
+    "rect": [
+      350,
+      45,
+      306,
+      280
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "head_flower",
+    "source": "items",
+    "rect": [
+      658,
+      45,
+      325,
+      285
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "head_shell",
+    "source": "items",
+    "rect": [
+      985,
+      40,
+      310,
+      290
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "head_crown",
+    "source": "items",
+    "rect": [
+      1296,
+      35,
+      324,
+      290
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "reward_clean_hat",
+    "source": "items",
+    "rect": [
+      0,
+      335,
+      358,
+      290
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "accessory_ribbon",
+    "source": "items",
+    "rect": [
+      358,
+      341,
+      309,
+      284
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "accessory_scarf",
+    "source": "items",
+    "rect": [
+      673,
+      340,
+      365,
+      286
+    ],
+    "folder": "items",
+    "polygon": [
+      [
+        673,
+        340
+      ],
+      [
+        985,
+        340
+      ],
+      [
+        985,
+        477
+      ],
+      [
+        1038,
+        551
+      ],
+      [
+        1038,
+        626
+      ],
+      [
+        673,
+        626
+      ]
+    ]
+  },
+  {
+    "id": "accessory_pendant",
+    "source": "items",
+    "rect": [
+      999,
+      335,
+      312,
+      290
+    ],
+    "folder": "items",
+    "polygon": [
+      [
+        999,
+        335
+      ],
+      [
+        1311,
+        335
+      ],
+      [
+        1311,
+        625
+      ],
+      [
+        1081,
+        625
+      ],
+      [
+        1081,
+        487
+      ],
+      [
+        999,
+        487
+      ]
+    ]
+  },
+  {
+    "id": "accessory_badge",
+    "source": "items",
+    "rect": [
+      1311,
+      335,
+      309,
+      290
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "reward_guardian_medal",
+    "source": "items",
+    "rect": [
+      35,
+      630,
+      275,
+      330
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "toy_ball",
+    "source": "items",
+    "rect": [
+      340,
+      635,
+      316,
+      321
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "toy_bubbles",
+    "source": "items",
+    "rect": [
+      670,
+      635,
+      316,
+      321
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "toy_music",
+    "source": "items",
+    "rect": [
+      994,
+      632,
+      330,
+      328
+    ],
+    "folder": "items"
+  },
+  {
+    "id": "frame_wave",
+    "source": "frames",
+    "rect": [
+      0,
+      0,
+      627,
+      621
+    ],
+    "folder": "frames"
+  },
+  {
+    "id": "frame_shell",
+    "source": "frames",
+    "rect": [
+      627,
+      0,
+      627,
+      621
+    ],
+    "folder": "frames"
+  },
+  {
+    "id": "frame_rainbow",
+    "source": "frames",
+    "rect": [
+      0,
+      621,
+      627,
+      633
+    ],
+    "folder": "frames"
+  },
+  {
+    "id": "reward_event_frame",
+    "source": "frames",
+    "rect": [
+      627,
+      621,
+      627,
+      633
+    ],
+    "folder": "frames"
+  },
+  {
+    "id": "dolphin_wave",
+    "source": "patterns",
+    "rect": [
+      0,
+      0,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "dolphin_star",
+    "source": "patterns",
+    "rect": [
+      418,
+      0,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "dolphin_sparkle",
+    "source": "patterns",
+    "rect": [
+      836,
+      0,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "turtle_wave",
+    "source": "patterns",
+    "rect": [
+      0,
+      418,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "turtle_flower",
+    "source": "patterns",
+    "rect": [
+      418,
+      418,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "turtle_star",
+    "source": "patterns",
+    "rect": [
+      836,
+      418,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "hermit_stripe",
+    "source": "patterns",
+    "rect": [
+      0,
+      836,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "hermit_dot",
+    "source": "patterns",
+    "rect": [
+      418,
+      836,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  },
+  {
+    "id": "hermit_rainbow",
+    "source": "patterns",
+    "rect": [
+      836,
+      836,
+      418,
+      418
+    ],
+    "folder": "patterns"
+  }
+]

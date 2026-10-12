@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ホーム左上のアイコン・デザイン確認</title>
+  <link rel="icon" href="icons/icon.svg">
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#faf9f4;color:#35564c;font-family:system-ui,"Meiryo",sans-serif}
+    main{max-width:1160px;margin:auto;padding:28px 20px 40px}h1{font-size:23px;margin:8px 0 12px}p{font-size:14px;line-height:1.8;margin:8px 0;color:#64766b}
+    .tag{display:inline-block;border:1px solid #d7decf;border-radius:20px;padding:5px 12px;font-size:11px;background:#fffef7}
+    .controls{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:22px 0}select{font:inherit;color:inherit;border:1px solid #bdcfc4;background:white;padding:8px 12px;border-radius:12px}label{font-size:13px}input{accent-color:#4e927e}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}article{min-width:0}h2{font-size:16px;margin:0 0 10px}.habitat-name{font-size:12px;margin:10px 4px;text-align:center}
+    .scene{position:relative;height:370px;overflow:hidden;border:2px solid #eee1bd;border-radius:30px;background:url('assets/ui/beach.webp') center/cover;box-shadow:0 5px 0 #e6e7da}
+    .dock{position:absolute;left:12px;top:12px;display:flex;align-items:flex-start;gap:8px;z-index:2}
+    .entry{display:flex;align-items:center;flex-direction:column;border:0;background:none;color:#355f57;padding:0;font:inherit;font-weight:800;cursor:default}
+    .circle{display:grid;place-items:center;width:72px;height:72px;border:3px solid #fffbea;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 40% 30%,#f5fff3,#aadcd2);box-shadow:0 2px 0 #68998c,0 3px 7px #29595b35}
+    .portrait svg{display:block;width:100%;height:100%;transform:scale(1.18) translateY(-3%)}
+    .habitat{padding-top:8px}.habitat .circle{width:60px;height:60px;border-color:#fff7db;box-shadow:0 2px 0 #b19b6d,0 3px 7px #29595b35}
+    .circle img{width:100%;height:100%;object-fit:cover}
+    .label{position:relative;margin-top:-2px;padding:2px 9px;border-radius:12px;background:#fffbed;box-shadow:0 2px 3px #79694525;font-size:11px;line-height:1.3}
+    .pet-zone{position:absolute;left:8px;right:8px;top:124px;bottom:18px;border-radius:28px;display:flex;align-items:center;justify-content:center}
+    .hero{width:180px;height:180px;flex:none;animation:float 6s ease-in-out infinite alternate;filter:drop-shadow(0 5px 3px #24869924)}.hero svg{display:block;width:100%;height:100%}
+    article:nth-child(2) .hero{animation-delay:-2s}article:nth-child(3) .hero{animation-delay:-4s}
+    .show-zone .pet-zone{outline:2px dashed #397c79;background:#ffffff20}.zone-label{display:none;position:absolute;right:10px;bottom:8px;font-size:10px;background:#fffff2d9;border-radius:10px;padding:3px 8px}.show-zone .zone-label{display:block}
+    .note{margin-top:24px;border-top:1px solid #dde2d6;padding-top:15px}
+    @keyframes float{from{transform:translate(-22px,6px)}to{transform:translate(22px,-6px)}}
+    @media(max-width:800px){.cards{grid-template-columns:1fr;max-width:390px;margin:auto}.scene{height:360px}main{padding:22px 16px}h1{font-size:20px}}
+    @media(prefers-reduced-motion:reduce){.hero{animation:none}}
+  </style>
+</head>
+<body><main>
+  <span class="tag">デザイン確認用 ／ アプリへの反映は確認後</span>
+  <h1>ようせいと住処の入口を、海の左上へ</h1>
+  <p>住処は、それぞれの住処の絵をそのまま丸く縮小。主人公はアイコンより下の空間で動きます。</p>
+  <div class="controls"><label>主人公のすがた <select id="stage"><option value="1">こども</option><option value="2">せいちょう とちゅう</option><option value="3">りっぱに せいちょう</option></select></label><label><input type="checkbox" id="zone"> 主人公の表示範囲を確認</label></div>
+  <div class="cards" id="cards"></div>
+  <p class="note">左：育てているようせい　／　右：その子の住処。<br>アイコンの下に余白を取り、移動中・向きを変えるときも主人公と重ならない配置です。動きは配置を確認するための仮表示です。</p>
+</main>
+<script src="js/config.js"></script><script src="js/items.js"></script><script src="js/pets.js"></script><script src="js/pet-sprites.js"></script><script src="js/pet-art.js"></script>
+<script>
+const characters=[['dolphin','イルカ','ラグーン・オーシャン'],['turtle','ウミガメ','アクア・ガーデン'],['hermit','ヤドカリ','ビーチ・ヴィレッジ']];
+function render(){
+  const stage=Number(document.getElementById('stage').value);
+  document.getElementById('cards').innerHTML=characters.map(([type,name,home])=>{
+    const pet=BCT.art.render({type,stage,face:'happy',motion:false});
+    return `<article><h2>${name}のようせい</h2><div class="scene"><div class="dock"><div class="entry"><span class="circle portrait">${pet}</span><span class="label">ようせい</span></div><div class="entry habitat"><span class="circle"><img src="assets/habitats/habitat_${type}.webp" alt="${home}"></span><span class="label">すみか</span></div></div><div class="pet-zone"><div class="hero">${pet}</div><span class="zone-label">主人公の表示範囲</span></div></div><p class="habitat-name">すみか：${home}</p></article>`;
+  }).join('');
+}
+document.getElementById('stage').addEventListener('change',render);
+document.getElementById('zone').addEventListener('change',e=>document.body.classList.toggle('show-zone',e.target.checked));
+render();
+</script></body></html>

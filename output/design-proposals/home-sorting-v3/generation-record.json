@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-12",
+  "method": "built-in image_gen",
+  "status": "Design proposal only; not integrated.",
+  "reference": "../home-sorting-v2/home-sorting-proposal.png",
+  "file": "home-sorting-proposal.png",
+  "prompt": "Use case: precise-object-edit. Make a minimal edit to the attached Japanese beach-cleanup design proposal board. Preserve the full composition, header, footer, typography, glossy painted style, all three bins and their colors, and everything in the blue and yellow columns EXACTLY as it is.\nOnly edit the RIGHT CORAL \"もえるゴミ\" column:\n1. Completely REMOVE the crumpled paper sprite and its label \"かみくず\" from the lower item panel.\n2. That panel now contains exactly TWO items: the existing brown forked twig on the left, labeled \"きのえだ\", and the existing blue coiled rope on the right, labeled \"ロープ\". Enlarge and position them neatly with balanced spacing, similar to the two-item layout of the middle yellow panel. Preserve the twig and rope designs, colors, shapes and texture. No replacement third item.\n3. On the FRONT of the coral bin, REMOVE the white PAPER-SHEET pictogram. Replace that paper pictogram with a simple clear WHITE COILED-ROPE pictogram, including two short loose ends. Keep the existing white TWIG pictogram next to it. The bin now displays ONLY a rope and a twig, matching its contents. No paper icon anywhere.\nThere must be exactly SIX litter items total: plastic bottle + bag under blue, can + glass bottle under yellow, twig + rope under coral. No paper, paper label, paper sheet, crumpled paper, or new litter anywhere. Do not change any other text or art."
+}

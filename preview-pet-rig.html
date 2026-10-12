@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>パーツ アニメの 確認</title>
+  <link rel="stylesheet" href="css/pet-rig.css">
+  <style>
+    :root { --bg: #f5fbf8; --card: #fffefa; --ink: #2f4740; --line: #d5e3dc; --accent: #5d9a86; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 system-ui, "Hiragino Maru Gothic ProN", "Yu Gothic UI", sans-serif; }
+    header { position: sticky; top: 0; z-index: 10; background: #fffefaee; border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+    h1 { font-size: 17px; margin: 0 12px 0 0; }
+    label { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
+    button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 5px 10px; font: inherit; cursor: pointer; }
+    button.main { background: var(--accent); color: #fff; border-color: var(--accent); }
+    main { padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+    .card h2 { font-size: 14px; margin: 0 0 6px; display: flex; justify-content: space-between; align-items: center; }
+    .host { position: relative; width: 260px; height: 260px; margin: 0 auto; background:
+      repeating-linear-gradient(0deg, #eef4f1 0 1px, transparent 1px 26px), repeating-linear-gradient(90deg, #eef4f1 0 1px, transparent 1px 26px), #fbfdfc; }
+    .face { position: absolute; inset: 0; transition: transform .4s; }
+    .card.left .face { transform: scaleX(-1); }
+    .face > svg.ref { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+    .card .pet-rig { display: block; }
+    .card.hide-rig .pet-rig { display: none; }
+    .show-pivot .pr-part::after { content: ""; position: absolute; left: var(--px); top: var(--py); width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #ff3d6e; border: 3px solid #fff; box-sizing: border-box; z-index: 50; }
+    .card pre { font-size: 11px; line-height: 1.35; background: #f3f7f5; border-radius: 8px; padding: 6px; max-height: 160px; overflow: auto; margin: 8px 0 0; white-space: pre-wrap; }
+    .status { font-size: 12px; color: #6a8279; }
+    #allOut { width: calc(100% - 32px); margin: 0 16px 24px; height: 220px; font: 12px/1.4 ui-monospace, Consolas, monospace; }
+    .note { padding: 0 16px; color: #6a8279; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>パーツ アニメの 確認</h1>
+    <label>元の絵 <input id="onion" type="range" min="0" max="1" step="0.05" value="0.35"></label>
+    <label>はやさ <input id="speed" type="range" min="0" max="1.3" step="0.05" value="0"> <span id="speedV">0</span></label>
+    <label><input id="pivots" type="checkbox"> 付け根の 印</label>
+    <label><input id="left" type="checkbox"> 左むき</label>
+    <label><input id="hideRig" type="checkbox"> パーツを かくす</label>
+    <label>そうび <select id="equip"><option value="">なし</option><option value="head_straw,accessory_scarf">むぎわら＋スカーフ</option><option value="head_crown,accessory_pendant">かんむり＋ペンダント</option><option value="head_flower,accessory_ribbon">はな＋リボン</option></select></label>
+    <button id="fitAll" class="main">胴体を ぜんぶ 自動で あわせる</button>
+  </header>
+  <p class="note">元の絵（正面の絵）を うすく 下に 出して、パーツを 重ねて います。「胴体を 自動で あわせる」は 胴体の 位置と 大きさを 元の絵に 合わせた 下書きです（下の 欄を js/pet-rig-config.js の stages に 写す）。ヒレ・脚・尾は 元の絵と 形が ちがうので、設定ファイルの at（親の どこに 付けるか）を 目で 見て なおして ください。</p>
+  <main id="grid"></main>
+  <textarea id="allOut" readonly placeholder="胴体を 自動で あわせた 結果が ここに 出ます"></textarea>
+
+  <script src="js/config.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/pets.js"></script>
+  <script src="js/pet-sprites.js"></script>
+  <script src="js/pet-art.js"></script>
+  <script src="js/pet-art-fix.js"></script>
+  <script src="js/pet-rig-config.js"></script>
+  <script src="js/pet-rig.js"></script>
+  <script src="js/pet-rig-fit.js"></script>
+  <script src="js/pet-rig-preview.js"></script>
+</body>
+</html>

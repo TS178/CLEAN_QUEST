@@ -1,0 +1,1072 @@
+{
+  "version": 1,
+  "status": "review",
+  "note": "Generated drawings. Assembly transforms and joint pivots must be calibrated before runtime integration.",
+  "species": {
+    "dolphin": {
+      "name": "イルカ",
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "parts": [
+        [
+          "body",
+          "顔・胴体"
+        ],
+        [
+          "fin-near",
+          "手前の胸びれ"
+        ],
+        [
+          "fin-far",
+          "奥の胸びれ"
+        ],
+        [
+          "dorsal",
+          "背びれ"
+        ],
+        [
+          "tail-base",
+          "尾の付け根"
+        ],
+        [
+          "tail-fluke",
+          "尾びれ"
+        ]
+      ]
+    },
+    "turtle": {
+      "name": "カメ",
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "parts": [
+        [
+          "body",
+          "顔・胴体・甲羅"
+        ],
+        [
+          "front-near",
+          "手前の前びれ"
+        ],
+        [
+          "front-far",
+          "奥の前びれ"
+        ],
+        [
+          "rear-near",
+          "手前の後ろびれ"
+        ],
+        [
+          "rear-far",
+          "奥の後ろびれ"
+        ],
+        [
+          "tail",
+          "しっぽ"
+        ]
+      ]
+    },
+    "hermit": {
+      "name": "ヤドカリ",
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "parts": [
+        [
+          "body",
+          "顔・胴体・貝殻"
+        ],
+        [
+          "claw-right",
+          "画面左のハサミ"
+        ],
+        [
+          "claw-left",
+          "画面右のハサミ"
+        ],
+        [
+          "leg-near-front",
+          "手前の前脚"
+        ],
+        [
+          "leg-near-rear",
+          "手前の後脚"
+        ],
+        [
+          "leg-far-front",
+          "奥の前脚"
+        ],
+        [
+          "leg-far-rear",
+          "奥の後脚"
+        ]
+      ]
+    }
+  },
+  "assets": [
+    {
+      "id": "dolphin-1-body",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "body",
+      "label": "顔・胴体",
+      "file": "assets/pet-parts/dolphin-1-body.png",
+      "width": 273,
+      "height": 252,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        100,
+        15,
+        273,
+        252
+      ]
+    },
+    {
+      "id": "dolphin-1-fin-near",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "fin-near",
+      "label": "手前の胸びれ",
+      "file": "assets/pet-parts/dolphin-1-fin-near.png",
+      "width": 147,
+      "height": 93,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        473,
+        151,
+        147,
+        93
+      ]
+    },
+    {
+      "id": "dolphin-1-fin-far",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "fin-far",
+      "label": "奥の胸びれ",
+      "file": "assets/pet-parts/dolphin-1-fin-far.png",
+      "width": 143,
+      "height": 87,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        725,
+        156,
+        143,
+        87
+      ]
+    },
+    {
+      "id": "dolphin-1-dorsal",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "dorsal",
+      "label": "背びれ",
+      "file": "assets/pet-parts/dolphin-1-dorsal.png",
+      "width": 151,
+      "height": 111,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1000,
+        141,
+        151,
+        111
+      ]
+    },
+    {
+      "id": "dolphin-1-tail-base",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "tail-base",
+      "label": "尾の付け根",
+      "file": "assets/pet-parts/dolphin-1-tail-base.png",
+      "width": 148,
+      "height": 95,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1246,
+        122,
+        148,
+        95
+      ]
+    },
+    {
+      "id": "dolphin-1-tail-fluke",
+      "type": "dolphin",
+      "stage": 1,
+      "part": "tail-fluke",
+      "label": "尾びれ",
+      "file": "assets/pet-parts/dolphin-1-tail-fluke.png",
+      "width": 220,
+      "height": 139,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1496,
+        130,
+        220,
+        139
+      ]
+    },
+    {
+      "id": "dolphin-2-body",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "body",
+      "label": "顔・胴体",
+      "file": "assets/pet-parts/dolphin-2-body.png",
+      "width": 305,
+      "height": 284,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        91,
+        272,
+        305,
+        284
+      ]
+    },
+    {
+      "id": "dolphin-2-fin-near",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "fin-near",
+      "label": "手前の胸びれ",
+      "file": "assets/pet-parts/dolphin-2-fin-near.png",
+      "width": 173,
+      "height": 129,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        460,
+        386,
+        173,
+        129
+      ]
+    },
+    {
+      "id": "dolphin-2-fin-far",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "fin-far",
+      "label": "奥の胸びれ",
+      "file": "assets/pet-parts/dolphin-2-fin-far.png",
+      "width": 176,
+      "height": 107,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        710,
+        391,
+        176,
+        107
+      ]
+    },
+    {
+      "id": "dolphin-2-dorsal",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "dorsal",
+      "label": "背びれ",
+      "file": "assets/pet-parts/dolphin-2-dorsal.png",
+      "width": 201,
+      "height": 144,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        973,
+        373,
+        201,
+        144
+      ]
+    },
+    {
+      "id": "dolphin-2-tail-base",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "tail-base",
+      "label": "尾の付け根",
+      "file": "assets/pet-parts/dolphin-2-tail-base.png",
+      "width": 186,
+      "height": 139,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1233,
+        362,
+        186,
+        139
+      ]
+    },
+    {
+      "id": "dolphin-2-tail-fluke",
+      "type": "dolphin",
+      "stage": 2,
+      "part": "tail-fluke",
+      "label": "尾びれ",
+      "file": "assets/pet-parts/dolphin-2-tail-fluke.png",
+      "width": 260,
+      "height": 182,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1494,
+        382,
+        260,
+        182
+      ]
+    },
+    {
+      "id": "dolphin-3-body",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "body",
+      "label": "顔・胴体",
+      "file": "assets/pet-parts/dolphin-3-body.png",
+      "width": 357,
+      "height": 327,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        73,
+        536,
+        357,
+        327
+      ]
+    },
+    {
+      "id": "dolphin-3-fin-near",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "fin-near",
+      "label": "手前の胸びれ",
+      "file": "assets/pet-parts/dolphin-3-fin-near.png",
+      "width": 246,
+      "height": 158,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        412,
+        661,
+        246,
+        158
+      ]
+    },
+    {
+      "id": "dolphin-3-fin-far",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "fin-far",
+      "label": "奥の胸びれ",
+      "file": "assets/pet-parts/dolphin-3-fin-far.png",
+      "width": 238,
+      "height": 151,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        694,
+        667,
+        238,
+        151
+      ]
+    },
+    {
+      "id": "dolphin-3-dorsal",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "dorsal",
+      "label": "背びれ",
+      "file": "assets/pet-parts/dolphin-3-dorsal.png",
+      "width": 286,
+      "height": 213,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        903,
+        599,
+        286,
+        213
+      ]
+    },
+    {
+      "id": "dolphin-3-tail-base",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "tail-base",
+      "label": "尾の付け根",
+      "file": "assets/pet-parts/dolphin-3-tail-base.png",
+      "width": 218,
+      "height": 172,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1218,
+        643,
+        218,
+        172
+      ]
+    },
+    {
+      "id": "dolphin-3-tail-fluke",
+      "type": "dolphin",
+      "stage": 3,
+      "part": "tail-fluke",
+      "label": "尾びれ",
+      "file": "assets/pet-parts/dolphin-3-tail-fluke.png",
+      "width": 312,
+      "height": 187,
+      "source": "assets/art-source/motion-parts/dolphin-parts-v1.png",
+      "rect": [
+        1442,
+        655,
+        312,
+        187
+      ]
+    },
+    {
+      "id": "turtle-1-body",
+      "type": "turtle",
+      "stage": 1,
+      "part": "body",
+      "label": "顔・胴体・甲羅",
+      "file": "assets/pet-parts/turtle-1-body.png",
+      "width": 316,
+      "height": 219,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        168,
+        9,
+        316,
+        219
+      ]
+    },
+    {
+      "id": "turtle-1-front-near",
+      "type": "turtle",
+      "stage": 1,
+      "part": "front-near",
+      "label": "手前の前びれ",
+      "file": "assets/pet-parts/turtle-1-front-near.png",
+      "width": 168,
+      "height": 162,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        637,
+        32,
+        168,
+        162
+      ]
+    },
+    {
+      "id": "turtle-1-front-far",
+      "type": "turtle",
+      "stage": 1,
+      "part": "front-far",
+      "label": "奥の前びれ",
+      "file": "assets/pet-parts/turtle-1-front-far.png",
+      "width": 154,
+      "height": 161,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1066,
+        33,
+        154,
+        161
+      ]
+    },
+    {
+      "id": "turtle-1-rear-near",
+      "type": "turtle",
+      "stage": 1,
+      "part": "rear-near",
+      "label": "手前の後ろびれ",
+      "file": "assets/pet-parts/turtle-1-rear-near.png",
+      "width": 131,
+      "height": 137,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1370,
+        57,
+        131,
+        137
+      ]
+    },
+    {
+      "id": "turtle-1-rear-far",
+      "type": "turtle",
+      "stage": 1,
+      "part": "rear-far",
+      "label": "奥の後ろびれ",
+      "file": "assets/pet-parts/turtle-1-rear-far.png",
+      "width": 122,
+      "height": 136,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1734,
+        58,
+        122,
+        136
+      ]
+    },
+    {
+      "id": "turtle-1-tail",
+      "type": "turtle",
+      "stage": 1,
+      "part": "tail",
+      "label": "しっぽ",
+      "file": "assets/pet-parts/turtle-1-tail.png",
+      "width": 93,
+      "height": 83,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1986,
+        82,
+        93,
+        83
+      ]
+    },
+    {
+      "id": "turtle-2-body",
+      "type": "turtle",
+      "stage": 2,
+      "part": "body",
+      "label": "顔・胴体・甲羅",
+      "file": "assets/pet-parts/turtle-2-body.png",
+      "width": 363,
+      "height": 230,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        130,
+        223,
+        363,
+        230
+      ]
+    },
+    {
+      "id": "turtle-2-front-near",
+      "type": "turtle",
+      "stage": 2,
+      "part": "front-near",
+      "label": "手前の前びれ",
+      "file": "assets/pet-parts/turtle-2-front-near.png",
+      "width": 223,
+      "height": 203,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        611,
+        238,
+        223,
+        203
+      ]
+    },
+    {
+      "id": "turtle-2-front-far",
+      "type": "turtle",
+      "stage": 2,
+      "part": "front-far",
+      "label": "奥の前びれ",
+      "file": "assets/pet-parts/turtle-2-front-far.png",
+      "width": 205,
+      "height": 201,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1025,
+        242,
+        205,
+        201
+      ]
+    },
+    {
+      "id": "turtle-2-rear-near",
+      "type": "turtle",
+      "stage": 2,
+      "part": "rear-near",
+      "label": "手前の後ろびれ",
+      "file": "assets/pet-parts/turtle-2-rear-near.png",
+      "width": 160,
+      "height": 163,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1366,
+        255,
+        160,
+        163
+      ]
+    },
+    {
+      "id": "turtle-2-rear-far",
+      "type": "turtle",
+      "stage": 2,
+      "part": "rear-far",
+      "label": "奥の後ろびれ",
+      "file": "assets/pet-parts/turtle-2-rear-far.png",
+      "width": 158,
+      "height": 153,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1711,
+        266,
+        158,
+        153
+      ]
+    },
+    {
+      "id": "turtle-2-tail",
+      "type": "turtle",
+      "stage": 2,
+      "part": "tail",
+      "label": "しっぽ",
+      "file": "assets/pet-parts/turtle-2-tail.png",
+      "width": 92,
+      "height": 80,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1987,
+        302,
+        92,
+        80
+      ]
+    },
+    {
+      "id": "turtle-3-body",
+      "type": "turtle",
+      "stage": 3,
+      "part": "body",
+      "label": "顔・胴体・甲羅",
+      "file": "assets/pet-parts/turtle-3-body.png",
+      "width": 437,
+      "height": 267,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        73,
+        431,
+        437,
+        267
+      ]
+    },
+    {
+      "id": "turtle-3-front-near",
+      "type": "turtle",
+      "stage": 3,
+      "part": "front-near",
+      "label": "手前の前びれ",
+      "file": "assets/pet-parts/turtle-3-front-near.png",
+      "width": 329,
+      "height": 259,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        576,
+        447,
+        329,
+        259
+      ]
+    },
+    {
+      "id": "turtle-3-front-far",
+      "type": "turtle",
+      "stage": 3,
+      "part": "front-far",
+      "label": "奥の前びれ",
+      "file": "assets/pet-parts/turtle-3-front-far.png",
+      "width": 263,
+      "height": 256,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1004,
+        447,
+        263,
+        256
+      ]
+    },
+    {
+      "id": "turtle-3-rear-near",
+      "type": "turtle",
+      "stage": 3,
+      "part": "rear-near",
+      "label": "手前の後ろびれ",
+      "file": "assets/pet-parts/turtle-3-rear-near.png",
+      "width": 218,
+      "height": 191,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1347,
+        483,
+        218,
+        191
+      ]
+    },
+    {
+      "id": "turtle-3-rear-far",
+      "type": "turtle",
+      "stage": 3,
+      "part": "rear-far",
+      "label": "奥の後ろびれ",
+      "file": "assets/pet-parts/turtle-3-rear-far.png",
+      "width": 175,
+      "height": 196,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1717,
+        478,
+        175,
+        196
+      ]
+    },
+    {
+      "id": "turtle-3-tail",
+      "type": "turtle",
+      "stage": 3,
+      "part": "tail",
+      "label": "しっぽ",
+      "file": "assets/pet-parts/turtle-3-tail.png",
+      "width": 96,
+      "height": 83,
+      "source": "assets/art-source/motion-parts/turtle-parts-v1.png",
+      "rect": [
+        1992,
+        534,
+        96,
+        83
+      ]
+    },
+    {
+      "id": "hermit-1-body",
+      "type": "hermit",
+      "stage": 1,
+      "part": "body",
+      "label": "顔・胴体・貝殻",
+      "file": "assets/pet-parts/hermit-1-body.png",
+      "width": 320,
+      "height": 248,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        24,
+        13,
+        320,
+        248
+      ]
+    },
+    {
+      "id": "hermit-1-claw-right",
+      "type": "hermit",
+      "stage": 1,
+      "part": "claw-right",
+      "label": "画面左のハサミ",
+      "file": "assets/pet-parts/hermit-1-claw-right.png",
+      "width": 191,
+      "height": 190,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        417,
+        61,
+        191,
+        190
+      ]
+    },
+    {
+      "id": "hermit-1-claw-left",
+      "type": "hermit",
+      "stage": 1,
+      "part": "claw-left",
+      "label": "画面右のハサミ",
+      "file": "assets/pet-parts/hermit-1-claw-left.png",
+      "width": 182,
+      "height": 203,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        659,
+        60,
+        182,
+        203
+      ]
+    },
+    {
+      "id": "hermit-1-leg-near-front",
+      "type": "hermit",
+      "stage": 1,
+      "part": "leg-near-front",
+      "label": "手前の前脚",
+      "file": "assets/pet-parts/hermit-1-leg-near-front.png",
+      "width": 115,
+      "height": 182,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        979,
+        59,
+        115,
+        182
+      ]
+    },
+    {
+      "id": "hermit-1-leg-near-rear",
+      "type": "hermit",
+      "stage": 1,
+      "part": "leg-near-rear",
+      "label": "手前の後脚",
+      "file": "assets/pet-parts/hermit-1-leg-near-rear.png",
+      "width": 101,
+      "height": 177,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1224,
+        60,
+        101,
+        177
+      ]
+    },
+    {
+      "id": "hermit-1-leg-far-front",
+      "type": "hermit",
+      "stage": 1,
+      "part": "leg-far-front",
+      "label": "奥の前脚",
+      "file": "assets/pet-parts/hermit-1-leg-far-front.png",
+      "width": 92,
+      "height": 181,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1474,
+        59,
+        92,
+        181
+      ]
+    },
+    {
+      "id": "hermit-1-leg-far-rear",
+      "type": "hermit",
+      "stage": 1,
+      "part": "leg-far-rear",
+      "label": "奥の後脚",
+      "file": "assets/pet-parts/hermit-1-leg-far-rear.png",
+      "width": 112,
+      "height": 179,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1722,
+        58,
+        112,
+        179
+      ]
+    },
+    {
+      "id": "hermit-2-body",
+      "type": "hermit",
+      "stage": 2,
+      "part": "body",
+      "label": "顔・胴体・貝殻",
+      "file": "assets/pet-parts/hermit-2-body.png",
+      "width": 358,
+      "height": 257,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        44,
+        269,
+        358,
+        257
+      ]
+    },
+    {
+      "id": "hermit-2-claw-right",
+      "type": "hermit",
+      "stage": 2,
+      "part": "claw-right",
+      "label": "画面左のハサミ",
+      "file": "assets/pet-parts/hermit-2-claw-right.png",
+      "width": 226,
+      "height": 214,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        423,
+        301,
+        226,
+        214
+      ]
+    },
+    {
+      "id": "hermit-2-claw-left",
+      "type": "hermit",
+      "stage": 2,
+      "part": "claw-left",
+      "label": "画面右のハサミ",
+      "file": "assets/pet-parts/hermit-2-claw-left.png",
+      "width": 213,
+      "height": 222,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        687,
+        308,
+        213,
+        222
+      ]
+    },
+    {
+      "id": "hermit-2-leg-near-front",
+      "type": "hermit",
+      "stage": 2,
+      "part": "leg-near-front",
+      "label": "手前の前脚",
+      "file": "assets/pet-parts/hermit-2-leg-near-front.png",
+      "width": 115,
+      "height": 202,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        980,
+        311,
+        115,
+        202
+      ]
+    },
+    {
+      "id": "hermit-2-leg-near-rear",
+      "type": "hermit",
+      "stage": 2,
+      "part": "leg-near-rear",
+      "label": "手前の後脚",
+      "file": "assets/pet-parts/hermit-2-leg-near-rear.png",
+      "width": 120,
+      "height": 199,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1218,
+        311,
+        120,
+        199
+      ]
+    },
+    {
+      "id": "hermit-2-leg-far-front",
+      "type": "hermit",
+      "stage": 2,
+      "part": "leg-far-front",
+      "label": "奥の前脚",
+      "file": "assets/pet-parts/hermit-2-leg-far-front.png",
+      "width": 115,
+      "height": 210,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1465,
+        308,
+        115,
+        210
+      ]
+    },
+    {
+      "id": "hermit-2-leg-far-rear",
+      "type": "hermit",
+      "stage": 2,
+      "part": "leg-far-rear",
+      "label": "奥の後脚",
+      "file": "assets/pet-parts/hermit-2-leg-far-rear.png",
+      "width": 123,
+      "height": 203,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1718,
+        307,
+        123,
+        203
+      ]
+    },
+    {
+      "id": "hermit-3-body",
+      "type": "hermit",
+      "stage": 3,
+      "part": "body",
+      "label": "顔・胴体・貝殻",
+      "file": "assets/pet-parts/hermit-3-body.png",
+      "width": 368,
+      "height": 276,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        33,
+        528,
+        368,
+        276
+      ]
+    },
+    {
+      "id": "hermit-3-claw-right",
+      "type": "hermit",
+      "stage": 3,
+      "part": "claw-right",
+      "label": "画面左のハサミ",
+      "file": "assets/pet-parts/hermit-3-claw-right.png",
+      "width": 233,
+      "height": 230,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        431,
+        558,
+        233,
+        230
+      ]
+    },
+    {
+      "id": "hermit-3-claw-left",
+      "type": "hermit",
+      "stage": 3,
+      "part": "claw-left",
+      "label": "画面右のハサミ",
+      "file": "assets/pet-parts/hermit-3-claw-left.png",
+      "width": 269,
+      "height": 251,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        675,
+        545,
+        269,
+        251
+      ]
+    },
+    {
+      "id": "hermit-3-leg-near-front",
+      "type": "hermit",
+      "stage": 3,
+      "part": "leg-near-front",
+      "label": "手前の前脚",
+      "file": "assets/pet-parts/hermit-3-leg-near-front.png",
+      "width": 129,
+      "height": 227,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        976,
+        569,
+        129,
+        227
+      ]
+    },
+    {
+      "id": "hermit-3-leg-near-rear",
+      "type": "hermit",
+      "stage": 3,
+      "part": "leg-near-rear",
+      "label": "手前の後脚",
+      "file": "assets/pet-parts/hermit-3-leg-near-rear.png",
+      "width": 133,
+      "height": 226,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1217,
+        569,
+        133,
+        226
+      ]
+    },
+    {
+      "id": "hermit-3-leg-far-front",
+      "type": "hermit",
+      "stage": 3,
+      "part": "leg-far-front",
+      "label": "奥の前脚",
+      "file": "assets/pet-parts/hermit-3-leg-far-front.png",
+      "width": 139,
+      "height": 247,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1478,
+        557,
+        139,
+        247
+      ]
+    },
+    {
+      "id": "hermit-3-leg-far-rear",
+      "type": "hermit",
+      "stage": 3,
+      "part": "leg-far-rear",
+      "label": "奥の後脚",
+      "file": "assets/pet-parts/hermit-3-leg-far-rear.png",
+      "width": 153,
+      "height": 237,
+      "source": "assets/art-source/motion-parts/hermit-parts-v2.png",
+      "rect": [
+        1718,
+        559,
+        153,
+        237
+      ]
+    }
+  ]
+}

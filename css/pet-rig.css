@@ -1,0 +1,27 @@
+/* パーツで うごかす ようせい（js/pet-rig.js）。.rig-on の あいだは 正面の絵（.rig-front）の かわりに パーツを 見せる */
+.pet-rig { position: absolute; inset: 0; display: none; pointer-events: none; overflow: visible; }
+.rig-on:not(.rig-turn) .pet-rig { display: block; }
+.rig-on:not(.rig-turn) .rig-front { display: none; }
+.pr-stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+/* transform で それぞれが 重ねの まとまりに なる（マイナスの z-index は 親の 絵の うしろ） */
+.pr-part, .pr-head { position: absolute; isolation: isolate; }
+.pr-head { left: 0; top: 0; z-index: 1; }
+.pr-img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+.pr-equip { position: absolute; width: 0; height: 0; z-index: 5; transform-origin: 0 0; }
+.pr-equip img { position: absolute; display: block; max-width: none; }
+/* ホームの 池：.facing の 中に 入れる（向きの 反転は .facing ごと） */
+.pet .facing { position: relative; }
+/* すみか：左を むくときは 入れ物ごと 反転 */
+.hb-face { position: relative; width: 100%; height: 100%; transition: transform 0.4s; }
+.hb-pet.left .hb-face { transform: scaleX(-1); }
+/* パーツ表示の あいだは 左右の 反転を 一瞬で する（裏返す アニメーションで 向きの かわりが おくれない） */
+.pet.rig-on .facing, .hb-pet.rig-on .hb-face { transition: none; }
+@media (prefers-reduced-motion: reduce) { .hb-face { transition: none; } }
+body.reduce-motion .hb-face { transition: none; }
+/* 動きを へらす 設定では パーツを 出さず、正面の絵（止まった 絵）だけ */
+@media (prefers-reduced-motion: reduce) {
+  .rig-on .pet-rig { display: none !important; }
+  .rig-on .rig-front { display: block !important; }
+}
+body.reduce-motion .rig-on .pet-rig { display: none !important; }
+body.reduce-motion .rig-on .rig-front { display: block !important; }

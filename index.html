@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ビーチクリーン探検隊</title>
+  <meta name="description" content="はまべの ゴミを ひろって、うみの ようせいを そだてよう。親子で参加するビーチクリーンイベント用のアプリです。">
+  <meta name="theme-color" content="#fbfaf6">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="探検隊">
+  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/collection.css">
+  <link rel="stylesheet" href="css/ar.css">
+  <link rel="stylesheet" href="css/beach.css">
+  <link rel="stylesheet" href="css/pet-rig.css">
+  <link rel="stylesheet" href="css/collection-painted.css">
+  <link rel="stylesheet" href="css/ui-design.css">
+</head>
+<body>
+  <div class="app no-tabs" id="app">
+    <header class="topbar">
+      <div class="title">ビーチクリーン探検隊<small id="tbTeam"></small></div>
+      <span class="lv-chip" id="tbLv">Lv1</span>
+      <span class="pt-chip coin-chip" id="tbCoin" title="たんけんたいメダル">0</span>
+      <!-- 設定（はぐるまの 図形は SHIKA COLLECTION と おなじ 自作の SVG） -->
+      <button class="tb-gear" id="tbGear" type="button" aria-label="せってい"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.15 2.48 L13.85 2.48 L13.96 5.18 L15.44 5.79 L17.42 3.96 L20.04 6.58 L18.21 8.56 L18.82 10.04 L21.52 10.15 L21.52 13.85 L18.82 13.96 L18.21 15.44 L20.04 17.42 L17.42 20.04 L15.44 18.21 L13.96 18.82 L13.85 21.52 L10.15 21.52 L10.04 18.82 L8.56 18.21 L6.58 20.04 L3.96 17.42 L5.79 15.44 L5.18 13.96 L2.48 13.85 L2.48 10.15 L5.18 10.04 L5.79 8.56 L3.96 6.58 L6.58 3.96 L8.56 5.79 L10.04 5.18 Z" fill="#7c756a" stroke="#2b2722" stroke-width="1.5" stroke-linejoin="round" paint-order="stroke"/><circle cx="12" cy="12" r="3.3" fill="#fdf5e3" stroke="#2b2722" stroke-width="1.5" stroke-linejoin="round" paint-order="stroke"/></svg></button>
+    </header>
+
+    <main>
+      <!-- たまご選択 -->
+      <section class="screen" id="scr-egg">
+        <div class="brand-mark" aria-hidden="true"><div class="crest"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg></div><p class="eyebrow">A LITTLE FRIEND. A CLEANER SEA.</p><div class="brand-en">BEACH CLEAN</div><span class="brand-sub">EXPLORERS</span></div>
+        <h2>ビーチクリーン探検隊</h2>
+        <p class="lead">うみの ようせいの たまごを えらんでね。<br>いっしょに はまべを きれいに しよう！</p>
+        <div class="eggs" id="eggs"></div>
+        <p class="note" style="text-align:center">たまごを タップすると えらべるよ</p>
+        <div class="onboarding-foot"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg>ちいさな一歩が、うみの未来に。</div>
+      </section>
+
+      <!-- なまえ入力 -->
+      <section class="screen" id="scr-name">
+        <h2>なまえを きめよう</h2>
+        <div class="card" style="text-align:center" id="namePet"></div>
+        <form class="card" id="nameForm" autocomplete="off">
+          <label class="field"><span>ようせいの なまえ（いれなくても OK）</span>
+            <input id="inPetName" maxlength="12"></label>
+          <label class="field"><span>たんけんたいの なまえ</span>
+            <input id="inTeam" maxlength="16" placeholder="れい：うみがめたんけんたい"></label>
+          <label class="field"><span>なんにんで さんか？</span>
+            <select id="inMembers">
+              <option value="0">えらばない</option>
+              <option value="1">1にん</option><option value="2">2にん</option><option value="3">3にん</option>
+              <option value="4">4にん</option><option value="5">5にん</option><option value="6">6にん</option>
+              <option value="7">7にん</option><option value="8">8にん</option>
+            </select></label>
+          <p class="note">※ ほんとうの なまえは いれないでね（ニックネームで OK）。<br>
+            ※ きろくは この スマホの なかだけに ほぞんされます。</p>
+          <div class="btn-row">
+            <button type="button" class="btn ghost" id="nameBack">もどる</button>
+            <button type="submit" class="btn mint">たんけん スタート！</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- たんじょう -->
+      <section class="screen" id="scr-hatch">
+        <div class="hatch-stage" id="hatchStage"></div>
+        <p class="lead" id="hatchMsg" style="font-size:20px;font-weight:800;color:var(--ink)"></p>
+        <button class="btn block mint" id="hatchGo" style="display:none">ホームへ いこう</button>
+      </section>
+
+      <!-- ホーム -->
+      <section class="screen" id="scr-home">
+        <div class="pond" id="pond">
+          <div class="wave"></div>
+          <div class="beach-trash" id="beachTrash"></div>
+          <div class="pet-play-area" id="petPlayArea"><div class="pet" id="pet"><div class="float"><div class="facing" id="petFacing"><div class="body rig-front" id="petBody"></div></div></div></div></div>
+          <div class="pond-shortcuts" id="pondShortcuts" role="group" aria-label="ようせいと すみか">
+            <button class="pond-shortcut fairy-shortcut" data-go="me" id="actFairy" aria-label="ようせいを みる">
+              <span class="shortcut-circle"><span id="fairyPortrait" aria-hidden="true"></span></span>
+              <span class="shortcut-label">ようせい</span>
+            </button>
+            <button class="pond-shortcut habitat-shortcut" data-go="habitat" id="actHabitat" aria-label="すみかへ いく">
+              <span class="shortcut-circle" id="habitatPortrait" aria-hidden="true"></span>
+              <span class="shortcut-label">すみか</span>
+            </button>
+          </div>
+        </div>
+        <!-- 分別ゴミばこ と ごはん（js/beach.js） -->
+        <div class="beach-bar">
+          <div class="beach-status" id="beachStatus"></div>
+          <div class="bins-wrap" id="binsWrap"><div class="bins" id="bins"></div></div>
+          <div class="food-tray" id="foodTray"></div>
+        </div>
+      </section>
+
+      <!-- ミッション（クイズ・そうじ・とくべつ ごほうび） -->
+      <section class="screen" id="scr-mission">
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div id="missionBody"></div>
+      </section>
+
+      <!-- ひろう（きろく と ちず） -->
+      <section class="screen" id="scr-capture">
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div class="seg" role="tablist">
+          <button class="on" data-sub="rec" role="tab"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg> きろく する</button>
+          <button data-sub="map" role="tab"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 9-4 8 4 9-4v21l-9 4-8-4-9 4Z" fill="#dbe5ce"/><path d="M12 4v21M20 8v21" fill="none" stroke="#a8b598"/><path d="M20 18s5-5 5-9a5 5 0 0 0-10 0c0 4 5 9 5 9Z" fill="#ce8866"/><circle cx="20" cy="9" r="1.5" fill="#fff4d9"/></g></svg> ちず</button>
+        </div>
+        <div id="subRec">
+          <h2>ゴミを みつけたら きろくしよう</h2>
+          <div class="card">
+            <h3>① しゃしんを とる</h3>
+            <label class="shot-btn" id="shotBtn">
+              <span class="ico"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg></span><span>タップして しゃしんを とる</span>
+              <input type="file" accept="image/*" capture="environment" id="shotInput">
+            </label>
+            <div id="shotPreview" style="display:none">
+              <img class="preview" id="shotImg" alt="とった しゃしん">
+              <button class="linkish" id="shotRetake">とりなおす</button>
+            </div>
+            <div class="loc" id="locBox">📍 ばしょを しらべているよ…</div>
+            <p class="note">※ あぶない ものは さわらずに、おとなに しらせてね。</p>
+          </div>
+          <div class="card">
+            <h3>② なんの ゴミ？</h3>
+            <div class="types" id="typeGrid"></div>
+            <p class="note" style="margin-bottom:0">★ は まだ みつけていない しゅるい（はじめて きろく すると ごほうび）。
+              びんは われていると あぶないので、ごほうびは ありません。</p>
+          </div>
+          <button class="btn block mint" id="recBtn" disabled>きろく する！</button>
+        </div>
+        <div id="subMap" hidden>
+          <h2>クリーンマップ</h2>
+          <div id="map"></div>
+          <div class="map-off" id="mapOff">
+            <div class="ico">📡</div>
+            <b>いまは ちずを ひょうじ できないよ</b><br>
+            でんぱが もどると ちずが でてくるよ。<br>きろくは したの いちらんで みられるよ。
+          </div>
+          <div class="legend" id="mapLegend"></div>
+          <div class="area-tip" id="areaTip" style="display:none"></div>
+          <div class="card" style="margin-top:14px">
+            <h3>しゅるいべつの かず</h3>
+            <div class="bars" id="mapBars"></div>
+          </div>
+          <div class="card">
+            <h3>きろくの いちらん</h3>
+            <ul class="rec-list" id="recList"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ショップ -->
+      <section class="screen" id="scr-shop">
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div id="shopBody"></div>
+      </section>
+
+      <!-- きせかえ -->
+      <section class="screen" id="scr-dress">
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div id="dressBody"></div>
+      </section>
+
+      <!-- さつえい -->
+      <section class="screen" id="scr-photo">
+        <div class="ph-top">
+          <button class="btn small ghost" id="phBack">← もどる</button>
+          <b>いっしょに さつえい</b>
+        </div>
+        <div class="ph-stage" id="phStage">
+          <img id="phBg" alt="" hidden>
+          <video id="phVideo" playsinline muted hidden></video>
+          <img id="phPet" alt="ようせい" draggable="false">
+          <canvas id="phOverlay" width="1080" height="1440"></canvas>
+          <div class="ph-msg" id="phMsg"></div>
+        </div>
+        <div id="phSource" class="ph-source">
+          <button class="btn mint" id="phCam"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg> カメラで とる</button>
+          <button class="btn ghost" id="phPick"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="22" height="26" rx="2" fill="#e5c17c"/><rect x="8" y="6" width="16" height="20" fill="#e3efe6"/><path d="m9 23 5-7 4 4 3-3 3 6" fill="#88ad91"/><circle cx="19" cy="11" r="2" fill="#e5c17c"/></g></svg> しゃしんを えらぶ</button>
+          <button class="btn ghost" id="phSea"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg> うみの はいけい</button>
+          <input type="file" accept="image/*" id="phFile" hidden>
+        </div>
+        <div id="phControls" hidden>
+          <div class="ph-shoot">
+            <button class="btn small ghost" id="phSwitch" hidden>🔄 きりかえ</button>
+            <button class="shutter" id="phShutter" aria-label="シャッター"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg></button>
+            <button class="btn small ghost" id="phChange">はいけい</button>
+          </div>
+          <label class="ph-size">おおきさ <input type="range" id="phSize" min="20" max="95" value="55"></label>
+          <div class="ph-label">ポーズ</div>
+          <div class="chips" id="phPoses"></div>
+          <div class="ph-label">フレーム</div>
+          <div class="chips" id="phFrames"></div>
+          <label class="ph-check"><input type="checkbox" id="phText" checked> なまえ・イベント・ひづけ を いれる</label>
+        </div>
+        <div id="phResult" hidden>
+          <img id="phResultImg" class="ph-result" alt="きねんしゃしん">
+          <div class="btn-row">
+            <button class="btn ghost" id="phRetake">とりなおす</button>
+            <button class="btn mint" id="phSave">ほぞんする</button>
+          </div>
+          <p class="note" id="phSaveNote"></p>
+        </div>
+      </section>
+
+      <!-- AR で なでる・あそぶ（js/ar.js） -->
+      <section class="screen ar-screen" id="scr-ar">
+        <video id="arVideo" playsinline muted hidden></video>
+        <div id="arTouch" class="ar-touch"></div>
+        <div id="arHud" class="ar-hud" hidden>
+          <div class="ar-top">
+            <button class="btn small ghost" id="arBack">← もどる</button>
+            <span class="ar-mode" id="arMode"></span>
+            <span class="ar-hearts hearts" id="arHearts"></span>
+          </div>
+          <div class="ar-hint" id="arHint"></div>
+          <div class="ar-bottom">
+            <button class="btn small ghost" id="arRecall">📍 ここに よぶ</button>
+            <div class="ar-tray" id="arTray"></div>
+          </div>
+        </div>
+        <div class="ar-toast" id="arToast" hidden></div>
+        <div class="ar-notice" id="arNotice" hidden></div>
+        <div class="ar-start" id="arStart">
+          <div class="box">
+            <h2>AR で あそぼう</h2>
+            <p class="lead" id="arIntent"></p>
+            <div class="ar-safety">
+              <b>⚠ あんぜんの やくそく</b>
+              <ul>
+                <li>あるきながら つかわない。<b>とまって</b> つかおう</li>
+                <li>まわりに ひとや ものが ないか たしかめてから</li>
+                <li>うみ・みずべ・いわばの ちかくでは つかわない。<b>おとなと いっしょに</b></li>
+                <li>ゴミひろいの とちゅうは しまっておこう</li>
+              </ul>
+            </div>
+            <div class="ar-start-msg" id="arStartMsg" hidden></div>
+            <button class="btn block mint" id="arXr" hidden>ゆかに おく AR（おすすめ）</button>
+            <button class="btn block" id="arCam">📷 カメラで AR</button>
+            <button class="btn block ghost" id="arNoCam">カメラを つかわない</button>
+            <button class="btn block ghost small" id="arStartBack">← ホームへ</button>
+            <p class="note" style="text-align:center;margin-bottom:0">カメラの えいぞうは どこにも おくらないよ。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- すみか（js/habitat.js） -->
+      <section class="screen" id="scr-habitat">
+        <div class="hb-top">
+          <button class="btn small ghost home-back" data-go="home">← ホーム</button>
+          <b id="hbTitle"></b>
+        </div>
+        <div class="hb-scene" id="hbScene">
+          <div class="hb-bg" id="hbBg"></div>
+          <div class="hb-items" id="hbItems"></div>
+          <div class="hb-pet" id="hbPet"><div class="hb-face" id="hbPetFace"><div class="hb-body rig-front" id="hbPetBody"></div></div></div>
+          <div class="hb-say" id="hbSay" hidden></div>
+        </div>
+        <p class="note" id="hbHint"></p>
+        <div class="card">
+          <h3>もっている すみかの アイテム</h3>
+          <div class="hb-tray" id="hbTray"></div>
+        </div>
+      </section>
+
+      <!-- じぶん -->
+      <section class="screen" id="scr-me">
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div id="meTop"></div>
+        <!-- あそぶ（AR）・きせかえ・さつえい（もと ホーム） -->
+        <div class="actions me-actions">
+          <button class="btn peach" id="actPlay"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12" fill="#f5e8bf"/><path d="M16 4q-10 9 0 24M16 4q10 9 0 24" fill="#81aeb5"/><path d="M4 16h24" fill="none"/></g></svg> あそぶ</button>
+          <button class="btn mint" data-go="dress"><span data-ui-icon-slot="dress"></span> きせかえ</button>
+          <button class="btn lilac" data-go="photo"><span data-ui-icon-slot="capture"></span> さつえい</button>
+        </div>
+        <div id="meBody"></div>
+      </section>
+
+      <!-- 設定（ヘッダーの はぐるま）・管理者モード（設定の バージョンを 7かい タップ） -->
+      <section class="screen" id="scr-settings"><div id="settingsBody"></div></section>
+      <section class="screen" id="scr-admin"><div id="adminBody"></div></section>
+    </main>
+
+    <nav class="tabs">
+      <div class="inner">
+        <button data-go="home"><span class="ico"><span data-ui-icon-slot="nav-home"></span></span>ホーム</button>
+        <button data-go="mission"><span class="ico"><span data-ui-icon-slot="mission"></span></span>ミッション</button>
+        <button data-go="capture"><span class="ico"><span data-ui-icon-slot="capture"></span></span>ひろう</button>
+        <button data-go="shop"><span class="ico"><span data-ui-icon-slot="shop"></span></span>ショップ</button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- しんか・レベルアップ -->
+  <div class="evo" id="evo" aria-live="polite">
+    <div class="rays" id="evoRays"></div>
+    <div class="evo-pet" id="evoPet"></div>
+    <div class="evo-msg" id="evoMsg"></div>
+    <button class="btn mint" id="evoOk">やったね！</button>
+    <div class="flash" id="evoFlash"></div>
+  </div>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="modalBox"></div></div>
+
+  <script src="vendor/leaflet/leaflet.js"></script>
+  <script src="vendor/qrcode/qrcode.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/items.js"></script>
+  <script src="js/trash.js"></script>
+  <script src="js/quiz-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/pets.js"></script>
+  <script src="js/pet-sprites.js"></script>
+  <script src="js/pet-art.js"></script>
+  <script src="js/pet-art-fix.js"></script>
+  <script src="js/pet-motion.js"></script>
+  <script src="js/pet-rig-config.js"></script>
+  <script src="js/pet-rig.js"></script>
+  <script src="js/home-art.js"></script>
+  <script src="js/habitat-sprites.js"></script>
+  <script src="js/habitat-painted-art.js"></script>
+  <script src="js/collection-sprites.js"></script>
+  <script src="js/mission-sprites.js"></script>
+  <script src="js/collection-art.js"></script>
+  <script src="js/ui-design.js"></script>
+  <script src="js/badges.js"></script>
+  <script src="js/share.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/egg.js"></script>
+  <script src="js/home.js"></script>
+  <script src="js/beach.js"></script>
+  <script src="js/habitat.js"></script>
+  <script src="js/mission.js"></script>
+  <script src="js/capture.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/shop.js"></script>
+  <script src="js/dressup.js"></script>
+  <script src="js/photo.js"></script>
+  <script src="js/ar-math.js"></script>
+  <script src="js/ar.js"></script>
+  <script src="js/profile.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/admin.js"></script>
+  <script>BCT.start();</script>
+</body>
+</html>

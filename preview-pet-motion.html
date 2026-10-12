@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ようせいの動きとまばたき</title>
+  <link rel="stylesheet" href="css/habitat-preview.css">
+  <style>
+    main {max-width:1100px}.motion-group{margin:32px 0}.motion-group>h2{text-align:center;font-size:21px}.motion-group>p{text-align:center;color:#7c8c82;font-size:13px}
+    .motion-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.motion-card{background:#fffdf7;border:1px solid #e7e4d8;border-radius:24px;text-align:center;padding:16px 6px}.motion-card svg{width:100%;height:auto;overflow:visible}.motion-card p{font-size:12px;color:#84968a;margin:0 0 10px}.tools button{font:inherit;color:#fff;background:#3e7562;border:0;border-radius:22px;padding:12px 20px;cursor:pointer}.tools button:focus-visible{outline:3px solid #d9aa5c;outline-offset:3px}.motion-card{background-image:radial-gradient(ellipse at 50% 60%,#edf6ef,transparent 68%)}
+    @media(max-width:580px){.motion-grid{gap:6px}.motion-card{padding:8px 2px;border-radius:15px}.motion-card p{font-size:10px}.motion-group>p{font-size:11px}}
+  </style>
+</head>
+<body><main>
+  <header><p class="eyebrow">SEA FAIRY · LITTLE MOVEMENTS</p><h1>ひれも、表情も、動く。</h1><p>尾びれで泳ぐ。ひれをかく。はさみをゆらす。<br>3種類・3段階、それぞれの小さな動き。</p>
+    <div class="tools"><label><input id="motionEnabled" type="checkbox" checked> 動きを表示</label><button id="blinkNow">まばたきを見る</button><a href="index.html">アプリを開く →</a></div>
+  </header><div id="motionGallery"></div>
+  <footer>原画の色と形を使った部位アニメーション。移動せずに動きの違いを比べられます。</footer>
+</main>
+<script src="js/config.js"></script><script src="js/items.js"></script><script src="js/pets.js"></script><script src="js/pet-sprites.js"></script><script src="js/pet-art.js"></script><script src="js/pet-motion.js"></script>
+<script>
+  const descriptions={dolphin:['イルカ','尾びれをしならせ、胸びれでバランスをとります。'],turtle:['ウミガメ','左右のひれを交互にかき、ゆっくり泳ぎます。'],hermit:['ヤドカリ','はさみを持ち上げ、脚を交互に動かします。']};
+  document.getElementById('motionGallery').innerHTML=Object.entries(descriptions).map(([type,[name,text]])=>`<section class="motion-group"><h2>${name}</h2><p>${text}</p><div class="motion-grid">${[1,2,3].map(stage=>`<div class="motion-card">${BCT.art.render({type,stage})}<p>${['こども','進化1','最終進化'][stage-1]}</p></div>`).join('')}</div></section>`).join('');
+  document.getElementById('motionEnabled').addEventListener('change',event=>document.body.classList.toggle('reduce-motion',!event.target.checked));
+  document.getElementById('blinkNow').addEventListener('click',()=>BCT.petMotion.blink());
+</script></body></html>

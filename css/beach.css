@@ -1,0 +1,191 @@
+/* ホームの ビーチ（分別・エサ）と すみか（js/beach.js・js/habitat.js） */
+
+/* ---------- ビーチの ゴミ ---------- */
+.beach-trash { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.trash-piece {
+  position: absolute; width: 54px; height: 54px; margin: -27px 0 0 -27px; padding: 0;
+  border: none; background: none; pointer-events: auto; touch-action: none; cursor: grab;
+  animation: trashBob 3s ease-in-out infinite;
+}
+.trash-piece:nth-child(2n) { animation-delay: -1.2s; }
+.trash-piece:nth-child(3n) { animation-delay: -2.1s; }
+.trash-piece svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.trash-piece.dragging { opacity: 0.25; }
+.trash-piece.sel { filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 10px #ffd84a); transform: scale(1.15); }
+@keyframes trashBob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-3px) rotate(4deg); } }
+.drag-ghost { position: fixed; z-index: 200; pointer-events: none; margin: 0 !important; animation: none !important; }
+.drag-ghost svg { width: 100%; height: 100%; display: block; }
+.beach-shine {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 60%);
+  animation: shine 1.5s ease-out forwards;
+}
+@keyframes shine { from { opacity: 1; } to { opacity: 0; } }
+
+/* ---------- ゴミばこ・エサ ---------- */
+.beach-bar { margin-top: 10px; background: rgba(255, 255, 255, 0.85); border-radius: 20px; padding: 10px 12px; box-shadow: var(--shadow); }
+/* 「ピカピカ」「よごれ」の 印と 文字を 上下 まんなかで そろえる */
+.beach-status { font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 8px; }
+.beach-status .dirt { display: inline-flex; align-items: center; gap: 3px; background: #fff3e0; border-radius: 999px; padding: 2px 8px; }
+.beach-status .dirt.clean { background: #e6f8f0; color: #2f9a72; }
+.beach-status .dirt i { width: 10px; height: 10px; border-radius: 50%; background: #e3e8ee; display: inline-block; }
+.beach-status .dirt i.on { background: #b07a4a; }
+.bins { display: flex; justify-content: space-around; gap: 8px; }
+/* ゴミばこは よごれている あいだだけ。きれいに なったら 高さと 透明度を なめらかに しぼって しまう（js/beach.js の showBins）
+   ゴミばこが 大きく なる 演出（1.1倍）が 切れないように 余白を とり、そのぶん 外側を つめる */
+.bins-wrap {
+  overflow: hidden; max-height: var(--bins-h, 240px); padding: 6px 4px; margin: -6px -4px; opacity: 1;
+  transition: max-height 0.5s ease, padding 0.5s ease, margin 0.5s ease, opacity 0.35s ease 0.1s;
+}
+.bins-wrap .bin { transition: transform 0.45s ease; }
+.bins-wrap.gone {
+  max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; opacity: 0; visibility: hidden;
+  transition: max-height 0.5s ease 0.1s, padding 0.5s ease 0.1s, margin 0.5s ease 0.1s, opacity 0.35s ease, visibility 0s linear 0.6s;
+}
+.bins-wrap.gone .bin { transform: translateY(16px) scale(0.85); }
+.bins-wrap.instant, .bins-wrap.instant .bin { transition: none !important; }
+.bin {
+  flex: 1; max-width: 104px; border: 3px solid transparent; background: none; border-radius: 16px; padding: 2px 0 4px;
+  display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 800; color: var(--ink);
+}
+.bin svg { width: 58px; height: 66px; display: block; pointer-events: none; }
+.bin span { pointer-events: none; }
+.bin.ready { border-color: var(--bin); border-style: dashed; }
+.bin.over { background: color-mix(in srgb, var(--bin) 22%, white); transform: scale(1.08); }
+.bin.gulp svg { animation: gulp 0.45s ease-out; }
+.bin.hint { animation: binHint 0.5s ease-in-out 3; }
+@keyframes gulp { 30% { transform: scale(1.15, 0.85); } 60% { transform: scale(0.95, 1.08); } }
+@keyframes binHint { 50% { background: color-mix(in srgb, var(--bin) 35%, white); transform: scale(1.1); } }
+/* ごはん：ラベル・3つの しずく・「ショップでかう」を 1行に（小さい スマホでは しずくを すこし ちいさく） */
+.food-tray { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); flex-wrap: nowrap; }
+.food-tray .lbl { font-size: 12px; font-weight: 800; color: var(--ink-soft); flex: none; white-space: nowrap; }
+.food-tray .hint { font-size: 11px; color: var(--ink-soft); font-weight: 700; margin-left: auto; min-width: 0; text-align: right; }
+.food-tray [data-food-shop] { flex: none; margin-left: auto; white-space: nowrap; }
+.food-item { position: relative; width: clamp(34px, 11vw, 52px); height: clamp(34px, 11vw, 52px); flex: none; border: none; background: none; padding: 2px; touch-action: none; cursor: grab; }
+@media (max-width: 360px) {
+  .food-tray { gap: 4px; }
+  .food-tray [data-food-shop] { padding: 6px 8px; font-size: 12px; }
+}
+/* 「ピカピカ」と「つぎの ゴミまで」・「よごれ」と「ゴミを ゴミばこへ ドラッグ！」を 1行に（折りかえすと ホームが 画面に おさまらない） */
+@media (max-width: 400px) {
+  #beachStatus { font-size: 12px; gap: 4px 6px; }
+  #beachStatus .dirt .expedition-icon { width: 26px; height: 26px; }
+}
+.food-item svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.food-item small { position: absolute; right: -4px; bottom: -4px; background: #fff; border-radius: 999px; padding: 0 5px; font-size: 11px; font-weight: 800; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+.food-item.empty { opacity: 0.35; cursor: pointer; }
+.food-item.sel { filter: drop-shadow(0 0 8px #ffd84a); transform: scale(1.12); }
+.food-item.dragging { opacity: 0.3; }
+
+/* ---------- ようせい：こまりがお・たべる ---------- */
+/* 困り顔は 汗マークだけ（色は くすませない。すみかと 色が ちがって 見えるため） */
+.pet.worried::after {
+  content: "💦"; position: absolute; top: 4%; right: 10%; font-size: 26px; pointer-events: none;
+  animation: sweat 1.6s ease-in-out infinite;
+}
+@keyframes sweat { 0%, 100% { transform: translateY(0); opacity: 1; } 60% { transform: translateY(10px); opacity: 0.4; } }
+.pet.ready .body, .pet.over .body { filter: drop-shadow(0 0 10px #ffd84a); }
+.pet.eat .body { animation: eatGlow 1.3s ease-out; }
+.pet.eat[data-type="dolphin"] .float { animation: eatDolphin 1.3s ease-out; }
+.pet.eat[data-type="turtle"] .float { animation: eatTurtle 1.3s ease-in-out; }
+.pet.eat[data-type="hermit"] .float { animation: eatHermit 1.3s ease-in-out; }
+@keyframes eatGlow { 30% { filter: drop-shadow(0 0 14px var(--drop, #7cc8ef)) brightness(1.15); } }
+@keyframes eatDolphin { 0% { transform: none; } 40% { transform: translateY(calc(-70px * var(--fit, 1))) rotate(-360deg); } 75% { transform: translateY(0) rotate(-360deg); } 100% { transform: rotate(-360deg); } }
+@keyframes eatTurtle { 0%, 100% { transform: none; } 25% { transform: rotate(-12deg) scale(1.08); } 50% { transform: rotate(12deg) scale(1.12); } 75% { transform: rotate(-6deg) scale(1.05); } }
+@keyframes eatHermit { 0%, 100% { transform: none; } 20% { transform: scale(1.1, 0.8) translateY(8px); } 45% { transform: scale(0.95, 1.15) translateY(calc(-40px * var(--fit, 1))); } 70% { transform: scale(1.05, 0.95); } }
+
+/* 小さい スマホでは ホームの ようせいを すこし ちいさく（ふつうの 大きさの スマホでは 190px の まま）。
+   池が ひくいと、はねた ときに 頭が 池の 上で きれるため（js/home.js の wander は 上に すきまを あける）。
+   js/home.js の fitHome が 池の 高さから --pet-size を きめなおす */
+.pet { --pet-size: min(190px, 26vh, 52vw); width: var(--pet-size); height: var(--pet-size); margin: calc(var(--pet-size) / -2) 0 0 calc(var(--pet-size) / -2); }
+
+/* ホームは 画面の 高さに おさめる（スクロール なし）。池が のこりの 高さに あわせて のびちぢみ（--home-h は js/home.js の fitHome）。
+   ゴミばこを しまうと 池が なめらかに 大きく なる。とても ひくい 画面では 池を 145px より ちいさく しない（そのぶんだけ スクロール） */
+#scr-home.active { display: flex; flex-direction: column; min-height: var(--home-h, auto); }
+#scr-home .pond { flex: 1 1 auto; height: auto; min-height: 145px; max-height: 420px; }
+#scr-home .beach-bar, #scr-home .actions { flex: none; }
+#bins .bin svg { height: clamp(60px, 10vh, 112px); width: auto; }
+@media (max-height: 700px) {
+  #scr-home.active { padding-top: 12px; padding-bottom: 6px; }
+  #scr-home .beach-bar { margin-top: 8px; padding: 8px 10px; }
+  #scr-home .actions { gap: 8px; margin-top: 8px; }
+  #scr-home .actions .btn { padding: 6px; font-size: 14px; }
+  #scr-home .beach-status { margin-bottom: 2px; }
+  #scr-home .food-tray { margin-top: 4px; padding-top: 6px; }
+  #scr-home .bin { padding-bottom: 0; }
+}
+
+/* ---------- すみか ---------- */
+.habitat-btn { margin-top: 10px; background: linear-gradient(90deg, #4fb7c9, #69c79a); box-shadow: 0 4px 0 #3a8f86; }
+.hb-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.hb-scene { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); touch-action: none; user-select: none; }
+.hb-bg, .hb-bg svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hb-items { position: absolute; inset: 0; }
+.hb-item {
+  position: absolute; width: 24%; aspect-ratio: 1; margin: 0; padding: 0; border: none; background: none;
+  transform: translate(-50%, -80%); touch-action: none; cursor: grab;
+}
+.hb-item svg { width: 100%; height: 100%; display: block; pointer-events: none; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.18)); }
+.hb-item.dragging { transform: translate(-50%, -80%) scale(1.1); z-index: 5; }
+.hb-pet {
+  position: absolute; width: 30%; aspect-ratio: 1; transform: translate(-50%, -85%); z-index: 3; pointer-events: none;
+  transition: left 1.1s ease-in-out, top 1.1s ease-in-out;
+}
+.hb-pet.moving .hb-body { animation: hbHop 0.55s ease-in-out 2; }
+.hb-body { width: 100%; height: 100%; }
+.hb-body svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.hb-pet.joy .hb-body { animation: hbHop 0.5s ease-out 2; }
+@keyframes hbHop { 50% { transform: translateY(-14%); } }
+/* アイテムごとの うごき */
+.hb-pet.act-through .hb-body { animation: actThrough 1.6s ease-in-out 2; }
+.hb-pet.act-ride .hb-body { animation: actRide 1s ease-in-out infinite; transform: translateY(-18%); }
+.hb-pet.act-climb .hb-body { animation: actClimb 1.6s ease-in-out 2; }
+.hb-pet.act-rest .hb-body, .hb-pet.act-sit .hb-body { transform: scale(1, 0.9) translateY(6%); }
+.hb-pet.act-look .hb-body { animation: actLook 1.2s ease-in-out infinite; }
+.hb-pet.act-sleep .hb-body { transform: rotate(-12deg) translateY(8%); filter: brightness(0.95); }
+.hb-pet.act-sleep::after { content: "Zzz"; position: absolute; right: 0; top: 0; font-weight: 800; color: #5a6ea8; animation: zzz 1.6s ease-in-out infinite; }
+.hb-pet.act-hide .hb-body { animation: actHide 3s ease-in-out forwards; }
+@keyframes actThrough { 0% { transform: translate(-40%, 0); } 50% { transform: translate(0, -45%); } 100% { transform: translate(40%, 0); } }
+@keyframes actRide { 50% { transform: translateY(-24%) rotate(-4deg); } }
+@keyframes actClimb { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-55%) rotate(8deg); } }
+@keyframes actLook { 50% { transform: rotate(-6deg) translateY(-4%); } }
+@keyframes actHide { 0% { transform: none; opacity: 1; } 30%, 70% { transform: scale(0.45) translateY(10%); opacity: 0.25; } 100% { transform: none; opacity: 1; } }
+@keyframes zzz { 0% { opacity: 0; transform: translateY(8px); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
+.hb-say {
+  position: absolute; z-index: 6; transform: translate(-50%, -100%); background: #fff; border-radius: 14px; padding: 6px 12px;
+  font-size: 13px; font-weight: 800; max-width: 86%; text-align: center; line-height: 1.45; box-shadow: var(--shadow); pointer-events: none;
+}
+/* ようせいの うえに 入らない ときは したに 出す（js/habitat.js の say） */
+.hb-say.below { transform: translate(-50%, 0); }
+.hb-tray { display: flex; flex-direction: column; gap: 8px; }
+.hb-card { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 14px; border: 2px solid var(--line); background: #fff; }
+.hb-card.on { border-color: var(--mint-deep); background: #effbf6; }
+.hb-card .art { width: 56px; height: 56px; flex: none; }
+.hb-card .art svg { width: 100%; height: 100%; }
+.hb-card .nm { flex: 1; font-size: 13px; font-weight: 800; line-height: 1.4; }
+.hb-card .nm small { color: var(--ink-soft); font-weight: 700; }
+
+/* ---------- ショップの エサ ---------- */
+.food-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.food-card { border: 3px solid var(--line); background: #fff; border-radius: 16px; padding: 8px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.food-card .art { width: 64px; height: 64px; }
+.food-card .art svg { width: 100%; height: 100%; display: block; }
+.food-card .nm { font-weight: 800; font-size: 12px; text-align: center; line-height: 1.3; }
+.food-card .xp { font-size: 12px; font-weight: 800; color: var(--mint-deep); }
+.food-card .stock { font-size: 11px; color: var(--ink-soft); font-weight: 700; }
+.food-card .btn { margin-top: 4px; min-height: 36px; padding: 6px 10px; font-size: 13px; white-space: nowrap; }
+
+.toast { white-space: normal; max-width: 88vw; text-align: center; line-height: 1.4; }
+
+/* うごきを へらす */
+@media (prefers-reduced-motion: reduce) {
+  .trash-piece, .pet.worried::after, .hb-pet .hb-body, .pet.eat .float, .pet.eat .body { animation: none !important; }
+  .bins-wrap, .bins-wrap .bin { transition: none !important; }
+}
+body.reduce-motion .trash-piece, body.reduce-motion .pet.worried::after, body.reduce-motion .hb-pet .hb-body,
+body.reduce-motion .pet.eat .float, body.reduce-motion .pet.eat .body { animation: none !important; }
+body.reduce-motion .hb-pet { transition: none; }
+body.reduce-motion .bins-wrap, body.reduce-motion .bins-wrap .bin { transition: none !important; }
+.hb-preview { width: 170px; margin: 0 auto; }
+.hb-preview svg { width: 100%; height: auto; display: block; }

@@ -1,0 +1,134 @@
+/*
+ * Service Worker：アプリ本体を 端末に 保存して、圏外でも 動くようにする
+ * ------------------------------------------------------------
+ * アプリのファイルを 書きかえたら APP_VERSION を 上げること（上げないと 利用者に 届かない）。
+ *
+ * OpenStreetMap のタイル利用規約に 従い、地図タイル（よその サイトへの 通信）には
+ * 一切 手を 出さない。fetch の 横取りは 同じ サイトの ファイルだけ。
+ *
+ * ようせいの パーツ画像（assets/pet-parts、3種類 ぜんぶで 約3.5MB）は ここには 入れない。
+ * 自分の 種類の ぶんだけ ホームで 先に 読み（js/pet-rig.js の prefetch）、下の fetch で 保存する。
+ */
+const APP_VERSION = "bct-v13-camera-icons-1";
+const FILES = [
+  "./",
+  "index.html",
+  "operator.html",
+  "manifest.json",
+  "css/app.css",
+  "css/collection.css",
+  "css/ar.css",
+  "css/beach.css",
+  "css/pet-rig.css",
+  "css/collection-painted.css",
+  "css/ui-design.css",
+  "assets/ui/medal.webp",
+  "assets/ui/beach.webp",
+  "assets/ui/camera.webp",
+  "assets/ui/dress.webp",
+  "assets/ui/album.webp",
+  "assets/ui/map.webp",
+  "assets/items/toy_ball.webp",
+  "assets/habitats/habitat_dolphin.webp",
+  "assets/habitats/habitat_turtle.webp",
+  "assets/habitats/habitat_hermit.webp",
+  "js/ui-design.js",
+  "icons/seascape.svg",
+  "js/config.js",
+  "js/items.js",
+  "js/trash.js",
+  "js/quiz-data.js",
+  "js/storage.js",
+  "js/game.js",
+  "js/pets.js",
+  "js/pet-sprites.js",
+  "js/pet-art.js",
+  "js/pet-art-fix.js",
+  "js/pet-motion.js",
+  "js/pet-rig-config.js",
+  "js/pet-rig.js",
+  "js/home-art.js",
+  "js/habitat-sprites.js",
+  "js/habitat-painted-art.js",
+  "js/collection-sprites.js",
+  "js/mission-sprites.js",
+  "js/collection-art.js",
+  "js/badges.js",
+  "js/share.js",
+  "js/app.js",
+  "js/egg.js",
+  "js/home.js",
+  "js/beach.js",
+  "js/habitat.js",
+  "js/mission.js",
+  "js/capture.js",
+  "js/map.js",
+  "js/shop.js",
+  "js/dressup.js",
+  "js/photo.js",
+  "js/ar-math.js",
+  "js/ar.js",
+  "js/profile.js",
+  "js/settings.js",
+  "js/admin.js",
+  "js/operator.js",
+  "icons/icon.svg",
+  "icons/icon-192.png",
+  "icons/icon-512.png",
+  "vendor/leaflet/leaflet.js",
+  "vendor/leaflet/leaflet.css",
+  "vendor/leaflet/images/layers.png",
+  "vendor/leaflet/images/layers-2x.png",
+  "vendor/leaflet/images/marker-icon.png",
+  "vendor/leaflet/images/marker-icon-2x.png",
+  "vendor/leaflet/images/marker-shadow.png",
+  "vendor/leaflet/LICENSE.txt",
+  "vendor/qrcode/qrcode.js",
+  "vendor/qrcode/LICENSE.txt",
+  "vendor/jsqr/jsQR.js",
+  "vendor/jsqr/LICENSE.txt",
+  "vendor/three/three.module.js",
+  "vendor/three/three.core.js",
+  "vendor/three/LICENSE.txt",
+];
+
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(APP_VERSION)
+      .then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith("bct-") && k !== APP_VERSION).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", (e) => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return; // 地図タイルなど よその通信は ブラウザに まかせる
+
+  e.respondWith(
+    caches.open(APP_VERSION).then(async (cache) => {
+      const hit = await cache.match(req, { ignoreSearch: true });
+      if (hit) return hit;
+      try {
+        const res = await fetch(req);
+        if (res.ok && res.type === "basic") cache.put(req, res.clone());
+        return res;
+      } catch (err) {
+        if (req.mode === "navigate") {
+          const page = await cache.match(url.pathname.endsWith("operator.html") ? "operator.html" : "index.html");
+          if (page) return page;
+        }
+        throw err;
+      }
+    })
+  );
+});

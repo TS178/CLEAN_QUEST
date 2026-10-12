@@ -1,0 +1,686 @@
+{
+  "dolphin-1-body": {
+    "width": 261,
+    "height": 278,
+    "file": "assets/pet-parts-rear/dolphin-1-body.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      55,
+      26,
+      261,
+      278
+    ]
+  },
+  "dolphin-1-fin-left": {
+    "width": 145,
+    "height": 100,
+    "file": "assets/pet-parts-rear/dolphin-1-fin-left.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      358,
+      186,
+      145,
+      100
+    ]
+  },
+  "dolphin-1-fin-right": {
+    "width": 141,
+    "height": 100,
+    "file": "assets/pet-parts-rear/dolphin-1-fin-right.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      588,
+      186,
+      141,
+      100
+    ]
+  },
+  "dolphin-1-dorsal": {
+    "width": 83,
+    "height": 201,
+    "file": "assets/pet-parts-rear/dolphin-1-dorsal.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      814,
+      90,
+      83,
+      201
+    ]
+  },
+  "dolphin-1-tail-base": {
+    "width": 119,
+    "height": 152,
+    "file": "assets/pet-parts-rear/dolphin-1-tail-base.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      1021,
+      142,
+      119,
+      152
+    ]
+  },
+  "dolphin-1-tail-fluke": {
+    "width": 229,
+    "height": 140,
+    "file": "assets/pet-parts-rear/dolphin-1-tail-fluke.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      1233,
+      157,
+      229,
+      140
+    ]
+  },
+  "dolphin-2-body": {
+    "width": 265,
+    "height": 309,
+    "file": "assets/pet-parts-rear/dolphin-2-body.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      52,
+      314,
+      265,
+      309
+    ]
+  },
+  "dolphin-2-fin-left": {
+    "width": 173,
+    "height": 157,
+    "file": "assets/pet-parts-rear/dolphin-2-fin-left.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      349,
+      453,
+      173,
+      157
+    ]
+  },
+  "dolphin-2-fin-right": {
+    "width": 165,
+    "height": 158,
+    "file": "assets/pet-parts-rear/dolphin-2-fin-right.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      605,
+      452,
+      165,
+      158
+    ]
+  },
+  "dolphin-2-dorsal": {
+    "width": 94,
+    "height": 244,
+    "file": "assets/pet-parts-rear/dolphin-2-dorsal.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      818,
+      361,
+      94,
+      244
+    ]
+  },
+  "dolphin-2-tail-base": {
+    "width": 123,
+    "height": 157,
+    "file": "assets/pet-parts-rear/dolphin-2-tail-base.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      1017,
+      456,
+      123,
+      157
+    ]
+  },
+  "dolphin-2-tail-fluke": {
+    "width": 280,
+    "height": 175,
+    "file": "assets/pet-parts-rear/dolphin-2-tail-fluke.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      1216,
+      446,
+      280,
+      175
+    ]
+  },
+  "dolphin-3-body": {
+    "width": 244,
+    "height": 334,
+    "file": "assets/pet-parts-rear/dolphin-3-body.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      60,
+      632,
+      244,
+      334
+    ]
+  },
+  "dolphin-3-fin-left": {
+    "width": 216,
+    "height": 250,
+    "file": "assets/pet-parts-rear/dolphin-3-fin-left.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      312,
+      739,
+      216,
+      250
+    ]
+  },
+  "dolphin-3-fin-right": {
+    "width": 206,
+    "height": 250,
+    "file": "assets/pet-parts-rear/dolphin-3-fin-right.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      600,
+      739,
+      206,
+      250
+    ]
+  },
+  "dolphin-3-dorsal": {
+    "width": 101,
+    "height": 252,
+    "file": "assets/pet-parts-rear/dolphin-3-dorsal.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      813,
+      692,
+      101,
+      252
+    ]
+  },
+  "dolphin-3-tail-base": {
+    "width": 136,
+    "height": 176,
+    "file": "assets/pet-parts-rear/dolphin-3-tail-base.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      996,
+      756,
+      136,
+      176
+    ]
+  },
+  "dolphin-3-tail-fluke": {
+    "width": 393,
+    "height": 236,
+    "file": "assets/pet-parts-rear/dolphin-3-tail-fluke.png",
+    "source": "assets/art-source/rear-parts/dolphin.png",
+    "rect": [
+      1137,
+      739,
+      393,
+      236
+    ]
+  },
+  "turtle-1-body": {
+    "width": 290,
+    "height": 273,
+    "file": "assets/pet-parts-rear/turtle-1-body.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      107,
+      35,
+      290,
+      273
+    ]
+  },
+  "turtle-1-front-left": {
+    "width": 161,
+    "height": 193,
+    "file": "assets/pet-parts-rear/turtle-1-front-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      499,
+      103,
+      161,
+      193
+    ]
+  },
+  "turtle-1-front-right": {
+    "width": 159,
+    "height": 192,
+    "file": "assets/pet-parts-rear/turtle-1-front-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      734,
+      103,
+      159,
+      192
+    ]
+  },
+  "turtle-1-rear-left": {
+    "width": 127,
+    "height": 139,
+    "file": "assets/pet-parts-rear/turtle-1-rear-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      956,
+      148,
+      127,
+      139
+    ]
+  },
+  "turtle-1-rear-right": {
+    "width": 128,
+    "height": 139,
+    "file": "assets/pet-parts-rear/turtle-1-rear-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1173,
+      148,
+      128,
+      139
+    ]
+  },
+  "turtle-1-tail": {
+    "width": 71,
+    "height": 94,
+    "file": "assets/pet-parts-rear/turtle-1-tail.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1388,
+      172,
+      71,
+      94
+    ]
+  },
+  "turtle-2-body": {
+    "width": 333,
+    "height": 305,
+    "file": "assets/pet-parts-rear/turtle-2-body.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      85,
+      329,
+      333,
+      305
+    ]
+  },
+  "turtle-2-front-left": {
+    "width": 200,
+    "height": 225,
+    "file": "assets/pet-parts-rear/turtle-2-front-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      470,
+      384,
+      200,
+      225
+    ]
+  },
+  "turtle-2-front-right": {
+    "width": 191,
+    "height": 225,
+    "file": "assets/pet-parts-rear/turtle-2-front-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      729,
+      384,
+      191,
+      225
+    ]
+  },
+  "turtle-2-rear-left": {
+    "width": 144,
+    "height": 163,
+    "file": "assets/pet-parts-rear/turtle-2-rear-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      954,
+      450,
+      144,
+      163
+    ]
+  },
+  "turtle-2-rear-right": {
+    "width": 147,
+    "height": 164,
+    "file": "assets/pet-parts-rear/turtle-2-rear-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1167,
+      449,
+      147,
+      164
+    ]
+  },
+  "turtle-2-tail": {
+    "width": 80,
+    "height": 105,
+    "file": "assets/pet-parts-rear/turtle-2-tail.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1385,
+      475,
+      80,
+      105
+    ]
+  },
+  "turtle-3-body": {
+    "width": 387,
+    "height": 354,
+    "file": "assets/pet-parts-rear/turtle-3-body.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      58,
+      642,
+      387,
+      354
+    ]
+  },
+  "turtle-3-front-left": {
+    "width": 208,
+    "height": 302,
+    "file": "assets/pet-parts-rear/turtle-3-front-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      474,
+      667,
+      208,
+      302
+    ]
+  },
+  "turtle-3-front-right": {
+    "width": 201,
+    "height": 302,
+    "file": "assets/pet-parts-rear/turtle-3-front-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      744,
+      667,
+      201,
+      302
+    ]
+  },
+  "turtle-3-rear-left": {
+    "width": 164,
+    "height": 194,
+    "file": "assets/pet-parts-rear/turtle-3-rear-left.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      965,
+      768,
+      164,
+      194
+    ]
+  },
+  "turtle-3-rear-right": {
+    "width": 165,
+    "height": 194,
+    "file": "assets/pet-parts-rear/turtle-3-rear-right.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1178,
+      768,
+      165,
+      194
+    ]
+  },
+  "turtle-3-tail": {
+    "width": 86,
+    "height": 116,
+    "file": "assets/pet-parts-rear/turtle-3-tail.png",
+    "source": "assets/art-source/rear-parts/turtle.png",
+    "rect": [
+      1389,
+      791,
+      86,
+      116
+    ]
+  },
+  "hermit-1-body": {
+    "width": 328,
+    "height": 287,
+    "file": "assets/pet-parts-rear/hermit-1-body.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      87,
+      13,
+      328,
+      287
+    ]
+  },
+  "hermit-1-claw-left": {
+    "width": 204,
+    "height": 200,
+    "file": "assets/pet-parts-rear/hermit-1-claw-left.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      510,
+      74,
+      204,
+      200
+    ]
+  },
+  "hermit-1-claw-right": {
+    "width": 138,
+    "height": 162,
+    "file": "assets/pet-parts-rear/hermit-1-claw-right.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      767,
+      109,
+      138,
+      162
+    ]
+  },
+  "hermit-1-leg-left-front": {
+    "width": 115,
+    "height": 191,
+    "file": "assets/pet-parts-rear/hermit-1-leg-left-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      981,
+      95,
+      115,
+      191
+    ]
+  },
+  "hermit-1-leg-left-rear": {
+    "width": 109,
+    "height": 195,
+    "file": "assets/pet-parts-rear/hermit-1-leg-left-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1186,
+      89,
+      109,
+      195
+    ]
+  },
+  "hermit-1-leg-right-front": {
+    "width": 126,
+    "height": 197,
+    "file": "assets/pet-parts-rear/hermit-1-leg-right-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1390,
+      92,
+      126,
+      197
+    ]
+  },
+  "hermit-1-leg-right-rear": {
+    "width": 121,
+    "height": 196,
+    "file": "assets/pet-parts-rear/hermit-1-leg-right-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1588,
+      93,
+      121,
+      196
+    ]
+  },
+  "hermit-2-body": {
+    "width": 337,
+    "height": 300,
+    "file": "assets/pet-parts-rear/hermit-2-body.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      97,
+      311,
+      337,
+      300
+    ]
+  },
+  "hermit-2-claw-left": {
+    "width": 221,
+    "height": 223,
+    "file": "assets/pet-parts-rear/hermit-2-claw-left.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      503,
+      348,
+      221,
+      223
+    ]
+  },
+  "hermit-2-claw-right": {
+    "width": 158,
+    "height": 185,
+    "file": "assets/pet-parts-rear/hermit-2-claw-right.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      754,
+      398,
+      158,
+      185
+    ]
+  },
+  "hermit-2-leg-left-front": {
+    "width": 131,
+    "height": 209,
+    "file": "assets/pet-parts-rear/hermit-2-leg-left-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      964,
+      378,
+      131,
+      209
+    ]
+  },
+  "hermit-2-leg-left-rear": {
+    "width": 133,
+    "height": 215,
+    "file": "assets/pet-parts-rear/hermit-2-leg-left-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1160,
+      375,
+      133,
+      215
+    ]
+  },
+  "hermit-2-leg-right-front": {
+    "width": 124,
+    "height": 209,
+    "file": "assets/pet-parts-rear/hermit-2-leg-right-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1397,
+      385,
+      124,
+      209
+    ]
+  },
+  "hermit-2-leg-right-rear": {
+    "width": 125,
+    "height": 206,
+    "file": "assets/pet-parts-rear/hermit-2-leg-right-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1588,
+      386,
+      125,
+      206
+    ]
+  },
+  "hermit-3-body": {
+    "width": 416,
+    "height": 242,
+    "file": "assets/pet-parts-rear/hermit-3-body.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      45,
+      622,
+      416,
+      242
+    ]
+  },
+  "hermit-3-claw-left": {
+    "width": 240,
+    "height": 240,
+    "file": "assets/pet-parts-rear/hermit-3-claw-left.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      506,
+      627,
+      240,
+      240
+    ]
+  },
+  "hermit-3-claw-right": {
+    "width": 151,
+    "height": 170,
+    "file": "assets/pet-parts-rear/hermit-3-claw-right.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      786,
+      675,
+      151,
+      170
+    ]
+  },
+  "hermit-3-leg-left-front": {
+    "width": 137,
+    "height": 204,
+    "file": "assets/pet-parts-rear/hermit-3-leg-left-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      984,
+      656,
+      137,
+      204
+    ]
+  },
+  "hermit-3-leg-left-rear": {
+    "width": 131,
+    "height": 211,
+    "file": "assets/pet-parts-rear/hermit-3-leg-left-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1185,
+      651,
+      131,
+      211
+    ]
+  },
+  "hermit-3-leg-right-front": {
+    "width": 140,
+    "height": 202,
+    "file": "assets/pet-parts-rear/hermit-3-leg-right-front.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1387,
+      661,
+      140,
+      202
+    ]
+  },
+  "hermit-3-leg-right-rear": {
+    "width": 131,
+    "height": 204,
+    "file": "assets/pet-parts-rear/hermit-3-leg-right-rear.png",
+    "source": "assets/art-source/rear-parts/hermit.png",
+    "rect": [
+      1588,
+      656,
+      131,
+      204
+    ]
+  }
+}

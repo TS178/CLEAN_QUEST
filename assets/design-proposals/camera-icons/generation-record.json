@@ -1,0 +1,21 @@
+{
+  "status": "proposal-only-awaiting-user-approval",
+  "method": "built-in image_gen",
+  "prompts": {
+    "camera": "Use case: stylized-concept. Asset: a single transparent-background icon for a Japanese elementary-school children's ocean cleanup pet game. Supporting style reference is the attached existing beach ball: match its softly hand-painted dimensional highlights, creamy pastel shading and rounded friendly silhouette. Not vector, not photoreal. Crisp and simple enough to read at 36px. Centered square composition, fill 85% of frame, soft warm light. No text, letters, logos, watermarks, characters, or surrounding scene. True transparent alpha. Subject: a cute chunky mint-green compact camera with cream rounded corners, a large turquoise glass lens surrounded by a warm sand-gold ring, a small coral shutter button, tiny cream flash. Slight three-quarter front view, simple recognizable camera silhouette. A tiny white wave embossed on the lower corner, no other decorations.",
+    "dress": "Use case: stylized-concept. Asset: a single transparent-background icon for a Japanese elementary-school children's ocean cleanup pet game. Supporting style reference is the attached existing beach ball: match its softly hand-painted dimensional highlights, creamy pastel shading and rounded friendly silhouette. Not vector, not photoreal. Crisp and simple enough to read at 36px. Centered square composition, fill 85% of frame, soft warm light. No text, letters, logos, watermarks, characters, or surrounding scene. True transparent alpha. Subject: a rounded warm sand-gold clothes hanger, holding a silky blue scarf tied in a cute knot with one clean white wave stripe; a small cream straw explorer hat with turquoise band rests on the upper right shoulder of the hanger. Balanced silhouette that communicates dressing up the pets using their real accessories. No human clothing, no t-shirt, no face. Front view. Blue scarf is dominant.",
+    "album": "Create one cute ocean exploration game UI icon on a true transparent background, matching the supporting camera reference's soft hand-painted dimensional shading, rounded creamy corners, mint turquoise, warm sand gold and soft coral accents. Simple and readable at 36px. Centered square composition, subject fills 85%, no surrounding scenery, no text, no letters, no numbers, no logos, no watermark. Subject: two small printed photo cards, one slightly behind the other. Thick softly rounded ivory and pale sand-gold borders. Front photo clearly shows a turquoise ocean, golden sand, tiny green island and warm sun, simplified painted illustration. Back card mint edge visible. Three-quarter shallow perspective. This icon means choose a photo. No animals, no seashell ornaments, no camera.",
+    "map": "Create one cute ocean exploration game UI icon on a true transparent background, matching the supporting camera reference's soft hand-painted dimensional shading, rounded creamy corners, mint turquoise, warm sand gold and soft coral accents. Simple and readable at 36px. Centered square composition, subject fills 85%, no surrounding scenery, no text, no letters, no numbers, no logos, no watermark. Subject: a cute slightly folded exploration map of an island beach. Cream paper with rounded corners and gentle two folds, turquoise sea, small green island with pale sandy edge, one coral location pin with cream central hole. No dotted paths, no letters, no compass rose. Compact readable silhouette. This icon means map."
+  },
+  "reused": [
+    "assets/items/toy_ball.webp",
+    "assets/ui/beach.webp"
+  ],
+  "outputs": [
+    "camera.webp",
+    "dress.webp",
+    "album.webp",
+    "map.webp"
+  ],
+  "note": "Arrows and location marker are native SVG UI overlays. No production app files changed."
+}

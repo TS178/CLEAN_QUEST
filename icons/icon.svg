@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#fbf6e9"/><circle cx="256" cy="256" r="190" fill="#e3eee1" stroke="#b79954" stroke-width="5"/><circle cx="256" cy="256" r="178" fill="none" stroke="#d8c591" stroke-width="2"/><path d="M67 323Q160 300 256 333t189-10" fill="none" stroke="#75a9ae" stroke-width="9"/><g transform="translate(86 80) scale(1.7)">
+      <defs>
+        <radialGradient id="p1g"><stop offset="0" stop-color="#f4df9e" stop-opacity="0.33"/><stop offset="1" stop-color="#fffbd6" stop-opacity="0"/></radialGradient>
+        <linearGradient id="p1body" x1="0" y1="0" x2=".65" y2="1"><stop stop-color="#5198b4"/><stop offset=".6" stop-color="#5198b4"/><stop offset="1" stop-color="#346b82"/></linearGradient>
+      </defs>
+      <circle cx="100" cy="108" r="96" fill="url(#p1g)"/>
+      
+      
+      <g transform=""><g transform="translate(100 108) scale(0.87) translate(-100 -108)">
+        <g transform="translate(100 82) scale(1) translate(-100 -82)">
+          <g class="wing l"><path d="M96 84 Q67 80 50 56 Q52 44 65 53 Q62 32 75 40 Q82 43 99 74Z" fill="#f7f5df" stroke="#b59b60" stroke-width="1.6"/><path d="M61 56 L91 77 M72 45 L94 75" fill="none" stroke="#c8b781" stroke-width="1.3"/></g>
+          <g class="wing r"><path d="M104 84 Q133 80 150 56 Q148 44 135 53 Q138 32 125 40 Q118 43 101 74Z" fill="#f7f5df" stroke="#b59b60" stroke-width="1.6"/><path d="M139 56 L109 77 M128 45 L106 75" fill="none" stroke="#c8b781" stroke-width="1.3"/></g>
+        </g>
+        <g class="pet-body">
+      <defs><clipPath id="p1c"><path d="M44 118 C50 83 91 65 133 78 Q161 82 172 110 Q163 125 145 128 C109 157 61 145 44 118Z"/></clipPath></defs>
+      <g stroke="#294851" stroke-width="2.5" stroke-linejoin="round">
+      <path d="M53 119 Q34 114 19 99 Q16 121 32 127 Q19 133 23 149 Q42 140 57 130Z" fill="#5198b4"/>
+      <path d="M91 81 Q96 59 115 52 Q112 70 125 84Z" fill="#5198b4"/>
+      <path d="M44 118 C50 83 91 65 133 78 Q161 82 172 110 Q163 125 145 128 C109 157 61 145 44 118Z" fill="url(#p1body)"/>
+      </g>
+      
+      <path d="M158 105 Q180 101 189 112 Q191 121 168 124" fill="#5198b4" stroke="#294851" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M62 124 Q91 145 145 126 Q113 152 78 136Z" fill="#fff4d9"/>
+      <path d="M107 120 Q105 142 88 151 Q112 154 125 130" fill="#5198b4" stroke="#294851" stroke-width="2.3" stroke-linecap="round"/>
+      <path d="M72 94 Q95 78 116 83" stroke="#ffffff" stroke-opacity=".5" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M54 115 Q62 122 70 116" fill="none" stroke="#eed392" stroke-width="3"/>
+      <path d="M139.5 103.5 Q145 96 150.5 103.5" fill="none" stroke="#293f42" stroke-width="2.8" stroke-linecap="round"/>
+        <ellipse cx="141" cy="113" rx="8" ry="4.5" fill="#e7a090" opacity="0.75"/>
+        <path d="M164 116 Q170 126 176 116Z" fill="#b56760"/></g>
+        
+        
+        <g transform="translate(150 87) rotate(12) scale(1.05)" stroke-linejoin="round" stroke-linecap="round"><path d="M-14 -3 Q-15 -23 0 -23 Q15 -23 14 -3Z" fill="#ffffff" stroke="#294753" stroke-width="2"/>
+      <rect x="-15" y="-7" width="30" height="5.5" rx="2" fill="#294753"/>
+      <path d="M10 -3 Q24 -4 26 1 L10 1Z" fill="#294753"/>
+      <path d="M0 -19 V-11 M-4 -13 Q0 -8 4 -13 M-3 -17 H3" stroke="#294753" stroke-width="1.8" fill="none" stroke-linecap="round"/></g>
+      </g></g>
+      
+      
+      <path d="M100 22.5 L105.25 30 L100 37.5 L94.75 30Z" fill="#f8e3a2" stroke="#947135" stroke-width="1.5"/>
+      <path class="sparkle " fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M30 53 Q31.26 58.74 37 60 Q31.26 61.26 30 67
+         Q28.74 61.26 23 60 Q28.74 58.74 30 53Z"/><path class="sparkle d2" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M176 44 Q177.08 48.92 182 50 Q177.08 51.08 176 56
+         Q174.92 51.08 170 50 Q174.92 48.92 176 44Z"/><path class="sparkle d3" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M170 171 Q171.26 176.74 177 178 Q171.26 179.26 170 185
+         Q168.74 179.26 163 178 Q168.74 176.74 170 171Z"/>
+      <path class="sparkle d3" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M26 156 Q27.08 160.92 32 162 Q27.08 163.08 26 168
+         Q24.92 163.08 20 162 Q24.92 160.92 26 156Z"/><path class="sparkle d2" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M60 17 Q60.9 21.1 65 22 Q60.9 22.9 60 27
+         Q59.1 22.9 55 22 Q59.1 21.1 60 17Z"/>
+      <path class="sparkle d2" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M40 32 Q41.44 38.56 48 40 Q41.44 41.44 40 48
+         Q38.56 41.44 32 40 Q38.56 38.56 40 32Z"/><path class="sparkle d3" fill="#f8e7b7" stroke="#b58a3d" stroke-width="1"
+      d="M168 143 Q169.26 148.74 175 150 Q169.26 151.26 168 157
+         Q166.74 151.26 161 150 Q166.74 148.74 168 143Z"/>
+    </g></svg>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ja">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>泳ぐ・歩くためのパーツ図 | ビーチクリーンペット</title>
+ <link rel="icon" href="icons/icon-192.png"><link rel="stylesheet" href="css/pet-parts-preview.css">
+</head>
+<body>
+ <main>
+  <header><p class="eyebrow">PET ANIMATION PARTS</p><h1>泳ぐ。歩く。<br class="mobile">ひとつずつ動くための絵。</h1><p>3種類・3段階の成長に合わせた、57枚の透過パーツ。</p></header>
+  <nav aria-label="キャラクター"><button data-type="dolphin" aria-pressed="true">イルカ</button><button data-type="turtle" aria-pressed="false">カメ</button><button data-type="hermit" aria-pressed="false">ヤドカリ</button></nav>
+  <div class="stages" role="group" aria-label="成長段階"><button data-stage="1" aria-pressed="true">第1形態</button><button data-stage="2" aria-pressed="false">第2形態</button><button data-stage="3" aria-pressed="false">第3形態</button></div>
+  <section class="overview" aria-labelledby="pet-title"><figure class="original"><img id="original" alt=""><figcaption>元のキャラクター</figcaption></figure><div><p class="eyebrow" id="counter"></p><h2 id="pet-title"></h2><p id="motion-note"></p><p class="small">パーツは付け根まで描き、本体の下へ重ねられる形にしています。元絵を参照した描き起こし素材です。組み立て位置と動きは実装時に調整します。</p></div></section>
+  <section aria-label="パーツ一覧"><div id="parts" class="parts"></div></section>
+  <section class="references"><h2>向きを変えるときの参考</h2><p>既存の側面・背面図です。左が側面、右が背面。上から第1・第2・第3形態。</p><details><summary>側面・背面を見る</summary><a id="view-link" target="_blank" rel="noopener"><img id="views" alt=""></a></details></section>
+  <footer><a id="atlas-link" target="_blank" rel="noopener">このペットのパーツ原画</a><a href="assets/pet-parts/pet-animation-parts-v1.zip" download>57枚をまとめてダウンロード</a><p>確認用の素材ページです。ゲームの保存データは使用しません。</p></footer>
+ </main>
+ <script src="js/pet-parts-preview.js"></script>
+</body>
+</html>

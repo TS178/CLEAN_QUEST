@@ -1,0 +1,23 @@
+/* Painted badge silhouettes replace the old circular medal frame. */
+.badges { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.badges .badge { padding: 12px 8px 14px; background: #fffdf5; border: 1px solid #ebdec5; border-radius: 20px; }
+.badges .badge.locked { background: #fbfaf5; border-style: dashed; border-color: #d9ddd0; }
+.badge .medal.painted-medal { width: 112px; max-width: 100%; height: 112px; margin: 0 auto 8px; border: 0; border-radius: 0; background: none; box-shadow: none; filter: none; opacity: 1; }
+.painted-medal svg { width: 100%; height: 100%; display: block; }
+.badge.locked .painted-medal svg { opacity: .42; filter: saturate(.55); }
+.badge .badge-name { display: block; color: #584633; font-size: 12px; line-height: 1.55; }
+.badge .badge-state { display: inline-block; margin: 6px 0; padding: 2px 9px; border-radius: 20px; background: #e1f2e7; color: #3c7362; font-size: 10px; }
+.badge.locked .badge-state { background: #efeee5; color: #7c8178; }
+.badge .cond { line-height: 1.65; }
+.badge .medal.badge-celebration { width: 168px; height: 168px; animation: badgeArrival .65s ease-out both; }
+@keyframes badgeArrival { 0% { transform: scale(.65); opacity: 0; } 65% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+.bin svg { width: 78px; max-width: 100%; height: 112px; }
+.bin span { line-height: 1.5; }
+.operator-badge-art { display: inline-block; width: 30px; height: 30px; vertical-align: middle; }
+.operator-badge-art svg { width: 100%; height: 100%; }
+.clean-art svg { display: block; width: 100%; height: 100%; }
+.mlist .ico.clean-art { width: 48px; height: 48px; }
+.type-btn .ico.clean-art { display: block; width: 52px; height: 52px; margin: 0 auto; }
+.clean-art.record-art { display: inline-block; width: 40px; height: 40px; vertical-align: middle; }
+body.reduce-motion .badge-celebration { animation: none; }
+@media (prefers-reduced-motion: reduce) { .badge-celebration { animation: none !important; } }

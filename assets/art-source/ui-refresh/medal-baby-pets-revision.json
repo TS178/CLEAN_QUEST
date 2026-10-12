@@ -1,0 +1,11 @@
+{
+  "method": "built-in image_gen edit",
+  "source": "medal-beach-v2.png",
+  "references": [
+    "assets/pets/dolphin-1-normal.webp",
+    "assets/pets/turtle-1-normal.webp",
+    "assets/pets/hermit-1-normal.webp"
+  ],
+  "output": "medal.png",
+  "prompt": "Edit image 1, the golden clean-beach medal. Preserve the entire outer gold rope-pattern rim, coin silhouette, bevel, angle, lighting and transparent background. Preserve the clean sunny beach inset with golden sand, calm turquoise sea and sky. Add EXACTLY THREE baby pets to the SAND inside the coin, using images 2, 3, 4 as strict character identity references: baby dolphin left (round cyan body, cream belly, big navy eyes, tiny flippers and tail, pink cheeks), baby green sea turtle right (mint green shell with cream edge and soft hexagonal scutes, pale green head with green spots, big brown eyes, small swimming flippers), baby coral hermit crab lower center (large pale peach spiral shell, coral body and claws, big glossy dark eyes). These are the same three existing characters, NOT redesigned mascots. Preserve their colors, proportions, facial features, baby shapes and friendly smiling expressions. They form one compact happy triangular group standing/hovering playfully just over clean sand, dolphin slightly higher left, turtle slightly higher right, hermit crab front center. Each must be individually visible with its body and distinguishing parts; do not overlap faces, do not cut off on rim. Group occupies roughly 65% of inset width and 55% of inset height; make their faces large enough for a small currency icon. Keep visible clean sand around and beneath them and the calm shore behind. Retain one or two SMALL white-gold sparkle marks on the sand to express successful beach cleaning; reduce/move existing large sparkles so they do not obscure pets. Full-color polished painted game illustration matching original pets, integrated smoothly with medal artwork. No hats, ribbons, clothing, extra pets, litter, text, numbers or new symbols. All pets must remain entirely inside the inner circle; outside the medal stays truly transparent."
+}

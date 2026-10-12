@@ -1,0 +1,116 @@
+/* Shared expedition illustrations and currency hierarchy. */
+.expedition-icon { width: 30px; height: 30px; object-fit: contain; vertical-align: middle; }
+.object-icon > svg { display: block; width: 100%; height: 100%; }
+.card h3 > .expedition-icon { width: 36px; height: 36px; margin-right: 4px; }
+.btn > [data-ui-icon-slot] { display: inline-block; vertical-align: middle; }
+.btn .expedition-icon { width: 28px; height: 28px; }
+.tabs button .ico { display: flex; align-items: center; justify-content: center; height: 36px; }
+.tabs .expedition-icon { width: 36px; height: 36px; transition: transform .18s; }
+.tabs button { gap: 2px; }
+.tabs button.active { background: #e5f3eb; color: #175b4f; }
+.tabs button.active .expedition-icon { transform: translateY(-2px); }
+.chips.cats { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; }
+.chips.cats .chip { min-height: 74px; gap: 3px; border-radius: 15px; background: #fffdf5; }
+.chips.cats .chip .expedition-icon { width: 38px; height: 38px; }
+.chips.cats .chip.on { color: #205f50; background: #e2f3e9; border-color: #75b79b; box-shadow: inset 0 -3px #c7e4d5; }
+.food-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+.food-card { min-width: 0; padding: 12px 8px; border-width: 1px; }
+.food-card .stock { text-align: center; overflow-wrap: anywhere; }
+.food-card .btn { display: flex; align-items: center; justify-content: center; gap: 4px; max-width: 100%; padding: 8px 6px; }
+.food-card .btn .medal-icon { width: 24px; height: 24px; }
+@media(min-width:460px){.food-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.medal-icon { object-fit: contain; filter: drop-shadow(0 1px 1px #8a5d1920); }
+.medal-amount { display: inline-flex; align-items: center; justify-content: center; gap: 5px; vertical-align: middle; white-space: nowrap; }
+.medal-amount b { font-variant-numeric: tabular-nums; }
+.medal-label { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.medal-amount .medal-icon { width: 25px; height: 25px; }
+.topbar { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 7px; }
+.topbar .title { min-width: 0; font-size: 13px; }
+.topbar .title small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar .coin-chip { padding: 5px 10px 5px 4px; background: #fff5d7; border: 1px solid #dfc27f; box-shadow: 0 2px 0 #efdfb5; }
+.topbar .medal-icon { width: 34px; height: 34px; }
+.topbar .medal-amount b { font-size: 18px; color: #805414; }
+.medal-wallet { position: relative; display: flex; align-items: center; justify-content: center; gap: 20px; padding: 24px 18px; margin: 6px 0 14px; border: 1px solid #e8cf91; border-radius: 26px; background: radial-gradient(ellipse at 23% 42%,#fffef2 0,#fff5cc 42%,#f9e5b1 100%); box-shadow: inset 0 0 0 4px #fff9e0,0 5px 0 #eee2c1; }
+.medal-wallet > .medal-icon { width: 108px; height: 108px; flex: none; filter: drop-shadow(0 5px 4px #a67a3133); }
+.medal-wallet-copy { min-width: 0; color: #795015; }
+.medal-wallet-label { display: block; font-size: 13px; font-weight: 800; white-space: nowrap; }
+.medal-wallet-value { display: flex; align-items: baseline; gap: 7px; line-height: 1.25; margin: 5px 0; }
+.medal-wallet-value b { font-size: clamp(29px,9vw,43px); letter-spacing: -.025em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.medal-wallet-value > span { font-size: 13px; flex: none; }
+.medal-wallet-value.long b { font-size: clamp(22px,7vw,34px); }
+.medal-wallet-copy small { font-size: 10px; color: #93753d; }
+.home-status .row:has(#homeCoins) { flex-wrap: wrap; gap: 8px; }
+.home-status .row:has(#homeCoins) > .lbl { width: auto; flex: 1; font-size: 12px; }
+.home-status #homeCoins { color: #805414; }
+.home-status #homeCoins .medal-icon { width: 31px; height: 31px; }
+.note .medal-icon,.mlist .st .medal-icon,.quiz-count .medal-icon,.shop-item .pr .medal-icon { width: 22px; height: 22px; }
+.gain .medal-amount { margin-left: 4px; }
+.gain > span { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; }
+.price-line .medal-icon { width: 28px; height: 28px; }
+.stats .stat .medal-amount .medal-icon { width: 28px; height: 28px; }
+.stats .stat .lbl { overflow-wrap: anywhere; }
+.pond { background-image: url('../assets/ui/beach.webp'); background-position: center; border: 2px solid #f5e6bc; border-radius: 32px; box-shadow: 0 5px 0 #e4e5d3; }
+.pond::before,.pond::after { content: none; }
+.beach-status .dirt { padding: 3px 9px 3px 5px; gap: 4px; }
+.beach-status .dirt .expedition-icon { width: 32px; height: 32px; }
+.beach-status .dirt i { width: 8px; height: 8px; }
+.beach-status .dirt i.on { background: #dc9974; box-shadow: inset 0 1px 1px #b2795729; }
+.beach-status > b { display: inline-block; }
+.painted-found { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.found.painted-found > .found-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 5px; border: 1px solid #c4dfcc; border-radius: 16px; background: #f0f8ed; font-size: 12px; }
+.found.painted-found > .found-item.no { background: #faf9f1; border: 1px dashed #dbd9c8; opacity: 1; color: #797c72; }
+.found.painted-found .found-item > span { padding: 0; border: 0; background: none; }
+.painted-found .clean-art { width: 46px; height: 46px; }
+.painted-found .no .clean-art { opacity: .52; filter: saturate(.65); }
+.painted-found small { font-size: 10px; color: #52816b; }
+.painted-found .no small { color: #939389; }
+@media(max-width:370px){
+  .topbar { padding-left: 12px; padding-right: 12px; gap: 5px; }
+  .topbar .title { font-size: 11px; }
+  .topbar .title::before { font-size: 6px; }
+  .topbar .medal-amount b { font-size: 15px; }
+  .medal-wallet { gap: 12px; padding: 20px 12px; }
+  .medal-wallet > .medal-icon { width: 85px; height: 85px; }
+  .medal-wallet-label { font-size: 12px; }
+}
+body.reduce-motion .tabs .expedition-icon { transition: none; }
+/* 承認済みの左上配置。主人公の描画も入力も、入口より下の領域に収める。 */
+#scr-home .pond { min-height: 320px; }
+.pet-play-area { position: absolute; inset: 112px 0 0; overflow: hidden; pointer-events: none; }
+.pet-play-area > .pet { pointer-events: auto; }
+.pet-play-area .body { --amp: inherit; }
+.pond-shortcuts { position: absolute; left: 12px; top: 12px; z-index: 8; display: flex; align-items: flex-start; gap: 8px; pointer-events: none; }
+.pond-shortcut { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 0; border: 0; background: none; color: #355f57; font: inherit; font-weight: 800; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
+.shortcut-circle { display: grid; place-items: center; width: 72px; height: 72px; box-sizing: border-box; border: 3px solid #fff9df; border-radius: 50%; background: radial-gradient(circle at 40% 30%,#f5fff3,#aadcd2); box-shadow: 0 2px 0 #62968c,0 3px 7px #29595b35; }
+#fairyPortrait { display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
+#fairyPortrait > svg { display: block; width: 100%; height: 100%; transform: scale(1.18) translateY(-3%); }
+.habitat-shortcut { padding-top: 8px; }
+.habitat-shortcut .shortcut-circle { width: 60px; height: 60px; overflow: hidden; border-color: #fff7db; box-shadow: 0 2px 0 #b19b6d,0 3px 7px #29595b35; }
+.habitat-icon { object-fit: cover; border-radius: 50%; }
+.habitat-shortcut .habitat-icon { display: block; width: 100%; height: 100%; filter: none; }
+.shortcut-label { position: relative; margin-top: -2px; padding: 2px 8px; border-radius: 10px; background: #fffbed; box-shadow: 0 2px 3px #79694525; font-size: 11px; line-height: 1.3; }
+.pond-shortcut:active .shortcut-circle { transform: scale(.94); }
+.pond-shortcut:focus-visible { outline: 3px solid #245d71; outline-offset: 4px; border-radius: 40px; }
+#scr-home .actions { grid-template-columns: repeat(3,minmax(0,1fr)); }
+#scr-home .actions .btn { padding-left: 4px; padding-right: 4px; font-size: 14px; gap: 3px; }
+@media(max-width:360px){
+  .pond-shortcuts { left: 12px; top: 12px; gap: 8px; }
+  #scr-home .actions .btn { font-size: 12px; }
+}
+@media(prefers-reduced-motion:reduce){.tabs .expedition-icon{transition:none;}}
+
+/* 撮影の絵と、ようせい画面へ移動済みの3ボタンの配色。寸法・配置は既存CSSを使う。 */
+.camera-art { position: relative; display: inline-block; }
+.camera-art > img,.camera-art > svg { display: block; width: 100%; height: 100%; object-fit: contain; }
+.camera-art .camera-icon-badge { position: absolute; right: -4%; bottom: -4%; width: 48%; height: 48%; padding: 4%; display: grid; place-items: center; border: 1px solid #e0c994; border-radius: 50%; background: #fff9e6; box-shadow: 0 2px 2px #74532725; }
+.camera-icon-badge svg { display: block; width: 100%; height: 100%; }
+.camera-art.sea-icon { border-radius: 50%; overflow: hidden; border: 2px solid #ffe5a3; box-shadow: 0 1px 0 #d5b978; }
+.camera-art.sea-icon > img { object-fit: cover; }
+#scr-me .me-actions .btn { color: #315d57; box-shadow: inset 0 2px 0 #ffffffb3,0 3px 0 var(--action-base); }
+#scr-me .me-actions #actPlay { background: linear-gradient(#fff9e9,#f7e6bb); border-color: #e4cc94; --action-base: #d9c28e; }
+#scr-me .me-actions [data-go="dress"] { background: linear-gradient(#f0fcf4,#ceeadd); border-color: #a9cdbb; --action-base: #a1c3b1; }
+#scr-me .me-actions [data-go="photo"] { background: linear-gradient(#f0fbfd,#cfeaf0); border-color: #a7ced7; --action-base: #9bbfc9; }
+#actPlay .camera-art { width: 24px; height: 24px; }
+#scr-photo .camera-art { width: 24px; height: 24px; }
+#scr-photo #phShutter .camera-art { width: 36px; height: 36px; }
+#locBox .camera-art { width: 20px; height: 20px; }

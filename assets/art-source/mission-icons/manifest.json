@@ -1,0 +1,14 @@
+{
+  "mission_float": {
+    "width": 371,
+    "height": 420,
+    "file": "assets/mission-icons/float.webp",
+    "source": "assets/art-source/mission-icons/float.png"
+  },
+  "mission_other": {
+    "width": 310,
+    "height": 420,
+    "file": "assets/mission-icons/other.webp",
+    "source": "assets/art-source/mission-icons/other.png"
+  }
+}
