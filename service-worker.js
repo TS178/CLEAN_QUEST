@@ -9,7 +9,7 @@
  * ようせいの パーツ画像（assets/pet-parts、3種類 ぜんぶで 約3.5MB）は ここには 入れない。
  * 自分の 種類の ぶんだけ ホームで 先に 読み（js/pet-rig.js の prefetch）、下の fetch で 保存する。
  */
-const APP_VERSION = "bct-v13-camera-icons-1";
+const APP_VERSION = "bct-v13-camera-icons-2";
 const FILES = [
   "./",
   "index.html",

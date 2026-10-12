@@ -109,22 +109,22 @@
       <section class="screen" id="scr-capture">
         <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
         <div class="seg" role="tablist">
-          <button class="on" data-sub="rec" role="tab"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg> きろく する</button>
-          <button data-sub="map" role="tab"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8 9-4 8 4 9-4v21l-9 4-8-4-9 4Z" fill="#dbe5ce"/><path d="M12 4v21M20 8v21" fill="none" stroke="#a8b598"/><path d="M20 18s5-5 5-9a5 5 0 0 0-10 0c0 4 5 9 5 9Z" fill="#ce8866"/><circle cx="20" cy="9" r="1.5" fill="#fff4d9"/></g></svg> ちず</button>
+          <button class="on" data-sub="rec" role="tab"><span data-ui-icon-slot="camera"></span> きろく する</button>
+          <button data-sub="map" role="tab"><span data-ui-icon-slot="map"></span> ちず</button>
         </div>
         <div id="subRec">
           <h2>ゴミを みつけたら きろくしよう</h2>
           <div class="card">
             <h3>① しゃしんを とる</h3>
             <label class="shot-btn" id="shotBtn">
-              <span class="ico"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg></span><span>タップして しゃしんを とる</span>
+              <span class="ico"><span data-ui-icon-slot="camera"></span></span><span>タップして しゃしんを とる</span>
               <input type="file" accept="image/*" capture="environment" id="shotInput">
             </label>
             <div id="shotPreview" style="display:none">
               <img class="preview" id="shotImg" alt="とった しゃしん">
-              <button class="linkish" id="shotRetake">とりなおす</button>
+              <button class="linkish" id="shotRetake"><span data-ui-icon-slot="retake"></span> とりなおす</button>
             </div>
-            <div class="loc" id="locBox">📍 ばしょを しらべているよ…</div>
+            <div class="loc" id="locBox"><span data-ui-icon-slot="location"></span> ばしょを しらべているよ…</div>
             <p class="note">※ あぶない ものは さわらずに、おとなに しらせてね。</p>
           </div>
           <div class="card">
@@ -171,7 +171,7 @@
       <!-- さつえい -->
       <section class="screen" id="scr-photo">
         <div class="ph-top">
-          <button class="btn small ghost" id="phBack">← もどる</button>
+          <button class="btn small ghost" id="phBack"><span data-ui-icon-slot="back"></span> もどる</button>
           <b>いっしょに さつえい</b>
         </div>
         <div class="ph-stage" id="phStage">
@@ -182,16 +182,16 @@
           <div class="ph-msg" id="phMsg"></div>
         </div>
         <div id="phSource" class="ph-source">
-          <button class="btn mint" id="phCam"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg> カメラで とる</button>
-          <button class="btn ghost" id="phPick"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="22" height="26" rx="2" fill="#e5c17c"/><rect x="8" y="6" width="16" height="20" fill="#e3efe6"/><path d="m9 23 5-7 4 4 3-3 3 6" fill="#88ad91"/><circle cx="19" cy="11" r="2" fill="#e5c17c"/></g></svg> しゃしんを えらぶ</button>
-          <button class="btn ghost" id="phSea"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg> うみの はいけい</button>
+          <button class="btn mint" id="phCam"><span data-ui-icon-slot="camera"></span> カメラで とる</button>
+          <button class="btn ghost" id="phPick"><span data-ui-icon-slot="album"></span> しゃしんを えらぶ</button>
+          <button class="btn ghost" id="phSea"><span data-ui-icon-slot="sea"></span> うみの はいけい</button>
           <input type="file" accept="image/*" id="phFile" hidden>
         </div>
         <div id="phControls" hidden>
           <div class="ph-shoot">
-            <button class="btn small ghost" id="phSwitch" hidden>🔄 きりかえ</button>
-            <button class="shutter" id="phShutter" aria-label="シャッター"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 5-1 2-4h7l2 4 5 1v16H5V10Z" fill="#8eafac"/><circle cx="16" cy="17" r="6" fill="#fff5d7"/><circle cx="16" cy="17" r="3" fill="#477887"/><path d="M24 13h1"/></g></svg></button>
-            <button class="btn small ghost" id="phChange">はいけい</button>
+            <button class="btn small ghost" id="phSwitch" hidden><span data-ui-icon-slot="switch"></span> きりかえ</button>
+            <button class="shutter" id="phShutter" aria-label="シャッター"><span data-ui-icon-slot="shutter"></span></button>
+            <button class="btn small ghost" id="phChange"><span data-ui-icon-slot="background"></span> はいけい</button>
           </div>
           <label class="ph-size">おおきさ <input type="range" id="phSize" min="20" max="95" value="55"></label>
           <div class="ph-label">ポーズ</div>
@@ -203,8 +203,8 @@
         <div id="phResult" hidden>
           <img id="phResultImg" class="ph-result" alt="きねんしゃしん">
           <div class="btn-row">
-            <button class="btn ghost" id="phRetake">とりなおす</button>
-            <button class="btn mint" id="phSave">ほぞんする</button>
+            <button class="btn ghost" id="phRetake"><span data-ui-icon-slot="retake"></span> とりなおす</button>
+            <button class="btn mint" id="phSave"><span data-ui-icon-slot="save"></span> ほぞんする</button>
           </div>
           <p class="note" id="phSaveNote"></p>
         </div>
@@ -276,7 +276,7 @@
         <div id="meTop"></div>
         <!-- あそぶ（AR）・きせかえ・さつえい（もと ホーム） -->
         <div class="actions me-actions">
-          <button class="btn peach" id="actPlay"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12" fill="#f5e8bf"/><path d="M16 4q-10 9 0 24M16 4q10 9 0 24" fill="#81aeb5"/><path d="M4 16h24" fill="none"/></g></svg> あそぶ</button>
+          <button class="btn peach" id="actPlay"><span data-ui-icon-slot="play"></span> あそぶ</button>
           <button class="btn mint" data-go="dress"><span data-ui-icon-slot="dress"></span> きせかえ</button>
           <button class="btn lilac" data-go="photo"><span data-ui-icon-slot="capture"></span> さつえい</button>
         </div>
