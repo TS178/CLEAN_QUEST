@@ -446,6 +446,7 @@
       if (BCT.beach) BCT.beach.show(); // 時間が たった分 よごしてから 描く
       render();
       setTimeout(startWander, 60);
+      if (BCT.pondVideo) BCT.pondVideo.play(); // 波の 動画（js/pond-video.js）
     },
     hide() {
       // あそびの とちゅうで はなれたら かぞえない
@@ -455,6 +456,7 @@
       pet.classList.remove("joy", "special", "playing", "close", "eat");
       stopWander();
       if (BCT.beach) BCT.beach.hide();
+      if (BCT.pondVideo) BCT.pondVideo.stop();
     },
     refresh() {
       render();

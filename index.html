@@ -80,6 +80,7 @@
       <!-- ホーム -->
       <section class="screen" id="scr-home">
         <div class="pond" id="pond">
+          <video class="pond-video" id="pondVideo" muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback aria-hidden="true" tabindex="-1"></video>
           <div class="wave"></div>
           <div class="beach-trash" id="beachTrash"></div>
           <div class="pet-play-area" id="petPlayArea"><div class="pet" id="pet"><div class="float"><div class="facing" id="petFacing"><div class="body rig-front" id="petBody"></div></div></div></div></div>
@@ -104,7 +105,7 @@
 
       <!-- ミッション（クイズ・そうじ・とくべつ ごほうび） -->
       <section class="screen" id="scr-mission">
-        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button></div>
+        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button><b class="sub-title" id="msTitle">ミッションを クリアしよう！</b></div>
         <div id="missionBody"></div>
       </section>
 
@@ -126,7 +127,7 @@
               <img class="preview" id="shotImg" alt="とった しゃしん">
               <button class="linkish" id="shotRetake"><span data-ui-icon-slot="retake"></span> とりなおす</button>
             </div>
-            <div class="loc" id="locBox"><span data-ui-icon-slot="location"></span> ばしょを しらべているよ…</div>
+            <div class="loc" id="locBox"><span data-ui-icon-slot="location"></span> ばしょは イベントの 日だけ きろく するよ</div>
             <p class="note">※ あぶない ものは さわらずに、おとなに しらせてね。</p>
           </div>
           <div class="card">
@@ -138,14 +139,22 @@
           <button class="btn block mint" id="recBtn" disabled>きろく する！</button>
         </div>
         <div id="subMap" hidden>
-          <div id="map"></div>
-          <div class="map-off" id="mapOff">
-            <div class="ico">📡</div>
-            <b>いまは ちずを ひょうじ できないよ</b><br>
-            でんぱが もどると ちずが でてくるよ。<br>きろくは したの いちらんで みられるよ。
+          <div class="map-lock" id="mapLock" hidden>
+            <div class="ico">🔒</div>
+            <b>ちずは イベントの 日に ひらくよ</b>
+            <p>ふだんは ばしょを きろく しないので、ちずも おやすみ。<br>イベントの 日は、うけつけの QRコードで ひらけるよ。</p>
+            <button class="btn mint" id="mapScan">📷 うけつけの QRコードを よむ</button>
           </div>
-          <div class="legend" id="mapLegend"></div>
-          <div class="area-tip" id="areaTip" style="display:none"></div>
+          <div id="mapArea">
+            <div id="map"></div>
+            <div class="map-off" id="mapOff">
+              <div class="ico">📡</div>
+              <b>いまは ちずを ひょうじ できないよ</b><br>
+              でんぱが もどると ちずが でてくるよ。<br>きろくは したの いちらんで みられるよ。
+            </div>
+            <div class="legend" id="mapLegend"></div>
+            <div class="area-tip" id="areaTip" style="display:none"></div>
+          </div>
           <div class="card" style="margin-top:14px">
             <h3>しゅるいべつの かず</h3>
             <div class="bars" id="mapBars"></div>
@@ -184,7 +193,6 @@
         <div id="phSource" class="ph-source">
           <button class="btn mint" id="phCam"><span data-ui-icon-slot="camera"></span> カメラで とる</button>
           <button class="btn ghost" id="phPick"><span data-ui-icon-slot="album"></span> しゃしんを えらぶ</button>
-          <button class="btn ghost" id="phSea"><span data-ui-icon-slot="sea"></span> うみの はいけい</button>
           <input type="file" accept="image/*" id="phFile" hidden>
         </div>
         <div id="phControls" hidden>
@@ -312,6 +320,7 @@
   <script src="vendor/leaflet/leaflet.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
   <script src="js/config.js"></script>
+  <script src="js/event-mode.js"></script>
   <script src="js/items.js"></script>
   <script src="js/trash.js"></script>
   <script src="js/quiz-data.js"></script>
@@ -339,6 +348,7 @@
   <script src="js/swipe-back.js"></script>
   <script src="js/update.js"></script>
   <script src="js/backup.js"></script>
+  <script src="js/pond-video.js"></script>
   <script src="js/egg.js"></script>
   <script src="js/home.js"></script>
   <script src="js/beach.js"></script>

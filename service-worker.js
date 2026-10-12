@@ -11,8 +11,12 @@
  *
  * ようせいの パーツ画像（assets/pet-parts、3種類 ぜんぶで 約3.5MB）は ここには 入れない。
  * 自分の 種類の ぶんだけ ホームで 先に 読み（js/pet-rig.js の prefetch）、下の fetch で 保存する。
+ *
+ * ホームの 波の 動画（assets/ui/beach-waves.mp4、約6MB）にも 手を ださない（ブラウザに まかせる）。
+ * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
+ * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.15";
+const APP_VERSION = "1.17";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",
@@ -45,6 +49,8 @@ const FILES = [
   "icons/icon-maskable-512.png",
   "js/update.js",
   "js/backup.js",
+  "js/pond-video.js",
+  "js/event-mode.js",
   "js/config.js",
   "js/items.js",
   "js/trash.js",
@@ -133,6 +139,7 @@ self.addEventListener("fetch", (e) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // 地図タイルなど よその通信は ブラウザに まかせる
+  if (url.pathname.endsWith(".mp4")) return;        // 波の 動画も ブラウザに まかせる（上の 説明）
 
   e.respondWith(
     caches.open(CACHE).then(async (cache) => {

@@ -105,7 +105,16 @@ try {
   await sleep(300);
   await shot("03-mission");
   check("ミッション画面に 英語の かざり・見出し・番号ボタンは ない", await ev(`(()=>{const m=document.getElementById('missionBody');return !/SMALL STEPS/i.test(m.textContent)&&!m.querySelector('h2')&&!m.querySelector('.qchip')&&!/エサ/.test(m.textContent)})()`));
-  check("「たんけんたいメダル を あつめよう！」の 高さが そろう", await ev(`(()=>{const l=document.querySelector('.mission-lead .medal-label').getBoundingClientRect(),t=document.querySelector('.mission-lead .medal-line > span').getBoundingClientRect();return Math.abs((l.top+l.height/2)-(t.top+t.height/2))<=2})()`));
+  check("ミッション：「← ホーム」の よこに「ミッションを クリアしよう！」（まえの 説明文は ない）", await ev(`(()=>{const h=document.querySelector('#scr-mission .home-back').getBoundingClientRect(),t=document.getElementById('msTitle');const r=t.getBoundingClientRect();return t.textContent==='ミッションを クリアしよう！'&&r.left>h.right&&Math.abs((r.top+r.height/2)-(h.top+h.height/2))<=6&&!document.querySelector('.mission-lead')&&!document.getElementById('missionBody').textContent.includes('かえるよ')})()`));
+  const oneLine = (sel) => `(()=>{const e=document.querySelector('${sel}');if(!e)return false;const r=document.createRange();r.selectNodeContents(e);const t=[...r.getClientRects()].filter(x=>x.width>0).map(x=>Math.round(x.top+x.height/2));return Math.max(...t)-Math.min(...t)<=6&&e.scrollWidth<=e.clientWidth+1&&!/ /.test(e.textContent.replace(/[+＋]/g,''))})()`;
+  for (const [w, h] of [[412, 900], [390, 844], [360, 640]]) {
+    await b.send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 2, mobile: true });
+    await sleep(200);
+    check(`ミッション：クイズ・そうじの 説明は スペース なしで 1行（${w}px）`, (await ev(oneLine("#missionBody .card:nth-of-type(1) .note.one-line"))) && (await ev(oneLine("#missionBody .card:nth-of-type(2) .note.one-line"))));
+  }
+  await b.send("Emulation.setDeviceMetricsOverride", { width: 412, height: 900, deviceScaleFactor: 2, mobile: true });
+  await sleep(200);
+  check("イベントの 日 いがいは イベント しゅうりょう QR を 出さない", await ev(`!BCT.eventMode.isOpen() && !document.getElementById('msQr')`));
   check("あぶない ものの 注意は「はりが ついている もの」", await ev(`document.getElementById('missionBody').textContent.includes('はりが ついている もの')`));
   check("「もんだいに ちょうせん する！」→ まだ クリアしていない もんだい", (await ev(`document.getElementById('msNext').textContent.trim()==='もんだいに ちょうせん する！'`)) &&
     (await ev(`(()=>{document.getElementById('msNext').click();const q=document.querySelector('.quiz-q').textContent;const s=BCT.store.get();return BCT.QUIZ.some(x=>x.q===q&&!BCT.game.isClaimed(s,'quiz',x.id))})()`)));
@@ -136,24 +145,53 @@ try {
     return !!r&&r.querySelector('.qr-pos').textContent.replace(/ /g,'')==='クリアしたもんだい1/1'&&r.textContent.includes(q.q)&&r.textContent.includes(q.c[q.a])&&r.querySelector('[data-qr="-1"]').disabled&&r.querySelector('[data-qr="1"]').disabled})()`));
   await clickModal("とじる");
 
-  // ---------- 4. そうじミッション（しゅるいごとに 1回・びんは 対象外） ----------
-  async function record(type, withPhoto) {
+  // ---------- 4a. ふだんは ちず・ばしょ を つかわない（イベントの 日だけ。js/event-mode.js） ----------
+  await ev(`BCT.ui.show('capture')`);
+  await sleep(400);
+  check("ふだんは ばしょを きかない（イベントの 日だけ）", await ev(`!BCT.eventMode.isOpen() && document.getElementById('locBox').textContent.includes('イベントの 日だけ') && !document.getElementById('modal').classList.contains('show')`));
+  await ev(`document.querySelector('#scr-capture [data-sub=map]').click();true`);
+  await sleep(300);
+  check("ふだんは ちずに かぎ（うけつけの QR を よむ ボタン）", await ev(`!document.getElementById('mapLock').hidden && document.getElementById('mapArea').hidden && !!document.getElementById('mapScan')`));
+  await shot("05b-map-locked");
+  check("ちがう QR では ひらかない", await ev(`BCT.eventMode.openWith('https://example.com/index.html?event=wrong')===false && !BCT.eventMode.isOpen()`));
+  await ev(`document.querySelector('#scr-capture [data-sub=rec]').click();true`);
+  // 受付の QR（アプリの URL?event=あいことば）で ひらく
+  await b.goto(BASE + "index.html?event=" + encodeURIComponent(await ev(`BCT.CONFIG.event.openKey`)));
+  check("受付の QR で ひらくと きょうは つかえる・URL から あいことばを けす", await ev(`BCT.eventMode.source()==='qr' && location.search===''`));
+  check("受付の QR の URL は アプリの index.html?event=あいことば", await ev(`BCT.eventMode.receptionUrl('https://ts178.github.io/CLEAN_QUEST/operator.html')==='https://ts178.github.io/CLEAN_QUEST/index.html?event='+encodeURIComponent(BCT.CONFIG.event.openKey)`));
+
+  // ---------- 4. そうじミッション（しゅるいごとに 1回・びんは 対象外）。ばしょは 1けんごとに きく ----------
+  const askShown = () => waitFor(`document.getElementById('modal').classList.contains('show') && document.getElementById('modalBox').textContent.includes('ばしょも きろく する')`, 5000);
+  async function answerLoc(where) {
+    await clickModal(where === "no" ? "きろく しない" : "ばしょも きろく する");
+    if (where === "denied") {
+      check("位置の きょかが ない → ゆるし かたの おしらせ（ばしょ なしでも つづけられる）", await waitFor(`document.getElementById('modalBox').textContent.includes('ばしょの きょかが ありません') && !!document.querySelector('#modalBox .perm-steps')`, 5000));
+      await clickModal("ばしょ なしで つづける");
+    }
+  }
+  async function record(type, withPhoto, where = "yes") {
     await ev(`BCT.ui.show('capture')`);
     await sleep(500);
     if (withPhoto) {
       const doc = await b.send("DOM.getDocument");
       const { nodeId } = await b.send("DOM.querySelector", { nodeId: doc.root.nodeId, selector: "#shotInput" });
       await b.send("DOM.setFileInputFiles", { nodeId, files: [path.join(DIR, "..", "..", "icons", "icon-512.png")] });
+      if (!(await askShown())) console.log("  (しゃしんの あとに ばしょを きかなかった)");
+      await answerLoc(where);
     }
     await ev(`document.querySelector('.type-btn[data-type=${type}]').click()`);
     await waitFor(`!document.getElementById('recBtn').disabled`);
     await ev(`document.getElementById('recBtn').click()`);
-    await waitFor(`document.getElementById('modal').classList.contains('show')`);
+    if (!withPhoto) {
+      if (!(await askShown())) console.log("  (きろく する で ばしょを きかなかった)");
+      await answerLoc(where);
+    }
+    await waitFor(`document.getElementById('modal').classList.contains('show') && document.getElementById('modalBox').textContent.includes('きろくしたよ')`, 15000);
     return modalText();
   }
   let t = await record("pet", true);
   check("ペットボトル はじめて → ミッションクリア（ポイント）", t.includes("ミッション クリア") && (await st(`g.xp(s)===0 && g.coins(s)===40`)));
-  check("位置と写真も 記録", await st(`s.records[0].lat===37.0441 && s.records[0].photo===true`));
+  check("しゃしんの あとに「ばしょも きろく する？」→ 位置と写真も 記録", await st(`s.records[0].lat===37.0441 && s.records[0].photo===true`));
   await shot("06-clean-clear");
   await clickModal("もっと");
   await waitFor(`document.getElementById('modal').classList.contains('show')`);
@@ -162,12 +200,16 @@ try {
   await clickModal("つける");
   await drain();
   check("ぼうしを つけた", await st(`s.equip.head==='reward_clean_hat'`));
-  t = await record("pet", false);
+  t = await record("pet", false, "no");
   check("同じ しゅるいの 2回目は ごほうび なし", t.includes("クリアずみ") && (await st(`g.coins(s)===40 && s.records.length===2`)));
+  check("「きろく しない」を えらぶと 位置は のこさない（毎回 きく）", await st(`s.records[1].lat===null && s.records[1].lng===null`));
   await clickModal("もっと");
   await drain();
-  t = await record("bin", false);
+  await b.send("Browser.setPermission", { origin: new URL(BASE).origin, permission: { name: "geolocation" }, setting: "denied" }).catch((e) => console.log("  setPermission", e.message));
+  t = await record("bin", false, "denied");
+  await b.send("Browser.grantPermissions", { origin: new URL(BASE).origin, permissions: ["geolocation"] }).catch(() => {});
   check("びんは ごほうび なし（記録は のこる）", t.includes("ごほうびは ないよ") && (await st(`g.coins(s)===40 && s.records.length===3`)));
+  check("きょかが なくても ばしょ なしで きろく できる", await st(`s.records[2].lat===null && s.records[2].type==='bin'`));
   await clickModal("ホームへ");
   await drain();
 
@@ -313,11 +355,17 @@ try {
   await sleep(300);
   check("画面を はなれたら カメラ停止", await ev(`window.__track.readyState==='ended' && !document.getElementById('phVideo').srcObject`));
 
-  // ---------- 10. 見え方と 保存画像が 一致する（うみの はいけい で 比べる） ----------
+  // ---------- 10. 見え方と 保存画像が 一致する（しゃしんを えらぶ で 比べる。「うみの はいけい」は なくした） ----------
+  const pickPhoto = async () => {
+    const doc = await b.send("DOM.getDocument");
+    const { nodeId } = await b.send("DOM.querySelector", { nodeId: doc.root.nodeId, selector: "#phFile" });
+    await b.send("DOM.setFileInputFiles", { nodeId, files: [path.join(DIR, "..", "..", "assets", "ui", "beach.webp")] });
+  };
   await ev(`BCT.ui.show('photo')`);
   await sleep(300);
-  await ev(`document.getElementById('phSea').click()`);
-  await sleep(800);
+  check("さつえい：「うみの はいけい」は ない（カメラ・しゃしんを えらぶ だけ）", await ev(`!document.getElementById('phSea') && !document.getElementById('phSource').textContent.includes('うみの はいけい') && !!document.getElementById('phCam') && !!document.getElementById('phPick')`));
+  await pickPhoto();
+  await sleep(1000);
   await ev(`Object.assign(BCT.photo.place,{x:0.3,y:0.55,size:0.5}); document.getElementById('phSize').dispatchEvent(new Event('input'))`);
   await ev(`(()=>{const p=BCT.photo.place;const e=document.getElementById('phPet');e.style.left=p.x*100+'%';e.style.top=p.y*100+'%';e.style.width=p.size*100+'%'})()`);
   await sleep(500);
@@ -334,7 +382,7 @@ try {
     let d2=0;for(let i=0;i<a.length;i+=4){d2+=Math.abs(a[i]-cc[i])+Math.abs(a[i+1]-cc[i+1])+Math.abs(a[i+2]-cc[i+2])}
     return {same:d/(90*120*3), moved:d2/(90*120*3)}})()`);
   check("プレビューと 保存画像が 一致（ようせい・フレーム・文字の位置）", diff.same < 10 && diff.moved > diff.same * 2, JSON.stringify(diff));
-  await shot("19-photo-sea");
+  await shot("19-photo-picked");
 
   // ---------- 11. カメラが つかえないとき ----------
   await ev(`navigator.mediaDevices.getUserMedia=()=>Promise.reject(new DOMException('no','NotAllowedError'))`);
@@ -350,10 +398,11 @@ try {
   await clickModal("あとで");
   await sleep(300);
   await shot("20-photo-denied");
-  await ev(`document.getElementById('phSea').click()`);
-  await sleep(600);
+  check("カメラが つかえない ときの 案内は「しゃしんを えらぶ」だけ", await ev(`document.getElementById('phMsg').textContent.includes('しゃしんを えらぶ') && !document.getElementById('phMsg').textContent.includes('うみの はいけい')`));
+  await pickPhoto();
+  await sleep(1000);
   await ev(`document.getElementById('phShutter').click()`);
-  check("拒否しても うみの はいけいで 記念画像", await waitFor(`!document.getElementById('phResult').hidden && document.getElementById('phResultImg').naturalWidth===1080`));
+  check("拒否しても えらんだ しゃしんで 記念画像", await waitFor(`!document.getElementById('phResult').hidden && document.getElementById('phResultImg').naturalWidth===1080`));
   await ev(`BCT.ui.show('home')`);
 
   // ---------- 11b. 設定（はぐるま）・管理者モード・ようせい画面・しょうごう・ショップの ならび ----------
@@ -361,6 +410,13 @@ try {
   await sleep(200);
   check("ヘッダーに Lv は 出さない・メダルは はぐるまと おなじ くらいの 高さ", await ev(`(()=>{const lv=document.getElementById('tbLv');const c=document.getElementById('tbCoin').getBoundingClientRect(),g=document.getElementById('tbGear').getBoundingClientRect();
     return (!lv||getComputedStyle(lv).display==='none')&&c.height<=g.height+6})()`));
+  check("ホームの 池は 波の 動画（絵と おなじ 位置・タップは うけない）", await waitFor(`BCT.pondVideo.playing() && document.getElementById('pondVideo').videoWidth===1200`, 8000) &&
+    (await ev(`(()=>{const v=document.getElementById('pondVideo'),c=getComputedStyle(v),p=getComputedStyle(document.getElementById('pond'));return c.objectFit==='cover'&&c.objectPosition==='50% 50%'&&p.backgroundSize==='cover'&&p.backgroundPosition==='50% 50%'&&c.pointerEvents==='none'&&v.muted&&v.loop})()`)));
+  await ev(`BCT.ui.show('shop');true`);
+  await sleep(300);
+  check("ホームから はなれると 動画を 止める", await ev(`document.getElementById('pondVideo').paused`));
+  await ev(`BCT.ui.show('home');true`);
+  await sleep(300);
   check("池の 丸い ボタン「ようせい」「すみか」は おなじ 大きさ", await ev(`(()=>{const c=[...document.querySelectorAll('.pond-shortcut .shortcut-circle')].map(e=>{const r=e.getBoundingClientRect();return Math.round(r.width)+'x'+Math.round(r.height)});return c.length===2&&c[0]===c[1]})()`));
   check("ホームの 下に あそぶ・きせかえ・さつえい は ない（ようせい画面へ）", await ev(`!document.querySelector('#scr-home #actPlay') && !!document.querySelector('#scr-me .me-actions #actPlay') && !!document.querySelector('#scr-me .me-actions [data-go=dress]') && !!document.querySelector('#scr-me .me-actions [data-go=photo]')`));
   await ev(`document.getElementById('actFairy').click()`);
@@ -387,6 +443,10 @@ try {
   check("管理者モード：ヤドカリの 段階3 に かんむりを つけて 見られる", await ev(`(()=>{const v=document.querySelector('#admFace svg[data-pet]');return !!v&&v.dataset.pet==='hermit'&&v.dataset.stage==='3'&&!!v.querySelector('[data-item=head_crown]')})()`));
   check("管理者モードでは ほぞんデータが かわらない", (await ev(`localStorage.getItem('bct-state')`)) === saved);
   await shot("21a-admin");
+  await ev(`document.getElementById('admQr').click();true`);
+  check("管理者モード：イベント しゅうりょう QR を 見られる（イベントの 日 いがいでも）", await waitFor(`document.getElementById('modal').classList.contains('show') && !!document.querySelector('#qrWrap canvas') && document.getElementById('modalBox').textContent.includes('うんえいの ひと')`, 3000));
+  await ev(`(()=>{const b=[...document.querySelectorAll('#modalBox button')].pop();b&&b.click();return true})()`);
+  await sleep(300);
   await ev(`BCT.ui.show('me')`);
   await sleep(300);
   check("ようせい画面：すすみぐあいは 線（ゲージ）。しょうごう・おうちの かたへ は ない", await ev(`document.querySelectorAll('#meBody .pbar .progress').length>=5 && !document.querySelector('#meBody .badges') && !document.querySelector('#meBody .parent')`));
@@ -394,7 +454,8 @@ try {
   await shot("21b-yousei");
   await ev(`BCT.ui.show('mission')`);
   await sleep(300);
-  check("イベント しゅうりょう QR は ミッションの うみクイズの うえ", await ev(`(()=>{const q=document.getElementById('msQr'),c=document.getElementById('msNext')||document.getElementById('msReview');return !!q&&q.getBoundingClientRect().bottom<=c.closest('.card').getBoundingClientRect().top+1})()`));
+  check("イベントの 日は イベント しゅうりょう QR を 出す（うみクイズの うえ）", await ev(`(()=>{const q=document.getElementById('msQr'),c=document.getElementById('msNext')||document.getElementById('msReview');return BCT.eventMode.isOpen()&&!!q&&q.getBoundingClientRect().bottom<=c.closest('.card').getBoundingClientRect().top+1})()`));
+  check("イベント しゅうりょう QR の ボタンは クイズの ボタンと ちがう いろ", await ev(`(()=>{const q=getComputedStyle(document.getElementById('msQr')).backgroundColor,c=getComputedStyle(document.getElementById('msNext')||document.querySelector('#missionBody .btn.peach')).backgroundColor;return q!==c&&q==='rgb(45, 111, 143)'})()`));
   check("しょうごうの なまえは 1行・おなじ 大きさ", await ev(`(()=>{const n=[...document.querySelectorAll('#missionBody .badge-name')];const hs=new Set(n.map(e=>Math.round(e.getBoundingClientRect().height)));const fs=new Set(n.map(e=>getComputedStyle(e).fontSize));return n.length===7&&hs.size===1&&fs.size===1&&n.every(e=>e.scrollWidth<=e.parentElement.clientWidth+1)})()`));
   check("しょうごうは ミッションの いちばん した・3れつ", await ev(`(()=>{const c=document.querySelector('#missionBody .badges-card');return !!c&&c===document.getElementById('missionBody').lastElementChild&&getComputedStyle(c.querySelector('.badges3')).gridTemplateColumns.split(' ').length===3})()`));
   await ev(`document.querySelector('#missionBody [data-badge]:not(.locked)').click()`);
@@ -467,6 +528,10 @@ try {
   check("QRに 位置情報なし", !/lat|lng/.test(qr));
   await b.send("Emulation.setDeviceMetricsOverride", { width: 1200, height: 900, deviceScaleFactor: 1, mobile: false });
   await b.goto(BASE + "operator.html");
+  check("運営: 受付用 QR（アプリの URL?event=あいことば）", await ev(`!!document.querySelector('#recvQr svg') && document.getElementById('recvUrl').textContent===BCT.eventMode.receptionUrl(location.href) && document.getElementById('recvUrl').textContent.includes('index.html?event=')`));
+  check("運営: 受付用 QR は 読みとれる（jsQR）", await ev(`(async()=>{const svg=document.querySelector('#recvQr svg');const xml=new XMLSerializer().serializeToString(svg);const im=new Image();im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);await im.decode();
+    const c=document.createElement('canvas');c.width=c.height=400;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,400,400);g.drawImage(im,0,0,400,400);const code=jsQR(g.getImageData(0,0,400,400).data,400,400);
+    return !!code&&code.data===document.getElementById('recvUrl').textContent})()`));
   check("運営: v2 を 読める", await ev(`BCT.operator.add(${JSON.stringify(qr)})`));
   check("運営: 古い版 v1 は 案内つきで ことわる", await ev(`BCT.operator.add('{"v":1,"app":"bct","id":"x"}')===false && document.getElementById('last').textContent.includes('版')`));
   check("運営: 順位の 列が ない", await ev(`!document.getElementById('tbl').textContent.includes('順位') && ![...document.querySelectorAll('#sort option')].some(o=>/Pt|ゴミの数|正解/.test(o.textContent))`));

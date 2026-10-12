@@ -46,15 +46,14 @@
       { id: "reward_guardian_medal", prog: `Lv${game.level(s)}/${game.maxLevel()}` },
       { id: "reward_event_frame", prog: [`クイズ ${Math.min(qDone, BCT.CONFIG.eventFrameQuiz)}/${BCT.CONFIG.eventFrameQuiz}`, `そうじ ${Math.min(1, cDone)}/1`] },
     ];
+    // イベント しゅうりょう QR は イベントの 日だけ（js/event-mode.js）。イベントの 日 いがいは 管理者モードで 確認できる
+    const eventOpen = !BCT.eventMode || BCT.eventMode.isOpen();
     $("missionBody").innerHTML = `
-      <p class="lead mission-lead">ミッションを クリアして<br><span class="medal-line"><b class="medal-label">${BCT.art.icon("coin")}たんけんたいメダル</b><span>を あつめよう！</span></span><br>
-        ごはんや すみかの アイテムが かえるよ。</p>
-
-      <button class="btn block peach" id="msQr" style="margin-bottom:12px">🎉 イベント しゅうりょう QRコード</button>
+      ${eventOpen ? `<button class="btn block sea" id="msQr" style="margin-bottom:12px">🎉 イベント しゅうりょう QRコード</button>` : ""}
 
       <div class="card">
         <h3>${BCT.art.icon("quiz")} うみクイズ <span class="count">${qDone} / ${BCT.QUIZ.length}</span></h3>
-        <p class="note">1もん クリアごとに ${BCT.medal.amount(R.quiz.coins, '+')} 枚。まちがえても へらないよ。</p>
+        <p class="note one-line">1もんクリアごとに${BCT.medal.amount(R.quiz.coins, '+')}枚。まちがえてもへらないよ。</p>
         ${nq ? `<button class="btn block peach" id="msNext">もんだいに ちょうせん する！</button>`
           : `<p class="quiz-alldone">🎉 ぜんぶ クリア！</p>`}
         <button class="btn block ghost" id="msReview" ${qDone ? "" : "disabled"} style="margin-top:8px">📖 ふくしゅう する${qDone ? `（${qDone}もん）` : ""}</button>
@@ -62,7 +61,7 @@
 
       <div class="card">
         <h3>${BCT.art.icon("clean")} そうじミッション <span class="count">${cDone} / ${BCT.CLEAN_MISSIONS.length}</span></h3>
-        <p class="note">ゴミの しゅるいごとに、はじめて きろくすると ${BCT.medal.amount(R.clean.coins, '+')} 枚。</p>
+        <p class="note one-line">ゴミのしゅるいごとに、はじめてきろくすると${BCT.medal.amount(R.clean.coins, '+')}枚。</p>
         <ul class="mlist">${BCT.CLEAN_MISSIONS.map((t) => {
           const done = game.isClaimed(s, "clean", t.key);
           return `<li class="${done ? "done" : ""}"><span class="ico clean-art">${BCT.collectionArt.missionIcon(t.key)}</span><span class="nm">${ui.esc(missionName(t))}</span>
@@ -87,7 +86,7 @@
       ${badgesHtml(s)}`;
     if (nq) $("msNext").onclick = () => openQuiz(nq.id);
     $("msReview").onclick = openReview;
-    $("msQr").onclick = () => BCT.profile.showQr();
+    if ($("msQr")) $("msQr").onclick = () => BCT.profile.showQr();
     $("missionBody").querySelector("[data-go-cap]").onclick = () => ui.show("capture");
     document.querySelectorAll("#missionBody [data-badge]").forEach((b) => (b.onclick = () => showBadge(b.dataset.badge)));
   }

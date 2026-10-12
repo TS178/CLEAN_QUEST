@@ -191,9 +191,14 @@
   }
 
   async function show() {
-    renderLegend();
     renderBars();
     renderList();
+    // ちずは イベントの 日だけ（js/event-mode.js）。ふだんは かぎの おしらせ と 受付の QR を よむ ボタン
+    const open = !BCT.eventMode || BCT.eventMode.isOpen();
+    $("mapLock").hidden = open;
+    $("mapArea").hidden = !open;
+    if (!open) return;
+    renderLegend();
     if (!online()) {
       setOffline(true);
       return;
@@ -216,6 +221,11 @@
   window.addEventListener("offline", () => {
     if (mapVisible()) setOffline(true);
   });
+
+  $("mapScan").addEventListener("click", async () => {
+    if (await BCT.eventMode.scan()) show();
+  });
+  if (BCT.eventMode) BCT.eventMode.onChange(() => { if (mapVisible()) show(); });
 
   BCT.screens.map = { show };
   BCT.mapDebug = () => ({ map, tileOk, tileNg, pins: layer ? layer.getLayers().length : 0 });

@@ -15,7 +15,7 @@
     .op { max-width: 1100px; margin: 0 auto; padding: 16px; }
     .op h1 { font-size: 20px; margin: 4px 0 12px; }
     .op .grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 14px; align-items: start; }
-    @media (max-width: 800px) { .op .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 800px) { .op .grid { grid-template-columns: minmax(0, 1fr); } }
     .cam { position: relative; background: #000; border-radius: 16px; overflow: hidden; aspect-ratio: 1; }
     .cam video { width: 100%; height: 100%; object-fit: cover; display: block; }
     .cam .frame { position: absolute; inset: 18%; border: 4px solid rgba(255, 255, 255, 0.85); border-radius: 18px; pointer-events: none; }
@@ -35,6 +35,10 @@
     .tools select { padding: 8px 10px; border-radius: 10px; border: 2px solid var(--line); }
     textarea { width: 100%; min-height: 70px; border-radius: 12px; border: 2px solid var(--line); padding: 8px; font-size: 12px; }
     .del { border: none; background: none; color: #c0392b; font-size: 12px; text-decoration: underline; }
+    .recv-qr { width: min(260px, 70vw); margin: 8px auto; }
+    .recv-qr svg { width: 100%; height: auto; display: block; }
+    .recv-url { word-break: break-all; text-align: center; }
+    @media print { body * { visibility: hidden; } .recv-print, .recv-print * { visibility: visible; } .recv-print { position: absolute; left: 0; top: 0; width: 100%; } .recv-print button { display: none; } }
   </style>
 </head>
 <body>
@@ -42,6 +46,14 @@
     <h1>🧑‍✈️ 運営用 集計画面 <small class="note">ビーチクリーン探検隊</small></h1>
     <div class="grid">
       <div>
+        <div class="card">
+          <h3>⓪ 受付用 QR（この日だけ アプリの「ちず」と「ばしょの きろく」を ひらく）</h3>
+          <p class="note">参加者が スマホの カメラ、または アプリの「ひろう」→「ちず」→「うけつけの QRコードを よむ」で 読むと、その端末で <b>その日の 24時まで</b> ひらきます。
+            ふだん家で使うときは 位置を記録しません。イベントの日付を <code>js/config.js</code> の <code>event.days</code> に書いた日は、QR が なくても 自動で ひらきます。</p>
+          <div class="recv-qr" id="recvQr"></div>
+          <p class="note recv-url" id="recvUrl"></p>
+          <button class="btn small ghost" id="recvPrint">この QR を 印刷する</button>
+        </div>
         <div class="card">
           <h3>① 参加者の「イベント終了QR」を読み取る</h3>
           <div class="cam" id="cam">
@@ -95,6 +107,9 @@
   </div>
 
   <script src="vendor/jsqr/jsQR.js"></script>
+  <script src="vendor/qrcode/qrcode.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/event-mode.js"></script>
   <script src="js/trash.js"></script>
   <script src="js/pets.js"></script>
   <script src="js/badges.js"></script>

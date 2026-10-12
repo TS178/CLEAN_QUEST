@@ -769,3 +769,25 @@ body #scr-home .pond { min-height: 145px; }
 .set-backup .btn { flex: 1; min-width: 0; padding-left: 6px; padding-right: 6px; word-break: keep-all; }
 .app-update { text-align: center; margin: 0 0 12px; }
 #settingsBody .parent, #modalBox .keep { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* ---------- ホームの 池：波の 動画（js/pond-video.js）。絵（beach.webp）と おなじ cover・まんなか あわせ。再生が はじまったら 見せる ---------- */
+.pond-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; pointer-events: none; opacity: 0; transition: opacity 0.6s ease; background: transparent; }
+.pond-video.on { opacity: 1; }
+body.reduce-motion .pond-video { display: none; }
+
+/* ---------- ちずは イベントの 日だけ（js/event-mode.js）・受付の QR を よむ ---------- */
+.map-lock { padding: 22px 16px; text-align: center; border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+.map-lock .ico { font-size: 40px; }
+.map-lock p { margin: 6px 0 12px; font-size: 13px; color: var(--ink-soft); }
+.loc.off { background: #f1efe8; color: var(--ink-soft); }
+.ev-scan { position: relative; width: min(260px, 70vw); aspect-ratio: 1; margin: 8px auto; border-radius: 18px; overflow: hidden; background: #1d2b33; }
+.ev-scan video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ev-scan-frame { position: absolute; inset: 18%; border: 3px solid rgba(255, 255, 255, 0.9); border-radius: 14px; box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.25); }
+#modalBox .btn { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* ---------- ミッション：イベント しゅうりょう QR は ふかい うみの いろ（クイズの ボタンと くべつ）・せつめいは 1行 ---------- */
+body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 #1f4f66; color: #fff; }
+#missionBody .note.one-line { white-space: nowrap; font-size: clamp(10px, 3.05vw, 13px); letter-spacing: -0.01em; }
+#missionBody .note.one-line .medal-icon { width: 1.5em; height: 1.5em; }
+#missionBody .note.one-line .medal-amount { gap: 1px; }
+#missionBody .note.one-line .medal-amount b { font-size: 1em; }

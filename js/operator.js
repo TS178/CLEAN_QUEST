@@ -255,6 +255,24 @@
     timer = setTimeout(scan, 250);
   }
 
+  // ---------- 受付用 QR（アプリの URL?event=あいことば。js/event-mode.js） ----------
+  (function receptionQr() {
+    if (!BCT.eventMode || typeof qrcode === "undefined") return;
+    const url = BCT.eventMode.receptionUrl(location.href);
+    qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
+    const qr = qrcode(0, "M");
+    qr.addData(url, "Byte");
+    qr.make();
+    $("recvQr").innerHTML = qr.createSvgTag({ cellSize: 6, margin: 4, scalable: true });
+    $("recvUrl").textContent = url;
+    $("recvPrint").onclick = () => {
+      const card = $("recvQr").closest(".card");
+      card.classList.add("recv-print");
+      window.print();
+      setTimeout(() => card.classList.remove("recv-print"), 500);
+    };
+  })();
+
   // ---------- イベント ----------
   $("camStart").onclick = startCam;
   $("camStop").onclick = stopCam;

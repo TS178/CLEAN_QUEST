@@ -12,7 +12,11 @@
   let photoUrl = null;
   let type = null;
   let loc = null;           // { lat, lng, acc }
-  let locWait = null;       // 位置を さがしている Promise
+  let locAsked = false;     // この 1けんで「ばしょも きろく する？」を もう きいた
+  let locAnswer = null;     // こたえが でたら おわる Promise（true / false）
+  let locAsking = null;     // こたえて、さがし おわったら おわる Promise
+  let locSearchAt = 0;      // いま 位置を さがして いる（はじめた 時刻。0 = さがして いない）
+  let locToken = 0;         // 1けんごとに かわる（まえの 1けんの おそい 結果を つぎに まぜない）
 
   // ---------- 種類ボタン ----------
   function renderTypes() {
@@ -40,35 +44,114 @@
       : photoBlob ? "きろく する！" : "しゃしん なしで きろく する";
   }
 
-  // ---------- 位置 ----------
+  // ---------- 位置（イベントの 日だけ・1けんごとに きく。js/event-mode.js） ----------
+  // ふだん（家で つかう とき）は きかない・きろく しない（家の 位置を のこさない）。
+  // イベントの 日は、しゃしんを とった あと（しゃしん なしの ときは「きろく する」を おした とき）に
+  // 「ばしょも きろく する？」を 毎回 きく。ブラウザで「きょか しない」に なって いる ときは ゆるし かたを 出す。
+  // ばしょ なしでも きろく できる。
+  const eventOpen = () => !BCT.eventMode || BCT.eventMode.isOpen();
   function setLoc(cls, text) {
     const box = $("locBox");
     box.className = "loc " + (cls || "");
     box.innerHTML = BCT.art.icon("location") + " " + ui.esc(text.replace(/^📍\s*/, ""));
   }
-  function locate() {
+  // いまの ようすを 出す
+  function locIdle() {
+    if (!eventOpen()) return setLoc("off", "📍 ばしょは イベントの 日だけ きろく するよ（いまは きろく しない）");
+    if (loc) return setLoc("ok", `📍 ばしょが わかったよ！（ごさ やく${loc.acc}m）`);
+    if (locAsked) return setLoc("off", "📍 こんかいは ばしょを きろく しないよ");
+    setLoc("", "📍 しゃしんを とったら、ばしょも きろく するか きくよ");
+  }
+  function resetLoc() {
     loc = null;
-    if (!("geolocation" in navigator)) {
-      setLoc("ng", "📍 この スマホでは ばしょが わからないよ（このまま きろく できるよ）");
-      locWait = Promise.resolve(null);
-      return;
+    locAsked = false;
+    locAnswer = locAsking = null;
+    locSearchAt = 0;
+    locToken++;
+    locIdle();
+  }
+  async function geoDenied() {
+    try { return (await navigator.permissions.query({ name: "geolocation" })).state === "denied"; } catch (e) { return false; }
+  }
+  function geoSteps() {
+    const ua = navigator.userAgent || "";
+    if (/iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) {
+      return `<ol class="perm-steps">
+          <li>iPhone の <b>「設定」</b> → <b>「プライバシーとセキュリティ」</b> → <b>「位置情報サービス」</b> を オン</li>
+          <li>おなじ 画面の <b>「Safari の Web サイト」</b> を <b>「使用中のみ」</b> に する</li>
+          <li>Safari の したの <b>「ぁあ」</b> → <b>「Webサイトの設定」</b> → <b>「位置情報」</b> を <b>「許可」</b></li>
+        </ol>`;
     }
-    setLoc("", "📍 ばしょを しらべているよ…");
-    locWait = new Promise((resolve) => {
+    if (/Android/.test(ua)) {
+      return `<ol class="perm-steps">
+          <li>スマホの <b>位置情報</b>（画面の 上から おろした ところ）を オン</li>
+          <li>アドレス バーの ひだりの マーク → <b>「権限」</b>（または「サイトの設定」）→ <b>「位置情報」</b> を <b>「許可」</b></li>
+          <li>ホーム画面に ついかした アプリの ときは、アイコンを ながおし → <b>「アプリ情報」</b> → <b>「権限」</b> → <b>「位置情報」</b></li>
+        </ol>`;
+    }
+    return `<ol class="perm-steps"><li>ブラウザの アドレス バーの マーク から、この ページの <b>位置情報</b> を <b>「許可」</b> に する</li></ol>`;
+  }
+  async function geoGuide() {
+    const again = await ui.modal(
+      `<h3 class="keep">📍 ばしょの きょかが ありません</h3>
+       <p class="lead keep">ばしょを きろく するには、おうちの ひとと いっしょに 位置情報を ゆるしてね。</p>
+       ${geoSteps()}
+       <p class="note keep">ばしょ なしでも きろく できるよ。</p>`,
+      [{ label: "ばしょ なしで つづける", cls: "ghost", value: false }, { label: "もういちど ためす", cls: "mint", value: true }]
+    );
+    if (again) return locate();
+    setLoc("ng", "📍 ばしょの きょかが ないよ（このまま きろく できるよ）");
+    return null;
+  }
+  function getPos() {
+    return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(
-        (p) => {
-          loc = { lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6), acc: Math.round(p.coords.accuracy) };
-          setLoc("ok", `📍 ばしょが わかったよ！（ごさ やく${loc.acc}m）`);
-          resolve(loc);
-        },
-        (err) => {
-          const why = err.code === 1 ? "ばしょの きょかが ないよ。おうちの ひとに きいてね" : "ばしょが わからなかったよ";
-          setLoc("ng", `📍 ${why}（このまま きろく できるよ）`);
-          resolve(null);
-        },
+        (p) => resolve({ ok: { lat: +p.coords.latitude.toFixed(6), lng: +p.coords.longitude.toFixed(6), acc: Math.round(p.coords.accuracy) } }),
+        (err) => resolve({ err }),
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
       );
     });
+  }
+  async function locate() {
+    loc = null;
+    if (!("geolocation" in navigator)) {
+      setLoc("ng", "📍 この スマホでは ばしょが わからないよ（このまま きろく できるよ）");
+      return null;
+    }
+    if (await geoDenied()) return geoGuide();
+    setLoc("", "📍 ばしょを しらべているよ…");
+    const token = locToken;
+    locSearchAt = Date.now();
+    const r = await getPos();
+    locSearchAt = 0;
+    if (token !== locToken) return null; // もう つぎの 1けん
+    if (r.ok) {
+      loc = r.ok;
+      locIdle();
+      return loc;
+    }
+    if (r.err && r.err.code === 1) return geoGuide();
+    setLoc("ng", "📍 ばしょが わからなかったよ（このまま きろく できるよ）");
+    return null;
+  }
+  // 「ばしょも きろく する？」（1けんに 1かい。イベントの 日だけ）
+  function askLoc() {
+    if (!eventOpen()) return Promise.resolve(null);
+    if (locAsked) return locAsking || Promise.resolve(loc);
+    locAsked = true;
+    let answered;
+    locAnswer = new Promise((r) => (answered = r));
+    locAsking = (async () => {
+      const yes = await ui.modal(
+        `<h3 class="keep">📍 ばしょも きろく する？</h3>
+         <p class="lead keep" style="text-align:center">ゴミが あった ばしょを、<br>イベントの クリーンマップに のせるよ。<br>きろく しなくても だいじょうぶ。</p>`,
+        [{ label: "きろく しない", cls: "ghost", value: false }, { label: "ばしょも きろく する", cls: "mint", value: true }]
+      );
+      answered(!!yes);
+      if (!yes) { locIdle(); return null; }
+      return locate();
+    })();
+    return locAsking;
   }
 
   // ---------- 写真 ----------
@@ -110,6 +193,7 @@
     $("shotBtn").style.display = "none";
     $("shotPreview").style.display = "block";
     updateBtn();
+    askLoc(); // イベントの 日は「ばしょも きろく する？」
   }
 
   function resetForm() {
@@ -131,11 +215,19 @@
     btn.disabled = true;
     // しゃしんの じゅんびが まだなら まつ
     if (photoJob) await photoJob.catch(() => {});
-    // 位置が まだなら すこしだけ まつ
-    if (!loc && locWait) await Promise.race([locWait, new Promise((r) => setTimeout(r, 3000))]);
+    // ばしょ：まだ きいて いなければ ここで きく（しゃしん なしの とき）。
+    // こたえ・ゆるし かたの おしらせは おわるまで まつ。位置を さがす のは 10秒まで（それより かかれば ばしょ なし）
+    if (eventOpen()) {
+      if (!locAsked) askLoc();
+      btn.textContent = "ばしょを たしかめているよ…";
+      await locAnswer;
+      let finished = false;
+      locAsking.then(() => (finished = true));
+      while (!finished && !(locSearchAt && Date.now() - locSearchAt > 10000)) await new Promise((r) => setTimeout(r, 200));
+    }
 
     const rec = { id: BCT.store.newId(), t: Date.now(), type, lat: null, lng: null, acc: null, photo: false };
-    if (loc) Object.assign(rec, loc);
+    if (loc && eventOpen()) Object.assign(rec, loc); // ふだんは 位置を のこさない
     if (photoBlob) {
       try {
         await BCT.store.putPhoto(rec.id, photoBlob);
@@ -164,10 +256,10 @@
       [{ label: "ホームへ", cls: "ghost", value: "home" }, { label: "もっと きろく", cls: "mint", value: "more" }]
     );
     resetForm();
+    resetLoc();
     renderTypes();
     await BCT.afterGain();
     if (next === "home") ui.show("home");
-    else locate();
   }
 
   $("shotInput").addEventListener("change", onPhoto);
@@ -185,12 +277,13 @@
     $("subMap").hidden = name !== "map";
     $("capTitle").textContent = name === "map" ? "クリーンマップ" : "ゴミを みつけたら きろくしよう";
     if (name === "map") BCT.screens.map.show();
-    else locate();
+    else locIdle();
   }
+  if (BCT.eventMode) BCT.eventMode.onChange(locIdle);
   document.querySelectorAll("#scr-capture .seg button").forEach((b) => b.addEventListener("click", () => setSub(b.dataset.sub)));
 
   BCT.screens.capture = {
-    // ひらくたびに いまの 位置を しらべなおす（うごきまわるので）
+    // 位置は ひらいた ときには しらべない（イベントの 日に、1けんごとに きく）
     show(arg) {
       renderTypes();
       setSub(arg === "map" ? "map" : sub);

@@ -3,7 +3,7 @@
  * ------------------------------------------------------------
  * - 床への固定・遮蔽・距離の測定は しない。ようせいは 画面の上に 重ねるだけ。
  * - カメラは「カメラで とる」を おしたときに はじめて つかう。画面を はなれたら すぐ止める。
- * - カメラが つかえないときは「しゃしんを えらぶ」か「うみの はいけい」で 同じように つくれる。
+ * - カメラが つかえないときは「しゃしんを えらぶ」で 同じように つくれる（「うみの はいけい」は 2026-10-13 利用者の 指示で なくした）。
  * - 映像・写真は どこにも 送らない。できた画像も 利用者が ほぞん するまで メモリの中だけ。
  *
  * プレビューと 保存画像を 一致させるしくみ:
@@ -19,7 +19,7 @@
 
   let stream = null;
   let facing = "environment";
-  let source = null;        // "camera" | "image" | "sea"
+  let source = null;        // "camera" | "image"
   let bgImage = null;       // しゃしん／うみ の Image
   let bgUrl = null;         // えらんだ しゃしんの objectURL
   let resultUrl = null;
@@ -204,10 +204,6 @@
     setMode("shoot");
     $("phSwitch").hidden = true;
   }
-  async function useSea() {
-    const img = await BCT.art.toImage(BCT.art.seaSvg(W, H));
-    useImage(img, "sea");
-  }
   function pickPhoto() {
     $("phFile").value = "";
     $("phFile").click();
@@ -221,7 +217,7 @@
     try {
       await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = bgUrl; });
     } catch (err) {
-      return fallback("しゃしんを よめませんでした。べつの しゃしんを えらぶか、うみの はいけいを つかってね。");
+      return fallback("しゃしんを よめませんでした。べつの しゃしんを えらんでね。");
     }
     useImage(img, "image");
   });
@@ -230,7 +226,7 @@
     stopCamera();
     source = null;
     setMode("start");
-    message(`<b>${ui.esc(why)}</b><br>かわりに「しゃしんを えらぶ」か「うみの はいけい」で つくれるよ。`);
+    message(`<b>${ui.esc(why)}</b><br>かわりに「しゃしんを えらぶ」で つくれるよ。`);
   }
 
   // ---------------- フレーム・文字（保存画像と おなじ大きさで 描く） ----------------
@@ -411,7 +407,6 @@
   // ---------------- ボタン ----------------
   $("phCam").addEventListener("click", startCamera);
   $("phPick").addEventListener("click", pickPhoto);
-  $("phSea").addEventListener("click", useSea);
   $("phShutter").addEventListener("click", shoot);
   $("phSave").addEventListener("click", save);
   $("phRetake").addEventListener("click", () => {
@@ -459,7 +454,7 @@
       setMode("start");
       const why = cameraUnavailableReason();
       message(why
-        ? `<b>${ui.esc(why)}</b><br>「しゃしんを えらぶ」か「うみの はいけい」で つくれるよ。`
+        ? `<b>${ui.esc(why)}</b><br>「しゃしんを えらぶ」で つくれるよ。`
         : "はいけいを えらんでね。<br>ようせいは ゆびで うごかせるよ");
       $("phCam").disabled = !!why;
     },

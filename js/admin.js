@@ -5,6 +5,7 @@
  * - あたま・こもの・みため を じゆうに きせかえ、ポーズ・かおも えらべる（もっていない アイテムも 見られる）
  * - 「うごく すがた（パーツ。js/pet-rig.js）」と「正面の絵（js/pet-art.js）」を きりかえて 見る
  * - ほぞんデータは かえない（ここで えらんだ ものは この画面の 中だけ）
+ * - イベント しゅうりょう QR を イベントの 日 いがいでも 見られる（ミッションでは イベントの 日だけ。中身は いまの データ）
  * 入りかた：設定（右上の はぐるま）の バージョンを 7かい つづけて タップ（js/settings.js）
  */
 (function () {
@@ -24,6 +25,7 @@
     $("adminBody").innerHTML = `
       <div class="sub-top"><button class="btn small ghost" id="admBack">← せってい</button><h3>管理者モード</h3></div>
       <p class="note adm-note">確認用の お試し画面です。ここで えらんだ ものは ほぞんされません。</p>
+      <button class="btn small sea block" id="admQr" style="margin-bottom:10px">🎉 イベント しゅうりょう QR を 見る（イベントの 日 いがいでも）</button>
       <div class="adm-stage ${st.left ? "left" : ""}" id="admStage"><div class="adm-face" id="admFace"></div></div>
       <div class="adm-row">${btn(st.view === "rig", 'data-view="rig"', "うごく すがた")}${btn(st.view === "front", 'data-view="front"', "正面の絵")}
         ${btn(st.left, 'data-left', "← むき")}${st.view === "rig" ? btn(st.swim, 'data-swim', st.swim ? "およぐ" : "とまる") : ""}</div>
@@ -39,6 +41,7 @@
           `<button class="adm-item ${st.equip[slot] === it.id ? "on" : ""}" data-eq="${slot}" data-id="${it.id}" title="${ui.esc(it.name)}">
             <span class="art">${BCT.art.itemIcon(it.id, st.type)}</span><span class="nm">${ui.esc(it.name)}</span></button>`).join("")}</div>`).join("")}`;
     $("admBack").onclick = () => ui.show("settings");
+    $("admQr").onclick = () => BCT.profile.showQr();
     const on = (sel, fn) => document.querySelectorAll(`#adminBody ${sel}`).forEach((b) => (b.onclick = () => { fn(b); render(); }));
     on("[data-view]", (b) => (st.view = b.dataset.view));
     on("[data-left]", () => (st.left = !st.left));

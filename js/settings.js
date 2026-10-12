@@ -20,6 +20,8 @@
         <h3>おうちの かたへ</h3>
         <label class="ph-check" style="margin-bottom:10px"><input type="checkbox" id="setReduce" ${reduce ? "checked" : ""}> うごきを へらす（アニメーションを みじかく する）</label>
         <button class="btn small ghost block" id="setAbout" style="margin-bottom:10px">このアプリについて（無料・ライセンス）</button>
+        <h4 class="set-sub">ちず・ばしょの きろく</h4>
+        <p class="note keep" id="setEvent"></p>
         <h4 class="set-sub">データの バックアップ</h4>
         <div class="btn-row set-backup">
           <button class="btn small ghost" id="setBackup">バックアップを ほぞん</button>
@@ -42,8 +44,19 @@
     $("setRestore").onclick = () => BCT.backup.restore();
     $("setUpdateGo").onclick = () => BCT.update.apply();
     showUpdate();
+    showEvent();
     version().then((v) => { if ($("setVer")) $("setVer").textContent = `バージョン ${v}`; });
   }
+  // ちず・ばしょの きろくは イベントの 日だけ（js/event-mode.js）
+  function showEvent() {
+    const el = $("setEvent");
+    if (!el || !BCT.eventMode) return;
+    const src = BCT.eventMode.source();
+    el.innerHTML = src
+      ? `<b>きょうは つかえます</b>（${src === "date" ? "イベントの 日" : "うけつけの QR で ひらいた。きょうの 24時まで"}）。ゴミを きろく する たびに、ばしょも きろく するか ききます。`
+      : `<b>イベントの 日だけ つかえます。</b>ふだんは ばしょを ききも きろく も しません（家の 位置を のこさない ため）。イベントの 日は 自動で、または うけつけの QR で ひらきます。`;
+  }
+  if (BCT.eventMode) BCT.eventMode.onChange(showEvent);
   function showUpdate() {
     const u = $("setUpdate");
     if (u) u.hidden = !(BCT.update && BCT.update.hasUpdate());
