@@ -791,3 +791,13 @@ body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 
 #missionBody .note.one-line .medal-icon { width: 1.5em; height: 1.5em; }
 #missionBody .note.one-line .medal-amount { gap: 1px; }
 #missionBody .note.one-line .medal-amount b { font-size: 1em; }
+
+/* ---------- ホームの いちばん した：とくべつ しょうごう を 小さく 1行（js/home.js） ---------- */
+#scr-home .home-badges { flex: none; display: flex; align-items: center; gap: 6px; width: 100%; margin: 6px 0 0; padding: 3px 12px; border: 1px solid #ece6d2; border-radius: 999px; background: #fffdf6; font: inherit; color: var(--ink-soft); cursor: pointer; white-space: nowrap; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+#scr-home .home-badges:active { transform: scale(0.98); }
+.home-badges .hbg-lbl { flex: none; font-size: 11px; font-weight: 800; }
+.home-badges .hbg-medals { flex: 1; min-width: 0; display: flex; justify-content: center; gap: 2px; }
+.home-badges .hbg-medal { flex: none; width: 24px; height: 24px; display: block; }
+.home-badges .hbg-medal svg { width: 100%; height: 100%; display: block; }
+.home-badges .hbg-medal.locked { filter: grayscale(1); opacity: 0.32; }
+.home-badges .hbg-count { flex: none; font-size: 11px; font-weight: 800; }

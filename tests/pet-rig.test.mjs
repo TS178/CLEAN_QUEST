@@ -14,6 +14,9 @@ for (const f of ["js/pet-rig-config.js", "js/pet-rig.js"]) vm.runInContext(fs.re
 const BCT = window.BCT;
 const M = BCT.petRig.math;
 const TYPES = ["dolphin", "turtle", "hermit"];
+// 画面 右がわ（絵は 右向き）の 前の ヒレ・ハサミ。これだけ 胴体の 上に 重ねる
+const FRONT = { dolphin: "fin-far", turtle: "front-far", hermit: "claw-left" };
+const OTHER_SIDE = { dolphin: "fin-near", turtle: "front-near", hermit: "claw-right" };
 
 // PNG の 大きさ（IHDR）
 function pngSize(file) {
@@ -44,10 +47,9 @@ test("3種類 × 3段階 すべてで、パーツの 画像・親・付け根・
         assert.ok(!q.parent, `${where} は 胴体に つながる`);
         assert.ok(p.place.at.every((v) => v >= -0.1 && v <= 1.1), `${where} の 付け根は 親の 画像の 近く`);
         assert.ok(p.place.scale > 0.2 && p.place.scale < 2, where);
-        // 胴体が いちばん 上（ほかの パーツは ぜんぶ 胴体の うしろ）。手前の パーツは 奥の パーツより 前
-        assert.ok(p.z < 0, `${where} は 胴体の うしろ`);
-        const twin = id.replace("near", "far");
-        if (/near/.test(id) && cfg.parts[twin]) assert.ok(p.z > cfg.parts[twin].z, `${where} は ${twin} より 前`);
+        // 重ね順（2026-10-13）：画面 右がわ（すすむ ほう）の ヒレ・ハサミ だけ 胴体の 上、ほかは ぜんぶ 胴体の うしろ
+        if (id === FRONT[type]) assert.ok(p.z > 0, `${where} は 胴体の 上`);
+        else assert.ok(p.z < 0, `${where} は 胴体の うしろ`);
       }
       if (p.swing) assert.ok(p.swing.amp >= 0 && p.swing.amp <= 40, `${where} の 振れ幅`);
     }
@@ -181,6 +183,13 @@ test("向きを かえるのは 間隔が あいたときだけ（ふだんは �
   assert.ok(turns >= 10 && turns <= 20, `10分で ${turns}回`);
 });
 
+test("胴体の 上に 重ねる ヒレ・ハサミ は 画面の 右がわ（すすむ ほう）の もの", () => {
+  for (const type of TYPES) for (const stage of [1, 2, 3]) {
+    const cfg = BCT.petRigConfig(type, stage);
+    assert.ok(cfg.parts[FRONT[type]].place.at[0] > cfg.parts[OTHER_SIDE[type]].place.at[0], `${type}-${stage}：${FRONT[type]} が 右がわ`);
+  }
+});
+
 test("色の 補正・帽子と こものの ずらし は 正しい 形", () => {
   for (const type of TYPES) for (const stage of [1, 2, 3]) {
     const cfg = BCT.petRigConfig(type, stage);
@@ -189,5 +198,6 @@ test("色の 補正・帽子と こものの ずらし は 正しい 形", () =>
     for (const v of Object.values(cfg.equipShift || {})) assert.ok(v.length === 2 && v.every((x) => Math.abs(x) < 0.2), `${type} の ずらし`);
   }
   assert.ok(BCT.petRigConfig("hermit", 1).tint, "ヤドカリは 色を 正面の絵に 近づける");
-  assert.ok(BCT.PET_RIG.dolphin.equipShift.acc[1] < 0, "イルカの リボンは 上へ");
+  // こもの は 正面の絵でも 首（あごの した）に したので、パーツ表示だけの ずらしは しない（js/pet-art-fix.js）
+  assert.ok(!BCT.PET_RIG.dolphin.equipShift.acc, "イルカの こもの は ずらさない");
 });

@@ -16,7 +16,7 @@
  * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
  * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.17";
+const APP_VERSION = "1.18";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",

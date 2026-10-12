@@ -417,6 +417,12 @@ try {
   check("ホームから はなれると 動画を 止める", await ev(`document.getElementById('pondVideo').paused`));
   await ev(`BCT.ui.show('home');true`);
   await sleep(300);
+  check("ホームの いちばん したに とくべつ しょうごう を 小さく 1行（7つ）", await ev(`(()=>{const e=document.getElementById('homeBadges');const r=e.getBoundingClientRect(),bar=document.querySelector('#scr-home .beach-bar').getBoundingClientRect();
+    return e.querySelectorAll('.hbg-medal').length===7&&e.textContent.includes('とくべつ しょうごう')&&r.height<=40&&r.top>=bar.bottom&&e.scrollWidth<=e.clientWidth+1})()`));
+  check("ホームに「ごはん」と いう ことばは ない（ドロップ）", await ev(`!document.getElementById('scr-home').textContent.includes('ごはん') && document.getElementById('foodTray').textContent.includes('ドロップ')`));
+  check("ヤドカリの 帽子は 目の 上（はな・かいがらの かざりは かいがらの 上の まま）", await ev(`[1,2,3].every(st=>{const f=BCT.art.anchorFor,A=BCT.art.ANCHOR.hermit[st].head,h=f('hermit',st,'head','head_straw'),fl=f('hermit',st,'head','head_flower'),sh=f('hermit',st,'head','head_shell');
+    const svg=BCT.art.render({type:'hermit',stage:st,equip:{head:'head_straw'}});return fl===A&&sh===A&&h!==A&&h.x>A.x+40&&svg.includes('translate('+h.x+' '+h.y+')')})`));
+  check("こもの は 段階が かわっても 首（あごの した）：イルカ・ウミガメ は 顔の 近く", await ev(`['dolphin','turtle'].every(t=>[1,2,3].every(st=>{const a=BCT.art.ANCHOR[t][st].acc;return a.x>110&&a.y<126}))`));
   check("池の 丸い ボタン「ようせい」「すみか」は おなじ 大きさ", await ev(`(()=>{const c=[...document.querySelectorAll('.pond-shortcut .shortcut-circle')].map(e=>{const r=e.getBoundingClientRect();return Math.round(r.width)+'x'+Math.round(r.height)});return c.length===2&&c[0]===c[1]})()`));
   check("ホームの 下に あそぶ・きせかえ・さつえい は ない（ようせい画面へ）", await ev(`!document.querySelector('#scr-home #actPlay') && !!document.querySelector('#scr-me .me-actions #actPlay') && !!document.querySelector('#scr-me .me-actions [data-go=dress]') && !!document.querySelector('#scr-me .me-actions [data-go=photo]')`));
   await ev(`document.getElementById('actFairy').click()`);

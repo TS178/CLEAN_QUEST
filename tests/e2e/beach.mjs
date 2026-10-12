@@ -115,15 +115,15 @@ try {
   await sleep(400);
   check("さそいから ミッション画面へ", await ev(`BCT.ui.current()==='mission'`));
 
-  // ---------- 5b. ホームの 表示（ピカピカ の 行・ごはん の 段・けした もの） ----------
+  // ---------- 5b. ホームの 表示（ピカピカ の 行・ドロップ の 段・けした もの） ----------
   await ev(`BCT.ui.show('home')`);
   await sleep(400);
   const fun = await ev(`[1,2,3,4,5,6,7,8,9,10,12,15,20].map(n=>BCT.beach.funPun(n)).join(' ')`);
   check("〜ふん／〜ぷん を ただしく", fun === "1ぷん 2ふん 3ぷん 4ぷん 5ふん 6ぷん 7ふん 8ぷん 9ふん 10ぷん 12ふん 15ふん 20ぷん", fun);
   check("ピカピカの 行に「つぎの ゴミまで あと ○ふん／ぷん」", /つぎの ゴミまで あと \d+(ふん|ぷん)/.test(await ev(`document.getElementById('beachStatus').textContent`)));
   check("ピカピカの 印と 文字の 高さが そろう", await ev(`(()=>{const a=document.querySelector('#beachStatus .dirt').getBoundingClientRect(),b=document.querySelector('#beachStatus .next').getBoundingClientRect();return Math.abs((a.top+a.height/2)-(b.top+b.height/2))<=2})()`));
-  check("「ごはん」と「ショップでかう」が 同じ 行", await ev(`(()=>{const t=document.getElementById('foodTray'),l=t.querySelector('.lbl'),s=t.querySelector('[data-food-shop]');if(!l||!s)return false;const a=l.getBoundingClientRect(),b=s.getBoundingClientRect();
-    return l.textContent==='ごはん'&&s.textContent==='ショップでかう'&&Math.abs((a.top+a.height/2)-(b.top+b.height/2))<=6})()`));
+  check("「ドロップ」と「ショップでかう」が 同じ 行（「ごはん」とは いわない）", await ev(`(()=>{const t=document.getElementById('foodTray'),l=t.querySelector('.lbl'),s=t.querySelector('[data-food-shop]');if(!l||!s)return false;const a=l.getBoundingClientRect(),b=s.getBoundingClientRect();
+    return l.textContent==='ドロップ'&&s.textContent==='ショップでかう'&&Math.abs((a.top+a.height/2)-(b.top+b.height/2))<=6})()`));
   check("ホームに 名前・レベル・けいけんち・なつきど・すすみぐあい・なでる は 出さない",
     await ev(`['homeName','homeStage','homeBar','homeHearts','homeQuiz','homeClean','homeBadge','actPet'].every(id=>!document.getElementById(id)) && !!document.getElementById('actPlay')`));
 
@@ -144,17 +144,17 @@ try {
   await ev(`BCT.game.claim('quiz','zz-beach-pts',{xp:0,coins:300})`);
   await ev(`BCT.ui.show('shop','food')`);
   await sleep(300);
-  check("ショップに『すべて』『ごはん』『すみか』の タブ", await ev(`!!document.querySelector('#shopBody [data-cat=all]') && !!document.querySelector('#shopBody [data-cat=food]') && !!document.querySelector('#shopBody [data-cat=home]')`));
+  check("ショップに『すべて』『ドロップ』『すみか』の タブ（「ごはん」と いわない）", await ev(`!!document.querySelector('#shopBody [data-cat=all]') && document.querySelector('#shopBody [data-cat=food]').textContent.includes('ドロップ') && !document.getElementById('shopBody').textContent.includes('ごはん') && !!document.querySelector('#shopBody [data-cat=home]')`));
   await shot("b06-shop-food");
-  // ごはんも ほかの アイテムと おなじ：タップ → 説明と「とじる」「かう」
+  // ドロップも ほかの アイテムと おなじ：タップ → 説明と「とじる」「かう」
   await ev(`document.querySelector('[data-food-item=drop_blue]').click()`);
   await sleep(200);
-  check("ごはんを タップ → 説明と「とじる」「かう」", (await modalText()).includes("けいけんち") &&
+  check("ドロップを タップ → 説明と「とじる」「かう」", (await modalText()).includes("けいけんち") &&
     (await ev(`[...document.querySelectorAll('#modalBox button')].map(b=>b.textContent.trim()).some(t=>t==='とじる') && [...document.querySelectorAll('#modalBox button')].some(b=>b.textContent.includes('かう'))`)));
   await clickModal("かう");
   await sleep(300);
   // かった あとは ほかの アイテムと おなじ「かったよ！」（絵・なまえ・もってる数・のこり）
-  check("ごはんを かうと ほかの アイテムと おなじ「かったよ！」", (await modalText()).includes("かったよ") &&
+  check("ドロップを かうと ほかの アイテムと おなじ「かったよ！」", (await modalText()).includes("かったよ") &&
     (await ev(`!!document.querySelector('#modalBox .detail-prev svg') && document.getElementById('modalBox').textContent.includes('もってる 1こ') && [...document.querySelectorAll('#modalBox button')].some(b=>b.textContent.includes('ホームで あげる'))`)));
   await clickModal("あとで");
   await sleep(300);

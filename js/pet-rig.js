@@ -193,7 +193,8 @@
     const anchors = BCT.art.ANCHOR && BCT.art.ANCHOR[cfg.type] && BCT.art.ANCHOR[cfg.type][cfg.stage];
     for (const slot of ["acc", "head"]) {
       const id = equip && equip[slot];
-      const a = anchors && anchors[slot];
+      // アイテムごとの 付け根が あれば それ（js/pet-art-fix.js の anchorFor。ヤドカリの 帽子 など）
+      const a = BCT.art.anchorFor ? BCT.art.anchorFor(cfg.type, cfg.stage, slot, id) : anchors && anchors[slot];
       const art = id && BCT.art.ITEM_ART && BCT.art.ITEM_ART[id];
       if (!a || !art) continue;
       const m = art().match(/x="([-\d.]+)" y="([-\d.]+)" width="([\d.]+)" height="([\d.]+)"[^>]*href="([^"]+)"/);

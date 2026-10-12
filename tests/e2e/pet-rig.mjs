@@ -123,14 +123,16 @@ try {
       const r=BCT.petRig.create({type,stage,host,track:host,owner:host,equip:{head:'head_crown',acc:'accessory_pendant'}});
       const ok=await r.ready;
       out.push({key:type+'-'+stage,ok,parts:host.querySelectorAll('[data-part]').length,want:Object.keys(BCT.PET_RIG[type].parts).length,
-        behind:[...host.querySelectorAll('[data-part="body"] [data-part]')].every(e=>Number(e.style.zIndex)<0),
+        layer:Object.fromEntries([...host.querySelectorAll('[data-part="body"] [data-part]')].map(e=>[e.dataset.part,Number(e.style.zIndex)])),
         tint:host.querySelector('.pr-stage').style.filter,
         head:!!host.querySelector('.pr-head'),headItem:!!host.querySelector((type==='turtle'?'.pr-head':'[data-part="body"]')+' > .pr-equip[data-item="head_crown"]')});
       if(type==='hermit'&&stage===1){BCT.petRig.poseAt(r,Math.PI/2,1);out[out.length-1].bob=r.parts.els.body.style.transform;}
       BCT.petRig.destroy(r);host.remove();
     }return out})()`);
   check("3種類 × 3段階 すべて 組みたてられる", all.every((r) => r.ok && r.parts === r.want), JSON.stringify(all.filter((r) => !r.ok || r.parts !== r.want)));
-  check("胴体が いちばん 上（ヒレ・脚・尾・ハサミは 胴体の うしろ）", all.every((r) => r.behind));
+  const FRONT = { dolphin: "fin-far", turtle: "front-far", hermit: "claw-left" };
+  check("重ね順：画面 右がわの ヒレ・ハサミ だけ 胴体の 上、尾・足・左がわは 胴体の うしろ（左向きは 反転で 逆）",
+    all.every((r) => Object.entries(r.layer).every(([id, z]) => (id === FRONT[r.key.split("-")[0]] ? z > 0 : z < 0))), JSON.stringify(all.map((r) => r.layer)));
   check("ヤドカリは パーツの 色を 正面の絵に 近づける", all.filter((r) => r.key.startsWith("hermit")).every((r) => /saturate/.test(r.tint)));
   check("ウミガメは 頭の 層が あり、帽子は 頭に 付く", all.filter((r) => r.key.startsWith("turtle")).every((r) => r.head && r.headItem));
   check("イルカ・ヤドカリの 帽子は 胴体に 付く", all.filter((r) => !r.key.startsWith("turtle")).every((r) => !r.head && r.headItem));

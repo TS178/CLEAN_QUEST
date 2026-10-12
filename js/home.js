@@ -67,8 +67,29 @@
       $("habitatPortrait").innerHTML = BCT.art.icon("home");
       $("actHabitat").setAttribute("aria-label", `${BCT.HABITATS[s.pet.type]}へ いく`);
     }
-    // けいけんち・なつきど・クイズ／そうじ／しょうごう の すすみぐあいは じぶん・ミッション画面で 見る（ホームには 出さない）
+    // けいけんち・なつきど・クイズ／そうじ の すすみぐあいは じぶん・ミッション画面で 見る（ホームには 出さない）
+    renderBadges(s);
   }
+
+  // とくべつ しょうごう：ホームの いちばん したに 小さく 1行（もらった ものは 色、まだの ものは うすく）。ミッションの ものは そのまま
+  let badgeKey = "";
+  function renderBadges(s) {
+    const have = new Set(s.badges.map((b) => b.id));
+    const key = [...have].sort().join(",");
+    if (key === badgeKey && $("homeBadges").childElementCount) return;
+    badgeKey = key;
+    $("homeBadges").innerHTML = `<span class="hbg-lbl">とくべつ しょうごう</span>
+      <span class="hbg-medals">${BCT.BADGES.map((b) => `<span class="hbg-medal ${have.has(b.id) ? "" : "locked"}" title="${ui.esc(b.name)}">${BCT.collectionArt.badge(b.id)}</span>`).join("")}</span>
+      <span class="hbg-count">${have.size}/${BCT.BADGES.length}</span>`;
+    $("homeBadges").setAttribute("aria-label", `とくべつ しょうごう ${have.size} / ${BCT.BADGES.length}。ミッションで 見る`);
+  }
+  $("homeBadges").addEventListener("click", () => {
+    ui.show("mission");
+    requestAnimationFrame(() => {
+      const c = document.querySelector("#missionBody .badges-card");
+      if (c) c.scrollIntoView({ block: "start", behavior: ui.reducedMotion() ? "auto" : "smooth" });
+    });
+  });
 
   // ---------------- うごきまわる ----------------
   function wander() {

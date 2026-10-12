@@ -65,7 +65,7 @@
 
   // ショップの タブ（food = エサ は アイテムではなく 消えもの。js/config.js の foods）
   BCT.SLOTS = [
-    { key: "food", name: "ごはん", ico: "💧" },
+    { key: "food", name: "ドロップ", ico: "💧" },
     { key: "home", name: "すみか", ico: "🏝️" },
     { key: "head", name: "あたま", ico: "🎩" },
     { key: "acc", name: "こもの", ico: "🎀" },

@@ -57,7 +57,7 @@
 .bin.hint { animation: binHint 0.5s ease-in-out 3; }
 @keyframes gulp { 30% { transform: scale(1.15, 0.85); } 60% { transform: scale(0.95, 1.08); } }
 @keyframes binHint { 50% { background: color-mix(in srgb, var(--bin) 35%, white); transform: scale(1.1); } }
-/* ごはん：ラベル・3つの しずく・「ショップでかう」を 1行に（小さい スマホでは しずくを すこし ちいさく） */
+/* ドロップ：ラベル・3つの しずく・「ショップでかう」を 1行に（小さい スマホでは しずくを すこし ちいさく） */
 .food-tray { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); flex-wrap: nowrap; }
 .food-tray .lbl { font-size: 12px; font-weight: 800; color: var(--ink-soft); flex: none; white-space: nowrap; }
 .food-tray .hint { font-size: 11px; color: var(--ink-soft); font-weight: 700; margin-left: auto; min-width: 0; text-align: right; }

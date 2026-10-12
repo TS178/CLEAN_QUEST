@@ -31,7 +31,7 @@
   function render() {
     const s = BCT.store.get();
     if (!s.pet) return;
-    // すべて：ごはん ＋ ほかの カテゴリの アイテム ぜんぶ
+    // すべて：ドロップ ＋ ほかの カテゴリの アイテム ぜんぶ
     const items = cat === "all" ? BCT.SLOTS.filter((c) => c.key !== "food").flatMap((c) => game.shopItems(s, c.key)) : game.shopItems(s, cat);
     const coins = game.coins(s);
     // ← ホーム・メダル・カテゴリ は スクロールしても 上に のこす（エクセルの ウィンドウ枠の 固定の ように）
@@ -44,7 +44,7 @@
       ${cat === "look" ? `<p class="note">${ui.esc(pets.TYPES[s.pet.type].motif)}の ようせい せんようの みためだよ。</p>` : ""}
       ${cat === "toy" ? `<p class="note">おもちゃは ホームの「あそぶ」で つかうよ。おなじ おもちゃで ${BCT.CONFIG.toyUnlockPlays}かい あそぶと、しゃしんの ポーズを おぼえるよ。</p>` : ""}
       ${cat === "home" ? `<p class="note">${ui.esc(BCT.HABITATS[s.pet.type])}（${ui.esc(pets.TYPES[s.pet.type].motif)}の すみか）に おく アイテムだよ。おくと ようせいが そばで あそぶよ。</p>` : ""}
-      ${cat === "food" ? `<p class="note">ごはんを ようせいに あげると けいけんちが ふえて、しんか に ちかづくよ。ホームで ようせいへ ドラッグしてね。</p>` : ""}
+      ${cat === "food" ? `<p class="note">ドロップを ようせいに あげると けいけんちが ふえて、しんか に ちかづくよ。ホームで ようせいへ ドラッグしてね。</p>` : ""}
       ${`<div class="shop-grid">${(cat === "food" || cat === "all" ? BCT.CONFIG.foods.map((f) => foodTile(s, coins, f)) : []).join("")}${(cat === "food" ? [] : items).map((it) => {
         const have = game.owns(s, it.id);
         const worn = s.equip[it.slot] === it.id;
@@ -128,7 +128,7 @@
     ui.show("habitat");
   }
 
-  // ---------------- ごはん（きえもの。なんこでも かえる）：ほかの アイテムと おなじ タイル → 説明と「とじる」「かう」 ----------------
+  // ---------------- ドロップ（きえもの。なんこでも かえる）：ほかの アイテムと おなじ タイル → 説明と「とじる」「かう」 ----------------
   function foodTile(s, coins, f) {
     return `<button class="shop-item food-tile ${coins < f.price ? "short" : ""}" data-food-item="${f.id}">
       <span class="art">${BCT.homeArt.dropSvg(f.id)}</span>

@@ -7,8 +7,11 @@
  * ■ 種類ごとの 共通設定（parts）
  *   parent … どの パーツに 付くか（親が 回ると いっしょに うごく）。body だけは 親なし
  *   pivot  … この パーツの 付け根（回転の 中心）[横, たて]（この パーツの 画像に 対する 割合 0〜1。反転したあとの 絵で）
- *   z      … 重ね順。胴体を いちばん 上に するので、ほかの パーツは ぜんぶ マイナス（胴体の うしろ）。
- *            手前の パーツほど 0 に 近く（-1）、奥の パーツほど 小さく（-3）。付け根の 丸も 胴体に 隠れる
+ *   z      … 重ね順（2026-10-13 利用者の 指示）。絵は 右向きで、右向きの とき：
+ *              尾ビレ・足（後ろ足）、画面の 左がわの ヒレ・ハサミ → 胴体の うしろ（マイナス）
+ *              画面の 右がわ（すすむ ほう）の ヒレ・ハサミ → 胴体の 上（プラス）
+ *            左向きは 入れ物ごと 左右反転するので、自動で 逆（右がわが うしろ・左がわが 上）に なる。
+ *            うしろの パーツは 手前ほど 0 に 近く（-1）、奥ほど 小さく（-3）。帽子・こもの（z 5）は いつも いちばん 上
  *   swing  … サイン波の 回転 { amp: 振れ幅（度）, freq: 周期の 倍率（1 = 基本の 周期）, phase: 位相（ラジアン） }
  *
  * ■ 段階ごとの 置き場所（stages[段階].place）
@@ -50,7 +53,8 @@
       parts: {
         body: { pivot: [0.5, 0.55], z: 0, swing: { amp: 3, freq: 1, phase: PI } },
         dorsal: { parent: "body", pivot: [0.5, 0.72], z: -2, swing: { amp: 3, freq: 1, phase: PI } },
-        "fin-far": { parent: "body", pivot: [0.12, 0.38], z: -3, swing: { amp: 10, freq: 1, phase: 1.6 } },
+        // 画面 右（顔の よこ）の ヒレ＝fin-far は 胴体の 上、画面 左の ヒレ＝fin-near は 胴体の うしろ
+        "fin-far": { parent: "body", pivot: [0.12, 0.38], z: 1, swing: { amp: 10, freq: 1, phase: 1.6 } },
         "fin-near": { parent: "body", pivot: [0.85, 0.28], z: -1, swing: { amp: 14, freq: 1, phase: 1.6 } },
         // 尾は 胴体の うしろで お尻の ほうへ のばし、尾びれだけ 胴体の 下から のぞかせる（胴体が 上に 重なる）
         "tail-base": { parent: "body", pivot: [0.15, 0.35], z: -2, swing: { amp: 8, freq: 1, phase: 0 } },
@@ -68,9 +72,11 @@
           },
         },
         2: {
+          pivot: { dorsal: [0.85, 0.45] },
           place: {
             body: { x: 202, y: 144, rot: 3, scale: 1 },
-            dorsal: { at: [0.3, 0.12], rot: -20, scale: 0.9, flipY: true },
+            // 背びれ：裏返さず、右の はし（付け根）を 背中の 左上に。先は うしろ（左）へ（2026-10-13 なおし）
+            dorsal: { at: [0.3, 0.12], rot: 15, scale: 0.9 },
             "fin-far": { at: [0.85, 0.62], rot: -35, scale: 0.8 },
             "fin-near": { at: [0.3, 0.68], rot: 0, scale: 0.85 },
             "tail-base": { at: [0.32, 0.52], rot: 100, scale: 0.4 },
@@ -78,10 +84,11 @@
           },
         },
         3: {
-          pivot: { "dorsal": [0.55, 0.85], "fin-far": [0.1, 0.25], "tail-fluke": [0.1, 0.42] },
+          pivot: { "dorsal": [0.85, 0.7], "fin-far": [0.1, 0.25], "tail-fluke": [0.1, 0.42] },
           place: {
             body: { x: 370, y: 213, rot: 0, scale: 0.83 },
-            dorsal: { at: [0.2, 0.3], rot: -35, scale: 1.1, flipY: true },
+            // 背びれ（波の 形）：裏返さず、右の はしを 頭の うしろに。左へ ながれて 先が くるりと まく（正面の絵と おなじ）
+            dorsal: { at: [0.4, 0.1], rot: 0, scale: 1 },
             "fin-far": { at: [0.85, 0.62], rot: -30, scale: 0.65 },
             "fin-near": { at: [0.32, 0.7], rot: 0, scale: 0.85 },
             "tail-base": { at: [0.32, 0.52], rot: 100, scale: 0.4 },
@@ -90,8 +97,8 @@
         },
       },
       // 帽子・こもの を パーツ表示の ときだけ ずらす [横, たて]（胴体の 画像に 対する 割合。マイナスは 左・上）
-      //   こもの（リボンなど）は 正面の絵の 付け根だと お腹に くるので、首もとへ 上げる
-      equipShift: { acc: [0, -0.08] },
+      //   2026-10-13：こもの の 付け根を 正面の絵でも 首（あごの した）に したので、ずらしは なし（js/pet-art-fix.js）
+      equipShift: {},
       // 振り向くとき：正面は いまの 正面の絵。背面の 絵は まだ ない（用意できたら ファイル名を 書く）
       back: null,
     },
@@ -104,9 +111,10 @@
       parts: {
         body: { pivot: [0.5, 0.6], z: 0 },
         tail: { parent: "body", pivot: [0.75, 0.22], z: -2, swing: { amp: 8, freq: 1, phase: 0.5 } },
+        // 後ろ足・尾 → うしろ。前ヒレは 画面 右の front-far が 胴体の 上、左の front-near は うしろ（頭の 層は さらに 上）
         "rear-far": { parent: "body", pivot: [0.2, 0.18], z: -3, swing: { amp: 8, freq: 1, phase: PI } },
-        "front-far": { parent: "body", pivot: [0.15, 0.18], z: -3, swing: { amp: 18, freq: 1, phase: PI } },
-        "rear-near": { parent: "body", pivot: [0.8, 0.18], z: -1, swing: { amp: 8, freq: 1, phase: 0 } },
+        "front-far": { parent: "body", pivot: [0.15, 0.18], z: 1, swing: { amp: 18, freq: 1, phase: PI } },
+        "rear-near": { parent: "body", pivot: [0.8, 0.18], z: -2, swing: { amp: 8, freq: 1, phase: 0 } },
         "front-near": { parent: "body", pivot: [0.82, 0.17], z: -1, swing: { amp: 22, freq: 1, phase: 0 } },
       },
       // 頭：胴体の 絵の 頭の 部分だけを ぼかして 切り出し、軽く 上下させる（頭の パーツは 分かれていない）
@@ -164,8 +172,9 @@
         "leg-near-rear": { parent: "body", pivot: [0.7, 0.15], z: -2, swing: { amp: 18, freq: 1, phase: PI } },
         "leg-near-front": { parent: "body", pivot: [0.7, 0.15], z: -2, swing: { amp: 18, freq: 1, phase: 0 } },
         // ハサミは 小さく ゆらす（画面左＝claw-right、画面右＝claw-left）
+        //   足は ぜんぶ うしろ。画面 左の claw-right は 胴体の うしろ、画面 右の claw-left は 胴体の 上
         "claw-right": { parent: "body", pivot: [0.2, 0.18], z: -1, swing: { amp: 5, freq: 1, phase: 0.6 } },
-        "claw-left": { parent: "body", pivot: [0.2, 0.18], z: -1, swing: { amp: 6, freq: 1, phase: 2.2 } },
+        "claw-left": { parent: "body", pivot: [0.2, 0.18], z: 1, swing: { amp: 6, freq: 1, phase: 2.2 } },
       },
       // 歩幅に あわせて 胴体を 上下（1歩ごと＝周期の 2倍）。amp は 胴体の 画像の 高さに 対する 割合
       bob: { amp: 0.02, freq: 2, phase: 0 },

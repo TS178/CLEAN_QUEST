@@ -70,7 +70,7 @@
     },
     // エサ（アクアドロップ）：たかいほど おとく
     foods: [
-      { id: "drop_blue", name: "アクアドロップ", color: "#4aa8e0", price: 10, xp: 10, note: "まいにちの ごはん" },
+      { id: "drop_blue", name: "アクアドロップ", color: "#4aa8e0", price: 10, xp: 10, note: "まいにち あげる ドロップ" },
       { id: "drop_green", name: "シャイニードロップ", color: "#3cbf7a", price: 40, xp: 50, note: "ちょっと とくべつ" },
       { id: "drop_rainbow", name: "レインボードロップ", color: "rainbow", price: 140, xp: 200, note: "しんかの まえに" },
     ],

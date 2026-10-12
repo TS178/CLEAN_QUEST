@@ -139,7 +139,7 @@
     const s = BCT.store.get();
     const foods = BCT.CONFIG.foods;
     const any = foods.some((f) => game.foodStock(s, f.id) > 0);
-    $("foodTray").innerHTML = `<span class="lbl">ごはん</span>` + foods.map((f) => {
+    $("foodTray").innerHTML = `<span class="lbl">ドロップ</span>` + foods.map((f) => {
       const n = game.foodStock(s, f.id);
       return `<button class="food-item ${n ? "" : "empty"} ${selected && selected.id === f.id ? "sel" : ""}" data-food="${f.id}" aria-label="${ui.esc(f.name)} ${n}こ">
         ${H.dropSvg(f.id)}<small>×${n}</small></button>`;
@@ -336,7 +336,7 @@
     const r = game.feed(id);
     if (!r.ok) {
       if (drag) flyGhost(drag.home, false);
-      if (r.err === "empty") ui.toast("ごはんが ないよ。ショップで かえるよ");
+      if (r.err === "empty") ui.toast("ドロップが ないよ。ショップで かえるよ");
       return r;
     }
     if (drag) flyGhost(BCT.home.petRect(), true);
