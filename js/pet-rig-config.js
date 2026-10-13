@@ -2,6 +2,8 @@
  * パーツで うごかす ようせい の 設定（付け根・振れ幅・周期・重ね順）
  * ------------------------------------------------------------
  * 画像：assets/pet-parts/<種類>-<段階>-<パーツ>.png（右向き。左向きは 入れ物ごと 左右反転）
+ * ※ 2026-10-13 から、置き場所・付け根・重ね順・画像は js/pet-rig-cut.js（正面の絵から 切り出した パーツ）が 上書きする。
+ *   ここで つかうのは うごき（振れ幅・周期・ウミガメの 頭・ヤドカリの 上下）だけ。
  * うごかす本体：js/pet-rig.js   確認用ページ：preview-pet-rig.html（元の絵と 重ねて 位置を 合わせる）
  *
  * ■ 種類ごとの 共通設定（parts）
@@ -229,7 +231,9 @@
     const parts = {};
     for (const [id, p] of Object.entries(base.parts)) {
       if (!st.place[id]) continue; // 置き場所が きまっていない パーツは つかわない
-      parts[id] = Object.assign({}, p, { pivot: (st.pivot && st.pivot[id]) || p.pivot, place: st.place[id] });
+      // 段階ごとに 親・重ね順を かえられる（正面の絵から 切り出した パーツ：js/pet-rig-cut.js）
+      parts[id] = Object.assign({}, p, { pivot: (st.pivot && st.pivot[id]) || p.pivot, place: st.place[id] },
+        st.parent && st.parent[id] ? { parent: st.parent[id] } : {}, st.z && st.z[id] != null ? { z: st.z[id] } : {});
     }
     return Object.assign({}, base, { parts, type, stage, common: BCT.PET_RIG.common, tint: st.tint || "",
       head: base.head ? Object.assign({}, base.head, st.head || {}) : null });

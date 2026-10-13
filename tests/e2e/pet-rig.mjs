@@ -40,7 +40,8 @@ try {
   check("パーツ表示の あいだ 正面の絵は かくれる", (await ev(shown("#pet .pet-rig"))) && !(await ev(shown("#petBody"))));
   check("困り顔は 汗マークだけ（色を くすませない）", (await ev(`document.getElementById('pet').classList.contains('worried')`)) &&
     (await ev(`getComputedStyle(document.querySelector('#pet .pet-rig')).filter==='none' && getComputedStyle(document.getElementById('petBody')).filter==='none' && getComputedStyle(document.getElementById('pet'),'::after').content.includes('💦')`)));
-  check("イルカの パーツが 6つ", (await ev(`document.querySelectorAll('#pet [data-part]').length`)) === 6);
+  check("イルカの パーツは 正面の絵から 切り出した もの（胴体・背びれ・ヒレ2つ・尾びれ）", (await ev(`document.querySelectorAll('#pet [data-part]').length`)) === (await ev(`Object.keys(BCT.PET_RIG_CUT['dolphin-1'].parts).length`)) &&
+    (await ev(`[...document.querySelectorAll('#pet .pr-img')].every(i=>i.src.includes('/assets/pet-cut/dolphin-1-'))`)));
   const tf1 = await ev(`document.querySelector('#pet [data-part="tail-fluke"]').style.transform`);
   await sleep(350);
   const tf2 = await ev(`document.querySelector('#pet [data-part="tail-fluke"]').style.transform`);
@@ -122,7 +123,7 @@ try {
       const host=document.createElement('div');host.style.cssText='position:fixed;left:0;top:0;width:150px;height:150px';document.body.appendChild(host);
       const r=BCT.petRig.create({type,stage,host,track:host,owner:host,equip:{head:'head_crown',acc:'accessory_pendant'}});
       const ok=await r.ready;
-      out.push({key:type+'-'+stage,ok,parts:host.querySelectorAll('[data-part]').length,want:Object.keys(BCT.PET_RIG[type].parts).length,
+      out.push({key:type+'-'+stage,ok,parts:host.querySelectorAll('[data-part]').length,want:Object.keys(BCT.petRigConfig(type,stage).parts).length,
         layer:Object.fromEntries([...host.querySelectorAll('[data-part="body"] [data-part]')].map(e=>[e.dataset.part,Number(e.style.zIndex)])),
         tint:host.querySelector('.pr-stage').style.filter,
         head:!!host.querySelector('.pr-head'),headItem:!!host.querySelector((type==='turtle'?'.pr-head':'[data-part="body"]')+' > .pr-equip[data-item="head_crown"]')});
@@ -130,10 +131,24 @@ try {
       BCT.petRig.destroy(r);host.remove();
     }return out})()`);
   check("3種類 × 3段階 すべて 組みたてられる", all.every((r) => r.ok && r.parts === r.want), JSON.stringify(all.filter((r) => !r.ok || r.parts !== r.want)));
-  const FRONT = { dolphin: "fin-far", turtle: "front-far", hermit: "claw-left" };
-  check("重ね順：画面 右がわの ヒレ・ハサミ だけ 胴体の 上、尾・足・左がわは 胴体の うしろ（左向きは 反転で 逆）",
-    all.every((r) => Object.entries(r.layer).every(([id, z]) => (id === FRONT[r.key.split("-")[0]] ? z > 0 : z < 0))), JSON.stringify(all.map((r) => r.layer)));
-  check("ヤドカリは パーツの 色を 正面の絵に 近づける", all.filter((r) => r.key.startsWith("hermit")).every((r) => /saturate/.test(r.tint)));
+  const BCT_CUT = await ev(`BCT.PET_RIG_CUT`);
+  // 重ね順は 正面の絵の とおり（絵で 胴体に かぶさって いる 手足は 前、胴体から 生えて いる 手足は うしろ。js/pet-rig-cut.js）
+  check("重ね順は 正面の絵の とおり", all.every((r) => Object.entries(r.layer).every(([id, z]) => z === BCT_CUT[r.key].parts[id].z)), JSON.stringify(all.map((r) => r.layer)));
+  check("正面の絵から 切り出したので 色の 補正は しない", all.every((r) => !r.tint));
+  // 止まっている しゅんかん（ゆれ 0）は 正面の絵と ほぼ おなじ
+  const diffs = {};
+  for (const type of ["dolphin", "turtle", "hermit"]) for (const stage of [1, 2, 3]) {
+    await ev(`(async()=>{const S=200,mk=(x)=>{const d=document.createElement('div');d.className='cmp-box';d.style.cssText='position:fixed;left:'+x+'px;top:0;width:'+S+'px;height:'+S+'px;background:#fff;z-index:99999';document.body.appendChild(d);return d;};
+      const a=mk(0);a.innerHTML=BCT.art.render({type:'${type}',stage:${stage},motion:false});a.firstElementChild.style.cssText='width:100%;height:100%';
+      const b=mk(S);const cfg=JSON.parse(JSON.stringify(BCT.petRigConfig('${type}',${stage})));for(const p of Object.values(cfg.parts))if(p.swing)p.swing.amp=0;cfg.bob=null;if(cfg.head)cfg.head.amp=0;
+      const r=BCT.petRig.create({cfg,type:'${type}',stage:${stage},host:b,track:b,owner:b});await r.ready;BCT.petRig.setActive(r,false);b.classList.add('rig-on');BCT.petRig.poseAt(r,0,0);
+      window.__cmpRig=r;await new Promise(res=>requestAnimationFrame(()=>requestAnimationFrame(res)));return true})()`);
+    const img = await b.send("Page.captureScreenshot", { format: "png", clip: { x: 0, y: 0, width: 400, height: 200, scale: 1 } });
+    diffs[`${type}-${stage}`] = await ev(`(async()=>{const im=new Image();im.src='data:image/png;base64,${img.data}';await im.decode();const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const g=c.getContext('2d');g.drawImage(im,0,0);
+      const W=c.width,H=c.height,h=W/2;const d=g.getImageData(0,0,W,H).data;let s=0,n=0;for(let y=0;y<H;y++)for(let x=0;x<h;x++){const k=(y*W+x)*4,q=(y*W+x+h)*4;const e=Math.abs(d[k]-d[q])+Math.abs(d[k+1]-d[q+1])+Math.abs(d[k+2]-d[q+2]);if(d[k]+d[k+1]+d[k+2]<750||d[q]+d[q+1]+d[q+2]<750){s+=e;n++;}}
+      BCT.petRig.destroy(window.__cmpRig);document.querySelectorAll('.cmp-box').forEach(e=>e.remove());return +(s/Math.max(1,n)/3).toFixed(1)})()`);
+  }
+  check("止まっている ときは 正面の絵と ほぼ おなじ（3種類 × 3段階）", Object.values(diffs).every((v) => v < 12), JSON.stringify(diffs));
   check("ウミガメは 頭の 層が あり、帽子は 頭に 付く", all.filter((r) => r.key.startsWith("turtle")).every((r) => r.head && r.headItem));
   check("イルカ・ヤドカリの 帽子は 胴体に 付く", all.filter((r) => !r.key.startsWith("turtle")).every((r) => !r.head && r.headItem));
   check("ヤドカリは 歩幅に 合わせて 胴体が 上下", /translateY\(-[\d.]+px\)/.test(all.find((r) => r.key === "hermit-1").bob || ""), all.find((r) => r.key === "hermit-1").bob);
@@ -158,7 +173,7 @@ try {
 
   // 圏外でも 出せるように、自分の 種類の パーツは 保存される（Service Worker）
   check("自分の 種類の パーツ（ほかの 段階も）が 保存される",
-    await waitFor(`caches.keys().then(ks=>Promise.all(ks.map(k=>caches.open(k).then(c=>c.match('assets/pet-parts/dolphin-3-tail-fluke.png'))))).then(rs=>rs.some(Boolean))`, 8000));
+    await waitFor(`caches.keys().then(ks=>Promise.all(ks.map(k=>caches.open(k).then(c=>c.match('assets/pet-cut/dolphin-3-tail-fluke.png'))))).then(rs=>rs.some(Boolean))`, 8000));
 
   // ---------------- 小さい スマホ：ホームは 画面に おさまり、はねても 頭が 池から はみださない ----------------
   // 頭の 位置は 正面の絵の「色の ついた ところ」で はかる（透明な よはくを ふくめた 四角で はかると 大きく 出るため）
