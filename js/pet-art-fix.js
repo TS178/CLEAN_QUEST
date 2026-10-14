@@ -69,15 +69,38 @@
       }
     }
   }
+  /*
+   * iPhone・iPad（どの ブラウザも WebKit）と Mac の Safari では、正面の絵の「いきづかい」（js/pet-motion.js）を つかわない。
+   * pet-motion.js は svg の 中に foreignObject で canvas を 入れるが、WebKit は その canvas に svg の 拡大縮小・位置を
+   * かけずに 描く ことが ある（2026-10-13 iPhone で ショップの「みため」に 大きな ようせいが はみ出す 不具合）。
+   * motion:false に すると svg に data-pet-motion="off" が つき、pet-motion.js は さわらない（止まった 絵の まま）。
+   * 移動中の パーツの うごき（js/pet-rig.js）・AR の うごき（createComposite）は foreignObject を つかわないので そのまま。
+   */
+  const ua = navigator.userAgent || "";
+  const webkitFO = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+    (/Safari\//.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|FxiOS|Firefox|Android/.test(ua));
   const render = art.render;
   art.render = function (opts) {
     current = (opts && opts.equip) || null;
     try {
+      if (webkitFO && opts && opts.motion !== false) return render.call(this, Object.assign({}, opts, { motion: false }));
       return render.apply(this, arguments);
     } finally {
       current = null;
     }
   };
+  art.noFrontMotion = webkitFO;
+  // render を とおらずに つくられる 絵（ショップの「みため」の アイコン＝itemIcon など）も、画面に 入った しゅんかんに「off」に する。
+  // この 見はりは pet-motion.js より さきに つくるので、さきに よばれる（pet-motion.js は「off」の 絵を さわらない）
+  if (webkitFO && window.MutationObserver) {
+    const off = (root) => {
+      if (root.matches && root.matches('svg[data-pet-motion="auto"]')) root.setAttribute("data-pet-motion", "off");
+      if (root.querySelectorAll) root.querySelectorAll('svg[data-pet-motion="auto"]').forEach((e) => e.setAttribute("data-pet-motion", "off"));
+    };
+    new MutationObserver((list) => { for (const m of list) for (const n of m.addedNodes) if (n.nodeType === 1) off(n); })
+      .observe(document.documentElement, { childList: true, subtree: true });
+    off(document.documentElement);
+  }
   // パーツで うごく ようせい（js/pet-rig.js）・確認用
   art.anchorFor = (type, stage, slot, id) => itemAnchor(type, stage, id) || (A[type] && A[type][stage] && A[type][stage][slot]) || null;
   art.ITEM_ANCHOR = ITEM;

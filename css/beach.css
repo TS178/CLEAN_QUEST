@@ -52,7 +52,7 @@
 .bin svg { width: 58px; height: 66px; display: block; pointer-events: none; }
 .bin span { pointer-events: none; }
 .bin.ready { border-color: var(--bin); border-style: dashed; }
-.bin.over { background: color-mix(in srgb, var(--bin) 22%, white); transform: scale(1.08); }
+.bin.over { background: #fff6e0; background: color-mix(in srgb, var(--bin) 22%, white); transform: scale(1.08); } /* 1つめは color-mix の ない 古い iPhone 用 */
 .bin.gulp svg { animation: gulp 0.45s ease-out; }
 .bin.hint { animation: binHint 0.5s ease-in-out 3; }
 @keyframes gulp { 30% { transform: scale(1.15, 0.85); } 60% { transform: scale(0.95, 1.08); } }

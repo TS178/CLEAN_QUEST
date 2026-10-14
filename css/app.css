@@ -801,3 +801,14 @@ body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 
 .home-badges .hbg-medal svg { width: 100%; height: 100%; display: block; }
 .home-badges .hbg-medal.locked { filter: grayscale(1); opacity: 0.32; }
 .home-badges .hbg-count { flex: none; font-size: 11px; font-weight: 800; }
+
+/* ---------- iPhone（古い iOS）：ぼかしは -webkit- つきでないと きかない ---------- */
+.topbar { -webkit-backdrop-filter: blur(8px); }
+.modal { -webkit-backdrop-filter: blur(5px); }
+
+/* ショップの 上の 固定：画面の よこの すきまに あわせる（せまい スマホ 320px では 13px。はみ出して よこに スクロールしていた） */
+#scr-shop { --shop-gut: 20px; }
+@media (max-width: 360px) { #scr-shop { --shop-gut: 13px; } } /* css/collection.css の .screen と おなじ さかいめ */
+#shopBody .shop-sticky { margin-left: calc(-1 * var(--shop-gut)); margin-right: calc(-1 * var(--shop-gut)); padding-left: var(--shop-gut); padding-right: var(--shop-gut); }
+/* ことばの とちゅうで おりかえさない（管理者モード・さつえいの おしらせ） */
+#adminBody .adm-note, #admQr, #scr-photo .ph-msg { word-break: keep-all; overflow-wrap: anywhere; }

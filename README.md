@@ -498,6 +498,20 @@ node tests/e2e/beach.mjs
 
 はじめは よごれ度1・困り顔 → まちがったゴミばこ → ドラッグ・タップ・はじいて捨てる → きれいで笑顔・ゴミばこを なめらかに しまう・クイズへさそう → 時間でよごれる・3で止まる → エサを買う（ほかのアイテムと同じ「かったよ！」） → ドラッグ・タップであげる → 進化 → すみかを買って置く・動かす・タップで遊びに行く → 「ポイント」表示がない・すみかから もどっても ゴミばこが点滅しない（40項目）。
 
+### iPhone の 確認
+
+```
+node tests/e2e/iphone.mjs
+```
+
+headless Edge に iPhone の UA を名のらせて、正面の絵に foreignObject を使わないこと（ショップの「みため」などで ようせいが はみ出さない）と、幅 320・360・375・390・430px で どの画面も横に はみ出さないことを確かめます（14項目）。
+
+**2026-10-13 iPhone で見つかった不具合**：ショップの「みため」に大きな ようせいが はみ出していました。正面の絵の「いきづかい」（`js/pet-motion.js`）は svg の中に foreignObject で canvas を入れますが、iPhone の WebKit は その canvas に svg の拡大縮小・位置をかけずに描くことがあるためです。
+**iPhone・iPad と Mac の Safari では「いきづかい」を使わず止まった正面の絵にしました**（`js/pet-art-fix.js`。移動中のパーツの動き・AR は そのまま）。Android・パソコンの Chrome／Edge は いままでどおり。
+
+本物の WebKit での通し確認には、開発用に Playwright の WebKit（playwright-core 1.55.0、Apache-2.0、Microsoft。WebKit 本体は LGPL/BSD）を作業フォルダの外で使いました。**アプリには含めていません**（配布・費用なし）。
+Windows 版の WebKit では foreignObject の ずれは再現しない（iPhone の描き方でだけ起きる）ため、UA で切りかえる確認を テストに入れています。
+
 ### 更新の おしらせ・バックアップの 通し確認（headless Edge）
 
 ```

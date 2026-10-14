@@ -99,6 +99,7 @@
         location.reload();
       });
       reg = await navigator.serviceWorker.register("service-worker.js");
+      if (!reg) return; // 登録 できなかった（プライベート モード・確認用の ブラウザ など）
       if (reg.waiting && navigator.serviceWorker.controller) prompt(reg.waiting);
       reg.addEventListener("updatefound", () => {
         const sw = reg.installing;
