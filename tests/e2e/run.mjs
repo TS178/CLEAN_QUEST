@@ -417,8 +417,9 @@ try {
   check("ホームから はなれると 動画を 止める", await ev(`document.getElementById('pondVideo').paused`));
   await ev(`BCT.ui.show('home');true`);
   await sleep(300);
-  check("ホームの いちばん したに とくべつ しょうごう を 小さく 1行（7つ）", await ev(`(()=>{const e=document.getElementById('homeBadges');const r=e.getBoundingClientRect(),bar=document.querySelector('#scr-home .beach-bar').getBoundingClientRect();
-    return e.querySelectorAll('.hbg-medal').length===7&&e.textContent.includes('とくべつ しょうごう')&&r.height<=40&&r.top>=bar.bottom&&e.scrollWidth<=e.clientWidth+1})()`));
+  check("ホームの いちばん したに とくべつ しょうごう（上の段に なまえと 数、下の段に 7つの 絵。Codex 2026-10-16）", await ev(`(()=>{const e=document.getElementById('homeBadges');const r=e.getBoundingClientRect(),bar=document.querySelector('#scr-home .beach-bar').getBoundingClientRect();
+    const l=e.querySelector('.hbg-lbl').getBoundingClientRect(),c=e.querySelector('.hbg-count').getBoundingClientRect(),m=[...e.querySelectorAll('.hbg-medal')].map(x=>x.getBoundingClientRect());
+    return m.length===7&&e.textContent.includes('とくべつ しょうごう')&&Math.abs(l.top-c.top)<4&&m.every(x=>x.top>l.bottom-1&&Math.abs(x.top-m[0].top)<2)&&r.top>=bar.bottom&&e.scrollWidth<=e.clientWidth+1&&document.scrollingElement.scrollHeight<=innerHeight+1})()`));
   check("ホームに「ごはん」と いう ことばは ない（ドロップ）", await ev(`!document.getElementById('scr-home').textContent.includes('ごはん') && document.getElementById('foodTray').textContent.includes('ドロップ')`));
   check("ヤドカリの 帽子は 目の 上（はな・かいがらの かざりは かいがらの 上の まま）", await ev(`[1,2,3].every(st=>{const f=BCT.art.anchorFor,A=BCT.art.ANCHOR.hermit[st].head,h=f('hermit',st,'head','head_straw'),fl=f('hermit',st,'head','head_flower'),sh=f('hermit',st,'head','head_shell');
     const svg=BCT.art.render({type:'hermit',stage:st,equip:{head:'head_straw'}});return fl===A&&sh===A&&h!==A&&h.x>A.x+40&&svg.includes('translate('+h.x+' '+h.y+')')})`));

@@ -49,13 +49,13 @@
     // イベント しゅうりょう QR は イベントの 日だけ（js/event-mode.js）。イベントの 日 いがいは 管理者モードで 確認できる
     const eventOpen = !BCT.eventMode || BCT.eventMode.isOpen();
     $("missionBody").innerHTML = `
-      ${eventOpen ? `<button class="btn block sea" id="msQr" style="margin-bottom:12px">🎉 イベント しゅうりょう QRコード</button>` : ""}
+      ${eventOpen ? `<button class="btn block sea" id="msQr" style="margin-bottom:12px">イベント しゅうりょう QRコード</button>` : ""}
 
       <div class="card">
         <h3>${BCT.art.icon("quiz")} うみクイズ <span class="count">${qDone} / ${BCT.QUIZ.length}</span></h3>
         <p class="note one-line">1もんクリアごとに${BCT.medal.amount(R.quiz.coins, '+')}枚。まちがえてもへらないよ。</p>
         ${nq ? `<button class="btn block peach" id="msNext">もんだいに ちょうせん する！</button>`
-          : `<p class="quiz-alldone">🎉 ぜんぶ クリア！</p>`}
+          : `<p class="quiz-alldone">ぜんぶ クリア！</p>`}
         <button class="btn block ghost" id="msReview" ${qDone ? "" : "disabled"} style="margin-top:8px">📖 ふくしゅう する${qDone ? `（${qDone}もん）` : ""}</button>
       </div>
 
@@ -136,7 +136,7 @@
         <div class="medal painted-medal">${BCT.collectionArt.badge(id)}</div>
         <h3>${ui.esc(b.name)}</h3>
         <p class="lead">${ui.esc(b.cond)}</p>
-        <p class="note">${got ? `🎉 ${day.getMonth() + 1}がつ ${day.getDate()}にち に ゲット！` : `まだ だよ${b.prog ? `（いま ${ui.esc(b.prog(s))}）` : ""}`}</p>
+        <p class="note">${got ? `${day.getMonth() + 1}がつ ${day.getDate()}にち に ゲット！` : `まだ だよ${b.prog ? `（いま ${ui.esc(b.prog(s))}）` : ""}`}</p>
       </div>`, [{ label: "とじる", cls: "ghost", value: null }]);
   }
 

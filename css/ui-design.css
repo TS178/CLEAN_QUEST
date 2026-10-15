@@ -83,7 +83,7 @@ body.reduce-motion .tabs .expedition-icon { transition: none; }
 .pond-shortcut { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 0; border: 0; background: none; color: #355f57; font: inherit; font-weight: 800; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
 .shortcut-circle { display: grid; place-items: center; width: 72px; height: 72px; box-sizing: border-box; border: 3px solid #fff9df; border-radius: 50%; background: radial-gradient(circle at 40% 30%,#f5fff3,#aadcd2); box-shadow: 0 2px 0 #62968c,0 3px 7px #29595b35; }
 #fairyPortrait { display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
-#fairyPortrait > svg { display: block; width: 100%; height: 100%; transform: scale(1.18) translateY(-3%); }
+#fairyPortrait > svg { display: block; width: 100%; height: 100%; }
 .habitat-shortcut { padding-top: 8px; }
 .habitat-shortcut .shortcut-circle { width: 60px; height: 60px; overflow: hidden; border-color: #fff7db; box-shadow: 0 2px 0 #b19b6d,0 3px 7px #29595b35; }
 .habitat-icon { object-fit: cover; border-radius: 50%; }

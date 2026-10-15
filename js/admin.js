@@ -25,7 +25,7 @@
     $("adminBody").innerHTML = `
       <div class="sub-top"><button class="btn small ghost" id="admBack">← せってい</button><h3>管理者モード</h3></div>
       <p class="note adm-note">確認用の お試し画面です。ここで えらんだ ものは ほぞんされません。</p>
-      <button class="btn small sea block" id="admQr" style="margin-bottom:10px">🎉 イベント しゅうりょう QR を 見る（イベントの 日 いがいでも）</button>
+      <button class="btn small sea block" id="admQr" style="margin-bottom:10px">イベント しゅうりょう QR を 見る（イベントの 日 いがいでも）</button>
       <div class="adm-stage ${st.left ? "left" : ""}" id="admStage"><div class="adm-face" id="admFace"></div></div>
       <div class="adm-row">${btn(st.view === "rig", 'data-view="rig"', "うごく すがた")}${btn(st.view === "front", 'data-view="front"', "正面の絵")}
         ${btn(st.left, 'data-left', "← むき")}${st.view === "rig" ? btn(st.swim, 'data-swim', st.swim ? "およぐ" : "とまる") : ""}</div>

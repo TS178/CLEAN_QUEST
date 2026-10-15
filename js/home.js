@@ -64,6 +64,13 @@
     if (pk !== portraitKey) {
       portraitKey = pk;
       $("fairyPortrait").innerHTML = BCT.art.render({ type: s.pet.type, stage: game.stageOf(shownLv(s)), equip: s.equip, face: "happy", motion: false });
+      // 種類・進化・装備ごとの絵全体を、丸枠の内側へ余白をつけて収める。
+      const portrait = $("fairyPortrait").querySelector("svg");
+      const bounds = portrait.getBBox();
+      if (bounds.width && bounds.height) {
+        const side = Math.hypot(bounds.width, bounds.height) * 1.06;
+        portrait.setAttribute("viewBox", `${bounds.x + bounds.width / 2 - side / 2} ${bounds.y + bounds.height / 2 - side / 2} ${side} ${side}`);
+      }
       $("habitatPortrait").innerHTML = BCT.art.icon("home");
       $("actHabitat").setAttribute("aria-label", `${BCT.HABITATS[s.pet.type]}へ いく`);
     }

@@ -135,7 +135,7 @@
     const p = payload();
     const text = JSON.stringify(p);
     const p2 = ui.modal(
-      `<h3>🎉 おつかれさま！</h3>
+      `<h3>おつかれさま！</h3>
        <p class="lead" style="color:var(--ink);margin-bottom:4px">この がめんを <b>うんえいの ひと</b>に みせてね</p>
        <div class="qr-wrap" id="qrWrap"></div>
        <p class="note" style="text-align:center">🚩 ${ui.esc(p.tm)} ／ Lv${p.lv} ／ クイズ ${p.qz}もん ／ そうじ ${p.cm} ／ ゴミ ${p.rc}こ ／ しょうごう ${p.bd.length}こ</p>
