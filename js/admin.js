@@ -27,15 +27,17 @@
     if (st.equip.look && !items("look").some((it) => it.id === st.equip.look)) delete st.equip.look;
     $("adminBody").innerHTML = `
       <div class="sub-top"><button class="btn small ghost" id="admBack">← せってい</button><h3>管理者モード</h3></div>
-      <p class="note adm-note">試着は保存されません。装備の位置は「保存」で、この端末のホーム・すみかなどにも反映されます。</p>
+      <p class="note adm-note">試着は保存されません。装備の位置・大きさは「保存」で、この端末のホーム・すみかなどにも反映されます。</p>
       <button class="btn small sea block" id="admQr" style="margin-bottom:10px">イベント しゅうりょう QR を 見る（イベントの 日 いがいでも）</button>
       <div class="adm-stage ${st.left ? "left" : ""} ${editing?'editing':''}" id="admStage"><div class="adm-face" id="admFace"></div></div>
-      <button class="btn small sea block" id="admEdit">${editing?'位置調整を終了':'装備の位置を調整'}</button>
+      <button class="btn small sea block" id="admEdit">${editing?'調整を終了':'装備の位置・大きさを調整'}</button>
       ${editing?`<div class="adm-placement">
         <p class="note">装備をドラッグして調整できます。種類・形態・アイテムごとに保存します。保存前に選び直すと変更は戻ります。</p>
         <div class="adm-row">${['head','acc'].filter(slot=>st.equip[slot]).map(slot=>btn(selected===slot,`data-adjust="${slot}"`,slot==='head'?'あたまを調整':'こものを調整')).join('')}</div>
         <div class="adm-row" aria-label="位置の微調整">${[['-1,0','←'],['0,-1','↑'],['0,1','↓'],['1,0','→']].map(([d,l])=>`<button class="adm-chip" data-nudge="${d}" aria-label="${l}に移動">${l}</button>`).join('')}</div>
-        <div class="adm-row"><button class="btn small sea" id="admSave">位置を保存</button><button class="btn small ghost" id="admCancel">変更を戻す</button><button class="btn small ghost" id="admReset">標準位置に戻して保存</button></div>
+        <label class="adm-scale-label" for="admScale">大きさ <output id="admScaleValue" for="admScale">100%</output></label>
+        <div class="adm-scale"><button class="adm-chip" data-resize="-5" aria-label="5%縮小">−</button><input id="admScale" type="range" min="25" max="250" step="1" value="100" aria-label="装備の大きさ"><button class="adm-chip" data-resize="5" aria-label="5%拡大">＋</button></div>
+        <div class="adm-row"><button class="btn small sea" id="admSave">位置・大きさを保存</button><button class="btn small ghost" id="admCancel">変更を戻す</button><button class="btn small ghost" id="admReset">標準に戻して保存</button></div>
         <p class="note" id="admPosition" role="status" aria-live="polite"></p>
       </div>`:''}
       <div class="adm-row">${btn(st.view === "rig", 'data-view="rig"', "うごく すがた")}${btn(st.view === "front", 'data-view="front"', "正面の絵")}
@@ -53,7 +55,7 @@
             <span class="art">${BCT.art.itemIcon(it.id, st.type)}</span><span class="nm">${ui.esc(it.name)}</span></button>`).join("")}</div>`).join("")}`;
     $("admBack").onclick = () => ui.show("settings");
     $("admQr").onclick = () => BCT.profile.showQr();
-    const on = (sel, fn) => document.querySelectorAll(`#adminBody ${sel}`).forEach((b) => (b.onclick = () => { placement.cancel(); drag=null; fn(b); render(); }));
+    const on = (sel, fn, cancel=true) => document.querySelectorAll(`#adminBody ${sel}`).forEach((b) => (b.onclick = () => { if(cancel)placement.cancel(); drag=null; fn(b); render(); }));
     $('admEdit').onclick=()=>{placement.cancel();drag=null;editing=!editing;render();};
     if(editing){
       on('[data-adjust]',b=>selected=b.dataset.adjust);
@@ -63,11 +65,13 @@
         move(id,a.x+dx*(st.left?-1:1),a.y+dy);
       });
       $('admSave').onclick=()=>savePosition(false);
+      $('admScale').oninput=e=>resize(Number(e.target.value));
+      document.querySelectorAll('[data-resize]').forEach(b=>b.onclick=()=>resize(Number($('admScale').value)+Number(b.dataset.resize)));
       $('admReset').onclick=()=>savePosition(true);
       $('admCancel').onclick=()=>{placement.cancel();drawPet();positionStatus('保存前の変更を戻しました。');};
     }
     on("[data-view]", (b) => (st.view = b.dataset.view));
-    on("[data-left]", () => (st.left = !st.left));
+    on("[data-left]", () => (st.left = !st.left), false);
     on("[data-swim]", () => (st.swim = !st.swim));
     on("[data-type]", (b) => (st.type = b.dataset.type));
     on("[data-stage]", (b) => (st.stage = Number(b.dataset.stage)));
@@ -84,11 +88,23 @@
     document.querySelectorAll('[data-adjust]').forEach(b=>b.classList.toggle('on',b.dataset.adjust===selected));
     for(const name of ['admSave','admReset','admCancel'])if($(name))$(name).disabled=!id;
     document.querySelectorAll('[data-nudge]').forEach(b=>b.disabled=!id);
+    document.querySelectorAll('[data-resize]').forEach(b=>b.disabled=!id);
+    if($('admScale')){
+      const percent=a?Math.round(100*a.s/placement.defaultAnchor(st.type,st.stage,id).s):100;
+      $('admScale').disabled=!id;$('admScale').value=percent;
+      $('admScaleValue').textContent=percent+'%';
+    }
   }
   function savePosition(reset) {
     const id=st.equip[selected];if(!id)return;
     const ok=placement.save(st.type,st.stage,id,reset);
-    drawPet();positionStatus(ok?(reset?'標準位置を保存しました。':'この種類・形態・アイテムの位置を保存しました。'):'保存できませんでした。ブラウザの保存設定や空き容量を確認してください。');
+    drawPet();positionStatus(ok?(reset?'標準の位置・大きさを保存しました。':'この種類・形態・アイテムの位置・大きさを保存しました。'):'保存できませんでした。ブラウザの保存設定や空き容量を確認してください。');
+  }
+  function resize(percent) {
+    const id=st.equip[selected];if(!id)return;
+    const a=placement.get(st.type,st.stage,id),standard=placement.defaultAnchor(st.type,st.stage,id);
+    placement.preview(st.type,st.stage,id,{x:a.x,y:a.y,s:standard.s*Math.max(25,Math.min(250,percent))/100});
+    drawPet();positionStatus($('admPosition').textContent+'（未保存）');
   }
   function move(id,x,y) {
     placement.preview(st.type,st.stage,id,{x:Math.max(-20,Math.min(220,x)),y:Math.max(-20,Math.min(220,y))});

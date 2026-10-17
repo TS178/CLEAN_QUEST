@@ -10,6 +10,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "assets/design-proposals/shika-items-20261016"
+OVERRIDES = {"accessory_pendant": ROOT / "assets/item-source/sakuragai-pendant-charm.png"}
 GROUPS = {
     "PET_SPRITES": ("pet-sprites.js", "items", {
         "accessory_pendant": "sakuragai-pendant.png",
@@ -32,7 +33,7 @@ for bundle, (filename, folder, entries) in GROUPS.items():
     start = source.index("{", source.index(bundle + " ="))
     data, end = json.JSONDecoder().raw_decode(source[start:])
     for item_id, original in entries.items():
-        im = Image.open(SOURCE / original).convert("RGBA")
+        im = Image.open(OVERRIDES.get(item_id, SOURCE / original)).convert("RGBA")
         box = im.getchannel("A").point(lambda a: 255 if a > 8 else 0).getbbox()
         if not box:
             raise ValueError(f"Empty approved art: {original}")

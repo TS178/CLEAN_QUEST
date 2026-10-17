@@ -51,6 +51,13 @@
       3: hatsOver(130, 96, -4, 0.7),
     },
   };
+  // 2026-10-17: ヤドカリの装備が小さく見えるため、全形態の標準サイズを25%拡大。
+  // 付け根は維持し、静止画と動く描画に共通で反映する。
+  for (const stage of [1,2,3]) {
+    A.hermit[stage].head.s *= 1.25;
+    A.hermit[stage].acc.s *= 1.25;
+    Object.values(ITEM.hermit[stage]).forEach(a => a.s *= 1.25);
+  }
   const itemAnchor = (type, stage, id) => (id && ITEM[type] && ITEM[type][stage] && ITEM[type][stage][id]) || null;
 
   // ANCHOR の head / acc を「いま かいている アイテム」で かえる 読み出しに する

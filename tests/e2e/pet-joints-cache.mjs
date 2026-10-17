@@ -11,13 +11,13 @@ try {
   await b.ev(`Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(Error('Service Worker did not become ready')),15000))])`);
   for(const file of ['js/pet-rig.js','js/pet-rig-config.js','css/pet-rig.css']) {
     const old=execFileSync('git',['show','101a189:'+file],{encoding:'utf8',maxBuffer:2e6});
-    await b.ev(`(async()=>{const cache=await caches.open('bct-1.24');await cache.put(${JSON.stringify(file)},new Response(${JSON.stringify(old)},{headers:{'Content-Type':${JSON.stringify(file.endsWith('.css')?'text/css':'application/javascript')}}}));})()`);
+    await b.ev(`(async()=>{const cache=await caches.open('bct-1.25');await cache.put(${JSON.stringify(file)},new Response(${JSON.stringify(old)},{headers:{'Content-Type':${JSON.stringify(file.endsWith('.css')?'text/css':'application/javascript')}}}));})()`);
   }
   await b.goto(base+'preview-pet-joints.html',3000);
   const result=await b.ev(`({rigs:document.querySelectorAll('.pet-rig').length,connected:document.querySelectorAll('.pr-connected').length,skinScriptPresent:!!BCT.petSkin})`);
   assert.equal(result.rigs,9);assert.equal(result.connected,0);assert.equal(result.skinScriptPresent,true);
   console.log(JSON.stringify(result));
-  await b.goto(base+'output/design-proposals/pet-joints-1-24/index.html',3000);
+  await b.goto(base+'output/design-proposals/pet-joints-1-25/index.html',3000);
   const fixed=await b.ev(`({rigs:document.querySelectorAll('.pet-rig').length,connected:document.querySelectorAll('.pr-connected').length,status:document.querySelector('#renderStatus').textContent})`);
   assert.equal(fixed.connected,9);assert.ok(fixed.status.includes('9/9'));
   console.log(JSON.stringify({isolatedPreview:fixed}));

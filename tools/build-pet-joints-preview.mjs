@@ -6,6 +6,6 @@ let html=fs.readFileSync(new URL('preview-pet-joints.html',root),'utf8');
 html=html.replace('<meta charset="utf-8">','<meta charset="utf-8"><base href="/">');
 html=html.replace(/<link rel="stylesheet" href="([^"]+)">/g,(_,file)=>'<style>'+fs.readFileSync(new URL(file,root),'utf8')+'</style>');
 html=html.replace(/<script src="([^"]+)"><\/script>/g,(_,file)=>'<script>'+fs.readFileSync(new URL(file,root),'utf8').replace(/<\/script/gi,'<\\/script')+'</script>');
-const dir=new URL('output/design-proposals/pet-joints-1-24/',root);
+const dir=new URL('output/design-proposals/pet-joints-1-25/',root);
 fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(new URL('index.html',dir),html);
-console.log('output/design-proposals/pet-joints-1-24/index.html');
+console.log('output/design-proposals/pet-joints-1-25/index.html');

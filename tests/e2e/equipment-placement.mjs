@@ -15,6 +15,10 @@ try{
   for(const type of ['dolphin','turtle','hermit'])for(const stage of [1,2,3]){
     await click(`[data-type="${type}"]`);await click(`[data-stage="${stage}"]`);
     const before=await anchor();originals[`${type}/${stage}`]=before;
+    await ev(`document.getElementById('admScale').value=135;document.getElementById('admScale').dispatchEvent(new Event('input',{bubbles:true}))`);
+    const enlarged=await anchor();
+    assert.equal(enlarged.x,before.x);assert.equal(enlarged.y,before.y);
+    assert.ok(Math.abs(enlarged.s-before.s*1.35)<.0001,'resize keeps anchor');
     // Test real touch input, stage scaling, and reversed CSS transform.
     if(stage===2)await click('[data-left]');
     const pos=await ev(`(()=>{document.getElementById('admStage').scrollIntoView({block:'center'});
@@ -26,13 +30,18 @@ try{
     const after=await anchor();
     assert.ok(Math.abs(after.x-before.x-12/pos.a)<.05,`${type}/${stage}: touch X ${JSON.stringify({before,after,pos})}`);
     assert.ok(Math.abs(after.y-before.y-10/pos.d)<.05,`${type}/${stage}: touch Y`);
-    assert.equal(after.r,before.r);assert.equal(after.s,before.s);
+    assert.equal(after.r,before.r);assert.equal(after.s,enlarged.s,'drag retains resized scale');
     assert.match(await ev(`document.getElementById('admPosition').textContent`),/未保存/);
     await click('#admSave');saved[`${type}/${stage}`]=after;
     assert.match(await ev(`document.getElementById('admPosition').textContent`),/保存しました/);
     if(stage===2)await click('[data-left]');
   }
   assert.equal(Object.keys(JSON.parse(await ev(`localStorage.getItem('${KEY}')`))).length,9);
+  // Scale buttons clamp to the UI limits and cancel restores saved scale.
+  await ev(`document.getElementById('admScale').value=250;document.getElementById('admScale').dispatchEvent(new Event('input'))`);
+  await click('[data-resize="5"]');
+  assert.equal(await ev(`document.getElementById('admScaleValue').textContent`),'250%');
+  await click('#admCancel');assert.deepEqual(await anchor(),saved['hermit/3']);
   // A second item is independent; cancel and reset affect only the selected item.
   await click('[data-id="head_straw"]');await click('[data-nudge="1,0"]');await click('#admSave');
   const straw=await ev(`BCT.equipmentPlacement.get('hermit',3,'head_straw')`);
@@ -63,13 +72,19 @@ try{
     const a=BCT.equipmentPlacement.get('turtle',2,'head_flower'),parts=r.parts,L=parts.lay.body,F=parts.front;
     const expected=(a.x-F.ox)/F.k0;
     const actual=parseFloat(parts.root.querySelector('[data-item="head_flower"]').style.left);
+    const actualScale=Number(parts.root.querySelector('[data-item="head_flower"]').style.transform.split('scale(')[1].split(')')[0]);
     BCT.equipmentPlacement.preview('turtle',2,'head_flower',{x:a.x+2,y:a.y});BCT.equipmentPlacement.save('turtle',2,'head_flower');
     const next=BCT.petRig.sync(r,opts);await next.ready;
     const changed=r.destroyed&&next!==r;BCT.petRig.destroy(next);host.remove();
-    return changed&&Math.abs(actual-expected)<.02;
+    return changed&&Math.abs(actual-expected)<.02&&Math.abs(actualScale-a.s/(F.k0*L.scale))<.0001;
   })()`),true);
   await ev(`BCT.ui.show('admin')`);await sleep(300);
   assert.equal(await ev(`document.documentElement.scrollWidth<=innerWidth`),true);
   assert.deepEqual(b.consoleLogs.filter(x=>/^(error|EXCEPTION)/.test(x)),[]);
-  console.log('PASS: 9 forms touch drag, reverse, scale, per-item save/reload, reset, cancel, quota failure, static/moving anchors, game data intact.');
+  // Existing 1.24 position-only saves retain their x/y and receive the new default size.
+  await ev(`localStorage.setItem('${KEY}',JSON.stringify({'hermit/2/head_marine':{x:120,y:70}}))`);
+  await b.goto(base);
+  assert.equal(await ev(`(()=>{const a=BCT.equipmentPlacement.get('hermit',2,'head_marine');return a.x===120&&a.y===70&&Math.abs(a.s-.9)<.0001})()`),true);
+  assert.equal(await ev(`BCT.equipmentPlacement.preview('hermit',2,'head_marine',{x:120,y:70,s:-1})`),false);
+  console.log('PASS: 9 forms resizing + drag, reverse, scale limits, per-item save/reload, legacy migration, reset, cancel, quota failure, static/moving anchors, game data intact.');
 }finally{b.close();}
