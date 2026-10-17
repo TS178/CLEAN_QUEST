@@ -32,7 +32,7 @@
   }
   // Hide only accessory pixels behind the head; the original face/blink stays untouched.
   const NECK_HEAD={dolphin:[[119,97,44,30],[134,87,38,29],[148,94,33,31]],turtle:[[142,100,34,26],[154,85,29,25],[162,73,27,25]],hermit:[[146,129,32,25],[142,116,30,26],[132,124,30,25]]};
-  const isNeckItem=id=>['accessory_pendant','accessory_korogaki'].includes(id);
+  const isNeckItem=id=>['accessory_pendant','accessory_korogaki','accessory_scarf','reward_guardian_medal'].includes(id);
   function neckMask(type,stage){const [x,y,rx,ry]=NECK_HEAD[type][stage-1];return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="black"/>`;}
   function neckPlaced(type,stage,id,a){
     const content=placed(id,a);if(!isNeckItem(id))return content;

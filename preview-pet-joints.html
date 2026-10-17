@@ -14,11 +14,11 @@ article{background:white;border:1px solid #d9e8e1;border-radius:22px;padding:16p
 .rig-front{position:absolute;inset:0}.rig-front svg{width:100%;height:100%}.note{font-size:13px;color:#59776c}
 </style>
 <header><h1>ようせいの動き・付け根の修正確認</h1>
-<p>王冠の傾き、顔の後ろに回る首飾りの紐、ヒレ・脚の動きをご確認ください。</p>
+<p>体の後ろに隠れるスカーフ・メダル・首飾りと、ヒレ・脚の動きをご確認ください。</p>
 <label><input id="original" type="checkbox">元の静止画と比較</label>
 <label><input id="left" type="checkbox">左向き</label>
 <label>動きの速さ<input id="speed" type="range" min="0" max="1.3" step=".1" value="1"></label>
-<label>装備<select id="equipment"><option value="crown">王冠とペンダント</option><option value="pendant">ペンダントと花飾り</option><option value="hat">帽子とスカーフ</option><option value="pouch">ポシェットと花飾り</option><option value="none">装備なし</option></select></label>
+<label>装備<select id="equipment"><option value="hat">帽子とスカーフ</option><option value="medal">うみのまもりてメダル</option><option value="crown">王冠とペンダント</option><option value="pendant">ペンダントと花飾り</option><option value="pouch">ポシェットと花飾り</option><option value="none">装備なし</option></select></label>
 <div class="note">確認用ページです。育成・購入データは変更しません。端末の「動きを減らす」が有効な場合は静止画になります。</div></header>
 <p id="renderStatus" role="status" style="padding:0 20px">描画方式を確認しています…</p>
 <main id="cards"></main>
@@ -32,13 +32,13 @@ article{background:white;border:1px solid #d9e8e1;border-radius:22px;padding:16p
   async function rebuild(){
     document.querySelector('#equipment').disabled=true;
     rigs.splice(0).forEach(r=>BCT.petRig.destroy(r));document.querySelector('#cards').replaceChildren();
-    const equip={crown:{head:'head_crown',acc:'accessory_pendant'},pendant:{head:'head_flower',acc:'accessory_pendant'},hat:{head:'head_marine',acc:'accessory_scarf'},pouch:{head:'head_flower',acc:'accessory_korogaki'},none:{}}[document.querySelector('#equipment').value];
+    const equip={medal:{acc:'reward_guardian_medal'},crown:{head:'head_crown',acc:'accessory_pendant'},pendant:{head:'head_flower',acc:'accessory_pendant'},hat:{head:'head_marine',acc:'accessory_scarf'},pouch:{head:'head_flower',acc:'accessory_korogaki'},none:{}}[document.querySelector('#equipment').value];
     for(const type of Object.keys(names))for(const stage of [1,2,3]){
       const card=document.createElement('article');card.innerHTML=`<h2>${names[type]}・第${stage}形態</h2><div class="host"><div class="rig-front">${BCT.art.render({type,stage,equip,motion:false})}</div></div>`;
       document.querySelector('#cards').append(card);const host=card.querySelector('.host'),r=BCT.petRig.create({type,stage,equip,host});await r.ready;rigs.push(r);update();
     }
   const connected=rigs.filter(r=>r.parts?.skin).length,active=rigs.filter(r=>r.parts?.skin&&!r.parts.skin.canvas.hidden).length;
-  document.querySelector('#renderStatus').textContent=connected===9?`連続描画 1.26：${active}/9形態で有効${active<9?'（一部は端末の描画制限により静止画）':''}`:'旧版の描画が読み込まれています。アプリを1.26へ更新するか、キャッシュを分離した確認ページを開いてください。';
+  document.querySelector('#renderStatus').textContent=connected===9?`連続描画 1.27：${active}/9形態で有効${active<9?'（一部は端末の描画制限により静止画）':''}`:'旧版の描画が読み込まれています。アプリを1.27へ更新するか、キャッシュを分離した確認ページを開いてください。';
     document.querySelector('#equipment').disabled=false;
   }
   await rebuild();document.querySelector('#equipment').onchange=rebuild;
