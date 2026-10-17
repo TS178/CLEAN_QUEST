@@ -52,7 +52,8 @@ try{
   assets[e.id]={...result,file};
   console.log(`${e.id}: ${result.width}x${result.height}`);
  }
- fs.writeFileSync('js/pet-sprites.js','/* Generated from approved art. Rebuild: node tools/pack-pet-art.mjs */\nwindow.BCT = window.BCT || {};\nwindow.BCT.PET_SPRITES = '+JSON.stringify(assets)+';\n');
+  fs.writeFileSync('js/pet-sprites.js','/* Generated from approved art. Rebuild: node tools/pack-pet-art.mjs then python tools/pack-shika-items.py */\nwindow.BCT = window.BCT || {};\nwindow.BCT.PET_SPRITES = '+JSON.stringify(assets)+';\n');
  fs.writeFileSync('assets/art-source/manifest.json',JSON.stringify(entries,null,2)+'\n');
  console.log('Embedded sprites:',Object.keys(assets).length,'bytes:',fs.statSync('js/pet-sprites.js').size);
+  console.log('Next: python tools/pack-shika-items.py (restore approved Shika item overrides).');
 }finally{b.close();}

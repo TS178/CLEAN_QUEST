@@ -9,6 +9,8 @@
  * - 帽子・こもの は 正面の絵と 同じ 付け根で 頭・胴体の パーツの 子に するので、いっしょに うごく。
  * - 正面の絵（js/pet-art.js）と 同じ 位置・大きさに 出すので、正面の絵と 切りかえても ずれない。
  * 設定：js/pet-rig-config.js   確認用ページ：preview-pet-rig.html
+ * 正面絵の切り出し版は js/pet-skin.js で１枚の連続した面として描く。
+ * 切り出し画像は動かす範囲の判定に使い、付け根に隙間が開かないようにする。
  */
 (function () {
   const BCT = (window.BCT = window.BCT || {});
@@ -221,7 +223,13 @@
       item.appendChild(img);
       (slot === "head" && headEl ? headEl : els.body).appendChild(item);
     }
-    return { root, stage, els, headEl, lay, front, bodyH: sizes.body[1] };
+    let skin = null;
+    if (cfg.cut && BCT.petSkin) {
+      skin = await BCT.petSkin.create(cfg, imgs, lay, front);
+      root.classList.add('pr-connected');
+      els.body.append(skin.fallback, skin.canvas);
+    }
+    return { root, stage, els, headEl, lay, front, skin, bodyH: sizes.body[1] };
   }
 
   // ---------------- うごかす ----------------
@@ -247,6 +255,11 @@
       el.style.transform = `${by ? `translateY(${by.toFixed(2)}px) ` : ""}rotate(${ang.toFixed(2)}deg) scale(${L.scale})`;
     }
     if (parts.headEl) parts.headEl.style.transform = `translateY(${(headOffset(cfg.head, rig.phase, scale) * parts.bodyH).toFixed(2)}px)`;
+    if (parts.skin) {
+      // The face stays on the continuous body; keep its hat attached to that same surface.
+      if (parts.headEl) parts.headEl.style.transform = 'none';
+      parts.skin.draw(rig.phase, scale);
+    }
   }
 
   function step(rig, now) {
@@ -306,7 +319,7 @@
       key: opts.key || "",
     };
     rig.ready = build(cfg, opts.equip).then((parts) => {
-      if (rig.destroyed) return false;
+      if (rig.destroyed) { if (parts.skin) parts.skin.destroy(); return false; }
       rig.parts = parts;
       rig.host.appendChild(parts.root);
       fit(rig);
@@ -355,14 +368,14 @@
     rig.observer.disconnect();
     rig.resize.disconnect();
     clearTimeout(rig.turnTimer);
-    if (rig.parts) rig.parts.root.remove();
+    if (rig.parts) { if (rig.parts.skin) rig.parts.skin.destroy(); rig.parts.root.remove(); }
     rig.owner.classList.remove("rig-on", "rig-turn");
     rigs.delete(rig);
   }
 
   // 同じ 種類・段階・着せ替え なら いまの ものを つかう。ちがえば 作りなおす（パーツ表示の 状態は 引きつぐ）
   function sync(current, opts) {
-    const key = JSON.stringify([opts.type, opts.stage, opts.equip && opts.equip.head, opts.equip && opts.equip.acc]);
+    const key = JSON.stringify([opts.type, opts.stage, opts.equip && opts.equip.head, opts.equip && opts.equip.acc, BCT.equipmentPlacement?.revision || 0]);
     if (current && current.key === key && !current.destroyed && current.host === opts.host) return current;
     const wasActive = !!(current && current.active);
     if (current) destroy(current);

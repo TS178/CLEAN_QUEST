@@ -132,7 +132,7 @@
     if (isObj(s.habitat)) {
       for (const [k, p] of Object.entries(s.habitat)) {
         const it = BCT.itemOf(k);
-        if (it && it.slot === "home" && b.owned[k] && b.pet && it.only === b.pet.type && isObj(p)) b.habitat[k] = { x: unit(p.x), y: unit(p.y) };
+        if (it && it.slot === "home" && b.owned[k] && b.pet && (!it.only || it.only === b.pet.type) && isObj(p)) b.habitat[k] = { x: unit(p.x), y: unit(p.y) };
       }
     }
     return b;

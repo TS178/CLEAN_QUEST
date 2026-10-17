@@ -39,6 +39,7 @@ try {
     assets[entry.id] = {...result, file};
     console.log(`${entry.id}: ${result.width}x${result.height}, ${fs.statSync(file).size} bytes`);
   }
-  fs.writeFileSync('js/habitat-sprites.js', '/* Generated art bundle. Rebuild: node tools/pack-habitat-art.mjs */\nwindow.BCT = window.BCT || {};\nwindow.BCT.HABITAT_SPRITES = ' + JSON.stringify(assets) + ';\n');
+  fs.writeFileSync('js/habitat-sprites.js', '/* Generated art bundle. Rebuild: node tools/pack-habitat-art.mjs then python tools/pack-shika-items.py */\nwindow.BCT = window.BCT || {};\nwindow.BCT.HABITAT_SPRITES = ' + JSON.stringify(assets) + ';\n');
   console.log(`Packed ${entries.length} assets, ${fs.statSync('js/habitat-sprites.js').size} bytes`);
+  console.log('Next: python tools/pack-shika-items.py (restore approved Shika item overrides).');
 } finally { browser.close(); }

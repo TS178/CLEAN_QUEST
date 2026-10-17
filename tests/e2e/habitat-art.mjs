@@ -1,4 +1,4 @@
-// Render, export and offline coverage for the 15 painted assets; isolated Edge profile.
+// Render, export and offline coverage for the 18 painted assets; isolated Edge profile.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {launch, sleep} from './cdp.mjs';
@@ -29,7 +29,7 @@ try {
     if (before !== localStorage.getItem('bct-state')) throw new Error('Drawing mutated saved state');
     return results;
   })()`);
-  assert.equal(art.length, 15);
+  assert.equal(art.length, 18);
 
   for (const type of ['dolphin', 'turtle', 'hermit']) {
     await b.ev(`BCT.game.choosePet('${type}', 'ようせい', 'テスト', 1); BCT.game.claim('quiz', 'art-test-${type}', {xp:0, coins:1000});`);
@@ -56,7 +56,7 @@ try {
   await b.send('Network.enable');
   await b.send('Network.emulateNetworkConditions', {offline:true, latency:0, downloadThroughput:0, uploadThroughput:0});
   await b.goto(base);
-  assert.equal(await b.ev(`Object.keys(BCT.HABITAT_SPRITES).length`), 15);
+  assert.equal(await b.ev(`Object.keys(BCT.HABITAT_SPRITES).length`), 18);
   await b.ev(`BCT.ui.show('habitat')`);
   assert.equal(await b.ev(`document.querySelector('#hbBg image').dataset.artId`), 'habitat_hermit');
   await b.send('Network.emulateNetworkConditions', {offline:false, latency:0, downloadThroughput:-1, uploadThroughput:-1});

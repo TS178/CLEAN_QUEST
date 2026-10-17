@@ -24,7 +24,7 @@
   };
   const SIZE = {
     head_straw:[84,58],head_marine:[68,49],head_flower:[41,30],head_shell:[40,33],head_crown:[55,44],reward_clean_hat:[74,59],
-    accessory_ribbon:[43,31],accessory_scarf:[67,48],accessory_pendant:[46,43],accessory_badge:[28,28],reward_guardian_medal:[28,43]
+    accessory_ribbon:[43,31],accessory_scarf:[67,48],accessory_pendant:[46,43],accessory_korogaki:[52,60],accessory_badge:[28,28],reward_guardian_medal:[28,43]
   };
   const ITEM_ART = Object.fromEntries(Object.entries(SIZE).map(([id,[w,h]]) => [id, () => sprite(id,-w/2,BCT.itemOf(id).slot==='head'?-h+11:-h*.3,w,h)]));
   function placed(id,a) {

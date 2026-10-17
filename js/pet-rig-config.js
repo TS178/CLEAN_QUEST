@@ -235,7 +235,7 @@
       parts[id] = Object.assign({}, p, { pivot: (st.pivot && st.pivot[id]) || p.pivot, place: st.place[id] },
         st.parent && st.parent[id] ? { parent: st.parent[id] } : {}, st.z && st.z[id] != null ? { z: st.z[id] } : {});
     }
-    return Object.assign({}, base, { parts, type, stage, common: BCT.PET_RIG.common, tint: st.tint || "",
+    return Object.assign({}, base, { parts, type, stage, cut: !!st.cut, common: BCT.PET_RIG.common, tint: st.tint || "",
       head: base.head ? Object.assign({}, base.head, st.head || {}) : null });
   };
   BCT.petRigFile = (type, stage, part) => `assets/pet-parts/${type}-${stage}-${part}.png`;

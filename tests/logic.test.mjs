@@ -55,20 +55,69 @@ test("紙くずを引き継ぎ、ロープをもえるゴミへ分別できる",
   assert.equal(reloaded.game.sortTrash('old-paper','burn').ok,true);
 });
 
-test("アイテムは36種類（ショップ24＋すみか9＋達成報酬3）、1匹に見えるショップ商品は21種類", () => {
+test("アイテムは40種類（ショップ25＋すみか12＋達成報酬3）、1匹に見えるショップ商品は25種類", () => {
   const B = fresh();
-  assert.equal(B.ITEMS.length, 36);
-  assert.equal(B.ITEMS.filter((i) => i.shop).length, 33);
+  assert.equal(B.ITEMS.length, 40);
+  assert.equal(B.ITEMS.filter((i) => i.shop).length, 37);
   assert.equal(B.ITEMS.filter((i) => i.reward).length, 3);
-  assert.equal(B.ITEMS.filter((i) => i.slot === "home").length, 9);
-  assert.equal(new Set(B.ITEMS.map((i) => i.id)).size, 36, "IDが重複していない");
+  assert.equal(B.ITEMS.filter((i) => i.slot === "home").length, 12);
+  assert.equal(new Set(B.ITEMS.map((i) => i.id)).size, 40, "IDが重複していない");
   for (const t of ["dolphin", "turtle", "hermit"]) {
     B.game.choosePet(t, "テスト", "たい", 0);
     const items = B.game.shopItems(B.store.get());
-    assert.equal(items.length, 21, t);
-    assert.equal(items.filter((i) => i.slot === "home").length, 3, "すみかは じぶんの 3つ");
+    assert.equal(items.length, 25, t);
+    assert.equal(items.filter((i) => i.slot === "home").length, 6, "すみかは 専用3つ＋共通3つ");
     assert.ok(items.every((i) => !i.only || i.only === t), "ほかの種類の専用品が出ない");
   }
+});
+
+test("志賀町の共通置物は全種類で購入・配置・再読込でき、専用家具だけ種類変更でしまわれる", () => {
+  for (const type of ["dolphin", "turtle", "hermit"]) {
+    const storage = makeStorage(), B = tab(storage);
+    B.game.choosePet(type, "テスト", "たい", 0);
+    const ids = ["home_shika_lighthouse", "home_shika_bench", "home_shika_ganmon"];
+    assert.equal(B.game.buy(ids[0]).err, "coins");
+    assert.equal(B.game.placeHome(ids[0], .2, .3).err, "notowned");
+    giveCoins(B, 500);
+    for (const id of ids) {
+      const before = B.game.coins(B.store.get());
+      assert.equal(B.game.buy(id).ok, true);
+      assert.equal(B.game.coins(B.store.get()), before - B.itemOf(id).price);
+      assert.equal(B.game.buy(id).err, "owned");
+      assert.equal(B.game.coins(B.store.get()), before - B.itemOf(id).price);
+      assert.equal(B.game.placeHome(id, .25, .65).ok, true);
+    }
+    const dedicated = B.ITEMS.find(it => it.slot === "home" && it.only === type);
+    B.game.buy(dedicated.id);
+    B.game.placeHome(dedicated.id, .7, .8);
+    const R = tab(storage);
+    for (const id of ids) eq(R.store.get().habitat[id], {x:.25,y:.65});
+    R.game.choosePet(type === "dolphin" ? "turtle" : "dolphin", "テスト", "たい", 0);
+    assert.equal(R.store.get().habitat[dedicated.id], undefined);
+    assert.equal(R.game.placeHome(dedicated.id, .5, .5).err, "species");
+    for (const id of ids) eq(tab(storage).store.get().habitat[id], {x:.25,y:.65});
+    assert.equal(R.game.removeHome(ids[0]).ok, true);
+    assert.equal(tab(storage).store.get().habitat[ids[0]], undefined);
+  }
+});
+
+test("ペンダントと花飾りは旧購入情報を継承し、ころ柿ポシェットも装着状態を保存できる", () => {
+  const storage = makeStorage(), B = tab(storage);
+  B.game.choosePet("dolphin", "テスト", "たい", 0);
+  B.store.transact(s => {
+    s.owned.accessory_pendant = {t:123,price:40,via:"shop"};
+    s.owned.head_flower = {t:124,price:20,via:"shop"};
+    s.equip.acc = "accessory_pendant"; s.equip.head = "head_flower";
+  });
+  const R = tab(storage);
+  assert.equal(R.itemOf(R.store.get().equip.acc).name.replaceAll('\u200b',''), "さくらがいのペンダント");
+  assert.equal(R.itemOf(R.store.get().equip.head).name, "ハマナスの はなかざり");
+  assert.equal(R.store.get().owned.accessory_pendant.t, 123);
+  giveCoins(R, 60);
+  assert.equal(R.game.buy("accessory_korogaki").ok, true);
+  assert.equal(R.game.equip("acc", "accessory_korogaki").ok, true);
+  assert.equal(tab(storage).store.get().equip.acc, "accessory_korogaki");
+  assert.equal(R.game.equip("head", "accessory_korogaki").err, "slot");
 });
 
 test("レベルは累計けいけんちから計算し、1回で複数レベルをこえても最後まで進む", () => {

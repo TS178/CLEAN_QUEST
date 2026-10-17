@@ -1,5 +1,5 @@
 /*
- * アイテム一覧（ショップ24種類 ＋ 達成報酬3種類 ＝ 27種類）
+ * アイテム一覧（ショップ25種類 ＋ すみか12種類 ＋ 達成報酬3種類 ＝ 40種類）
  * ------------------------------------------------------------
  * slot: head（あたま） / acc（こもの） / look（とくべつな みため） / toy（おもちゃ） / frame（さつえいフレーム）
  * only: そのようせい専用（ほかの種類の人には ショップに出ない・買えない）
@@ -15,13 +15,14 @@
     // 共通の あたま：5
     { id: "head_straw", name: "むぎわらぼうし", slot: "head", price: 40 },
     { id: "head_marine", name: "マリンキャップ", slot: "head", price: 40 },
-    { id: "head_flower", name: "はなかざり", slot: "head", price: 20 },
+    { id: "head_flower", name: "ハマナスの はなかざり", slot: "head", price: 20 },
     { id: "head_shell", name: "かいがらかざり", slot: "head", price: 20 },
     { id: "head_crown", name: "ちいさな おうかん", slot: "head", price: 100 },
-    // 共通の こもの：4（ウミガメ・イルカは くびもと、ヤドカリは かいがらに つける）
+    // 共通の こもの：5
     { id: "accessory_ribbon", name: "あかい リボン", slot: "acc", price: 20, gift: true },
     { id: "accessory_scarf", name: "あおい スカーフ", slot: "acc", price: 40 },
-    { id: "accessory_pendant", name: "かいがら\u200bペンダント", slot: "acc", price: 40 },
+    { id: "accessory_pendant", name: "さくらがいの\u200bペンダント", slot: "acc", price: 40 },
+    { id: "accessory_korogaki", name: "ころ柿の\u200bポシェット", slot: "acc", price: 60 },
     { id: "accessory_badge", name: "おそうじたい\u200bバッジ", slot: "acc", price: 20 },
     // ようせい専用の みため：9（3しゅるい × 3）
     { id: "turtle_wave", name: "なみもようの こうら", slot: "look", price: 60, only: "turtle" },
@@ -59,6 +60,10 @@
     { id: "home_hermit_parasol", name: "キャップの ミニ\u200bパラソル＆\u200bベンチ", slot: "home", price: 60, only: "hermit", act: "sit", actName: "ベンチで ひとやすみ" },
     { id: "home_hermit_house", name: "デコレーション・\u200bマイおやど", slot: "home", price: 80, only: "hermit", act: "hide", actName: "おやどに はいる" },
     { id: "home_hermit_gym", name: "りゅうぼくの ミニ\u200bアスレチック", slot: "home", price: 100, only: "hermit", act: "climb", actName: "よじのぼる" },
+    // 志賀町の 共通の置物：3（どの ようせいの すみかにも おける）
+    { id: "home_shika_lighthouse", name: "旧福浦灯台の\u200bおきもの", slot: "home", price: 80, act: "look", actName: "とうだいを ながめる" },
+    { id: "home_shika_bench", name: "世界一長いベンチの\u200bおきもの", slot: "home", price: 80, act: "sit", actName: "ベンチで ひとやすみ" },
+    { id: "home_shika_ganmon", name: "巌門の\u200bおきもの", slot: "home", price: 100, act: "look", actName: "いわの あなを ながめる" },
   ];
   BCT.ITEMS.forEach((it) => { if (it.shop === undefined) it.shop = true; });
   BCT.itemOf = (id) => BCT.ITEMS.find((it) => it.id === id) || null;
@@ -82,7 +87,7 @@
     hermit: "ビーチ・ヴィレッジ",
   };
 
-  // 買わなくても使える 標準の見た目（27種類には ふくめない）
+  // 買わなくても使える 標準の見た目（アイテムの総数には ふくめない）
   BCT.LOOK_DEFAULT = {
     turtle: "ふつうの こうら",
     dolphin: "ふつうの からだ",

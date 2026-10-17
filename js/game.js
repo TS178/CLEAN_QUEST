@@ -148,7 +148,10 @@
         gift = true;
       }
       // ほかの種類の すみかの 置き場所は はずす
-      for (const id of Object.keys(s.habitat || {})) if (BCT.itemOf(id).only !== type) delete s.habitat[id];
+      for (const id of Object.keys(s.habitat || {})) {
+        const it = BCT.itemOf(id);
+        if (!it || (it.only && it.only !== type)) delete s.habitat[id];
+      }
       seedBeach(s, Date.now());
       s.seenLv = levelOf(xp(s));
       return { ok: true, gift };
@@ -307,7 +310,7 @@
       const it = BCT.itemOf(id);
       if (!it || it.slot !== "home") return { ok: false, err: "slot" };
       if (!owns(s, id)) return { ok: false, err: "notowned" };
-      if (!s.pet || it.only !== s.pet.type) return { ok: false, err: "species" };
+      if (!s.pet || (it.only && it.only !== s.pet.type)) return { ok: false, err: "species" };
       const c = (v) => Math.max(0.05, Math.min(0.95, Number(v) || 0.5));
       s.habitat[id] = { x: c(x), y: c(y) };
     });
