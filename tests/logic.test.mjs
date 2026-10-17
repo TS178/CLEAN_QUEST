@@ -31,6 +31,44 @@ function tab(storage) {
   return BCT;
 }
 const fresh = () => tab(makeStorage());
+
+test('相棒は順に3匹まで育成でき、経験値・装備・すみかを独立して保存する',()=>{
+  const disk=makeStorage(),B=tab(disk),g=B.game,s=()=>B.store.get();
+  g.choosePet('dolphin','いるか','探検隊',2);
+  assert.equal(g.adoptPet('turtle','かめ').ok,false);
+  g.claim('test','first',{xp:1000,coins:10000});
+  g.buy('head_crown');g.equip('head','head_crown');g.buy('home_shika_bench');g.placeHome('home_shika_bench',.3,.6);
+  const firstXp=g.xp(s()),coins=g.coins(s());
+  assert.equal(g.adoptPet('turtle','かめ').ok,true);
+  assert.equal(g.xp(s()),0);assert.equal(g.coins(s()),coins);assert.equal(s().equip.head,null);assert.equal(Object.keys(s().habitat).length,0);
+  assert.equal(g.adoptPet('hermit','やど').ok,false);
+  g.claim('test','second',{xp:1000,coins:10});
+  g.equip('head','head_crown');g.placeHome('home_shika_bench',.7,.8);
+  assert.equal(g.adoptPet('dolphin','重複').ok,false);
+  assert.equal(g.adoptPet('hermit','やど').ok,true);
+  assert.equal(g.adoptPet('turtle','重複').ok,false);
+  assert.equal(g.selectCompanion('dolphin').ok,true);
+  assert.equal(g.xp(s()),firstXp);assert.equal(s().equip.head,'head_crown');assert.equal(s().habitat.home_shika_bench.x,.3);
+  assert.equal(g.selectCompanion('turtle').ok,true);assert.equal(s().habitat.home_shika_bench.x,.7);
+  const reload=tab(disk);assert.equal(reload.game.companionStates(reload.store.get()).length,3);
+  assert.deepEqual(Array.from(reload.store.get().companionOrder),['dolphin','turtle','hermit']);
+  const backup=JSON.parse(JSON.stringify(reload.store.get()));assert.equal(reload.store.replace(backup),true);
+  assert.equal(reload.game.selectCompanion('hermit').ok,true);assert.equal(reload.game.xp(reload.store.get()),0);
+  const food=reload.CONFIG.foods[0];reload.game.buyFood(food.id);reload.game.feed(food.id);
+  assert.equal(reload.game.xp(reload.store.get()),food.xp);
+  assert.equal(reload.game.selectCompanion('dolphin').ok,true);assert.equal(reload.game.xp(reload.store.get()),firstXp);
+});
+
+test('相棒の切替・お迎えは保存失敗時に巻き戻り、不正な相棒データを除外する',()=>{
+  const disk=makeStorage(),B=tab(disk);B.game.choosePet('dolphin','いるか','隊',1);B.game.claim('test','unlock',{xp:1000,coins:200});
+  const before=JSON.stringify(B.store.get()),write=disk.setItem;disk.setItem=()=>{throw Error('quota');};
+  assert.equal(B.game.adoptPet('turtle','かめ').err,'save');assert.equal(JSON.stringify(B.store.get()),before);
+  disk.setItem=write;B.game.adoptPet('turtle','かめ');
+  const two=JSON.stringify(B.store.get());disk.setItem=()=>{throw Error('quota');};assert.equal(B.game.selectCompanion('dolphin').err,'save');assert.deepEqual(JSON.parse(JSON.stringify(B.store.get())),JSON.parse(two));
+  disk.setItem=write;
+  const bad=JSON.parse(two);bad.companions.hermit={pet:{type:'hermit',name:'不正'},petXp:'1000'};bad.companionOrder=['turtle','turtle','dragon','hermit'];
+  B.store.replace(bad);assert.equal(B.game.companionStates(B.store.get()).length,2);
+});
 // vm の中で作った配列・オブジェクトは「生まれ」が違うので、中身だけ比べる
 const eq = (a, b, m) => assert.deepEqual(JSON.parse(JSON.stringify(a)), b, m);
 const giveCoins = (B, n) => {

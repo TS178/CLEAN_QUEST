@@ -7,7 +7,12 @@
   function renderEggs() {
     const box = $("eggs");
     box.innerHTML = "";
-    pets.TYPE_KEYS.forEach((key) => {
+    const s=BCT.store.get(),have=BCT.game.companionStates(s).map(p=>p.pet.type);
+    if(s.pet){
+      const back=document.createElement('button');back.className='btn ghost';back.textContent='ホームに もどる';back.onclick=()=>ui.show('home');box.append(back);
+      if(!BCT.game.canAdopt(s))return;
+    }
+    pets.TYPE_KEYS.filter(key=>!have.includes(key)).forEach((key) => {
       const t = pets.TYPES[key];
       const b = document.createElement("button");
       b.className = "egg";
@@ -36,6 +41,7 @@
     $("inPetName").placeholder = t.defaultName;
     $("inTeam").value = s.team.name || "";
     $("inMembers").value = String(s.team.members || 0);
+    $('inTeam').disabled=!!s.pet;$('inMembers').disabled=!!s.pet;
     ui.show("name");
   }
 
@@ -44,7 +50,8 @@
     const name = $("inPetName").value.trim() || pets.TYPES[chosen].defaultName;
     const team = $("inTeam").value.trim() || "たんけんたい";
     const members = parseInt($("inMembers").value, 10) || 0;
-    const r = BCT.game.choosePet(chosen, name, team, members);
+    const r = BCT.store.get().pet ? BCT.game.adoptPet(chosen,name) : BCT.game.choosePet(chosen, name, team, members);
+    if(!r.ok){ui.toast('むかえられませんでした。保存状態と しんかを たしかめてね。');return;}
     hatch(r.gift);
   }
 

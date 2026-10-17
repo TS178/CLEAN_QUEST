@@ -8,7 +8,6 @@
   let wanderTimer = null;
   let bubbleTimer = null;
   let shownKey = "";
-  let portraitKey = "";
   let busy = false;       // なでる・あそぶ の演出中（このあいだの連打は かぞえない）
   let playToken = 0;      // あそびの とちゅうで 画面を はなれたら 1かいに かぞえない
   let pose = "normal";
@@ -36,7 +35,7 @@
     const worried = isWorried(s);
     pet.classList.toggle("worried", worried);
     const face = !worried && game.affection(s).stage >= 1 ? "happy" : undefined; // なつきど1：えがお
-    const k = JSON.stringify([s.pet.type, lv, s.equip, face, pose]);
+    const k = JSON.stringify([s.pet.type, lv, s.equip, face, pose, BCT.equipmentPlacement.revision]);
     if (k === shownKey && !force) return;
     shownKey = k;
     $("petBody").innerHTML = pets.renderState(s, { lv, face, pose });
@@ -54,26 +53,13 @@
       BCT.petRig.prefetch(s.pet.type);
     }
   }
-  const rigOn = (on) => BCT.petRig && BCT.petRig.setActive(rig, on);
+  const rigOn = (on) => {if(!BCT.petRig||!rig)return;BCT.petRig.setManualSpeed(rig,game.companionStates(BCT.store.get()).length>1?BCT.PET_RIG.common.speedRef*.45:null);BCT.petRig.setActive(rig,on);};
 
   function render() {
     const s = BCT.store.get();
     if (!s.pet) return;
     drawPet();
-    const pk = JSON.stringify([s.pet.type, shownLv(s), s.equip]);
-    if (pk !== portraitKey) {
-      portraitKey = pk;
-      $("fairyPortrait").innerHTML = BCT.art.render({ type: s.pet.type, stage: game.stageOf(shownLv(s)), equip: s.equip, face: "happy", motion: false });
-      // 種類・進化・装備ごとの絵全体を、丸枠の内側へ余白をつけて収める。
-      const portrait = $("fairyPortrait").querySelector("svg");
-      const bounds = portrait.getBBox();
-      if (bounds.width && bounds.height) {
-        const side = Math.hypot(bounds.width, bounds.height) * 1.06;
-        portrait.setAttribute("viewBox", `${bounds.x + bounds.width / 2 - side / 2} ${bounds.y + bounds.height / 2 - side / 2} ${side} ${side}`);
-      }
-      $("habitatPortrait").innerHTML = BCT.art.icon("home");
-      $("actHabitat").setAttribute("aria-label", `${BCT.HABITATS[s.pet.type]}へ いく`);
-    }
+    BCT.companionUI.render(s);fitPet();
     // けいけんち・なつきど・クイズ／そうじ の すすみぐあいは じぶん・ミッション画面で 見る（ホームには 出さない）
     renderBadges(s);
   }
@@ -103,6 +89,13 @@
     if (ui.current() !== "home" || busy) return stopWander();
     const w = playArea.clientWidth, h = playArea.clientHeight;
     if (!w) return;
+    const lane=BCT.companionUI.bounds(BCT.store.get().pet.type);
+    if(lane){
+      const now=Math.max(lane.minX,Math.min(lane.maxX,parseFloat(pet.style.left)||lane.minX));
+      const n=BCT.petRig.nextX(now,lane.minX,lane.maxX,pet.classList.contains('left'),Date.now()-lastTurn>=BCT.petRig.turnEvery(),Math.random());
+      if(n.turned){pet.classList.toggle('left',n.left);lastTurn=Date.now();}
+      pet.style.left=n.x+'px';pet.style.top=lane.y+'px';return;
+    }
     const half = pet.offsetWidth / 2 || 75;
     // よろこんで はねる 演出（イルカは 190px の とき 60〜80px。ようせいの 大きさに 比例）で 頭が 池の 上で きれないよう、上に すきまを あける。
     // 左右も 回転で はみださないよう すこし あける（小さい スマホで 池が ひくい ときに たいせつ）
@@ -444,11 +437,13 @@
     const hidden = wrap && wrap.classList.contains("gone") && bins ? bins.getBoundingClientRect().height : 0;
     // アイコンの帯を除いた高さに、ようせいとはねる余白を収める。
     const available = Math.max(320, pond.clientHeight - hidden) - playArea.offsetTop;
-    const size = Math.round(Math.max(72, Math.min(190, (available - 34) / 1.5)));
+    const lane=BCT.companionUI?.bounds(BCT.store.get().pet?.type);
+    const size = Math.round(lane?lane.size:Math.max(72, Math.min(190, (available - 34) / 1.5)));
     fit = size / 190;
     pet.style.setProperty("--pet-size", size + "px");
     pet.style.setProperty("--fit", fit.toFixed(3));
     pet.style.setProperty("--amp", baseAmp * fit);
+    if(lane){pet.style.transition='none';pet.style.left=Math.max(lane.minX,Math.min(lane.maxX,parseFloat(pet.style.left)||lane.minX))+'px';pet.style.top=lane.y+'px';void pet.offsetWidth;pet.style.removeProperty('transition');return;}
     // 池が ひくく なったら ようせいを 池の 中へ もどす
     const maxTop = ph - size / 2 - 10, minTop = Math.min(maxTop, size / 2 + 95 * fit + 12);
     const cur = pet.offsetTop, edge = size * .7 + 12;
@@ -465,7 +460,7 @@
   window.addEventListener("resize", fitHome);
   if (window.ResizeObserver) new ResizeObserver(fitPet).observe(pond);
 
-  BCT.home = { celebrate, say, render, petLegacy: doPet, playLegacy: play, react, petRect, drawPet };
+  BCT.home = { celebrate, say, render, petLegacy: doPet, playLegacy: play, react, petRect, drawPet, isBusy:()=>busy };
   BCT.screens.home = {
     show() {
       shownKey = "";
@@ -477,6 +472,7 @@
       if (BCT.pondVideo) BCT.pondVideo.play(); // 波の 動画（js/pond-video.js）
     },
     hide() {
+      BCT.companionUI.stop();
       // あそびの とちゅうで はなれたら かぞえない
       playToken++;
       busy = false;

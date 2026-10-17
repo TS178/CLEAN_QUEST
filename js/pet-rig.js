@@ -216,6 +216,12 @@
       img.alt = "";
       img.draggable = false;
       img.src = m[5];
+      if(BCT.art.isNeckItem?.(id)){
+        const [x,y,w,h]=m.slice(1,5).map(Number);
+        // Invert the item placement so the same head mask works in item-local space.
+        const mask=`<mask id="neck" maskUnits="userSpaceOnUse" x="${x}" y="${y}" width="${w}" height="${h}"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="white"/><g transform="scale(${1/a.s}) rotate(${-a.r}) translate(${-a.x} ${-a.y})">${BCT.art.neckMask(cfg.type,cfg.stage)}</g></mask>`;
+        img.src=BCT.art.toDataUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${w} ${h}" width="${w}" height="${h}"><defs>${mask}</defs><g mask="url(#neck)">${art()}</g></svg>`);
+      }
       img.style.left = m[1] + "px";
       img.style.top = m[2] + "px";
       img.style.width = m[3] + "px";

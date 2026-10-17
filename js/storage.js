@@ -4,8 +4,8 @@
  *   - ゴミの写真      … IndexedDB（LocalStorage は容量が小さいため）
  *   - 記念写真は保存しない（利用者が端末に保存するまでメモリの中だけ）
  *
- * けいけんち・ポイント・レベルは保存しない。受け取った報酬（claims）と買った物（owned）から
- * 毎回計算する（js/game.js）。値を別々に持たないので、食い違いが起きない。
+ * メダルは受け取った報酬・購入記録から計算する。既存の1匹の経験値は従来の台帳を使用。
+ * 2匹目を迎えた時に経験値を相棒ごとに確定し、以後の報酬はお世話中の相棒へ加算する。
  */
 (function () {
   const BCT = (window.BCT = window.BCT || {});
@@ -29,6 +29,9 @@
       createdAt: Date.now(),
       eventId: BCT.CONFIG.event.id,
       pet: null,              // { type, name }
+      petXp: null,            // null: legacy ledger; number: this companion's XP
+      companions: {},         // inactive companions; shared inventory stays at the top level
+      companionOrder: [],
       team: { name: "", members: 0 },
       seenLv: 1,              // レベルアップ演出を 見せた レベル
       claims: {},             // "イベントID:種類:ID" → { xp, coins, t }  受け取った報酬
@@ -135,6 +138,19 @@
         if (it && it.slot === "home" && b.owned[k] && b.pet && (!it.only || it.only === b.pet.type) && isObj(p)) b.habitat[k] = { x: unit(p.x), y: unit(p.y) };
       }
     }
+    b.petXp = typeof s.petXp === 'number' && Number.isFinite(s.petXp) ? Math.max(0, s.petXp) : null;
+    if (b.pet && isObj(s.companions)) {
+      for (const type of TYPES) {
+        const p = s.companions[type];
+        if (type === b.pet.type || !isObj(p) || p.pet?.type !== type || !Number.isFinite(p.petXp)) continue;
+        // Reuse the same ownership/species validation without recursively reading a roster.
+        const clean = sanitize({...b, ...p, owned:b.owned, companions:null, companionOrder:[]});
+        if (clean.petXp === null) continue;
+        b.companions[type] = Object.fromEntries(['pet','petXp','seenLv','equip','affection','toys','habitat'].map(k=>[k,clean[k]]));
+      }
+    }
+    const present = b.pet ? [b.pet.type, ...Object.keys(b.companions)] : [];
+    b.companionOrder = [...new Set([...(Array.isArray(s.companionOrder)?s.companionOrder:[]),...present])].filter(t=>present.includes(t));
     return b;
   }
 

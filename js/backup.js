@@ -103,6 +103,8 @@
     if (s.claims != null && !isObj(s.claims)) return "ごほうびの きろくが こわれています。";
     if (s.owned != null && !isObj(s.owned)) return "アイテムの きろくが こわれています。";
     if (s.pet != null && !isObj(s.pet)) return "ようせいの きろくが こわれています。";
+    if (s.companions != null && !isObj(s.companions)) return "相棒の きろくが こわれています。";
+    if (s.companionOrder != null && !Array.isArray(s.companionOrder)) return "相棒の ならびが こわれています。";
     if (o.prefs != null && !isObj(o.prefs)) return "設定の きろくが こわれています。";
     if (o.photos != null) {
       if (!isObj(o.photos)) return "写真の きろくが こわれています。";

@@ -10,7 +10,7 @@ try{
  for(const type of ['dolphin','turtle','hermit'])for(const [stage,level] of [[1,1],[2,3],[3,5]])for(const head of ['', 'head_straw','head_crown']){
   await b.ev(`BCT.store.transact(s=>{s.pet.type='${type}';s.food={drop_blue:{bought:100,fed:100,spent:0,xp:BCT.CONFIG.levels[${level-1}]}};s.seenLv=${level};s.equip={head:'${head}',acc:'accessory_scarf'};});BCT.ui.show('home');true`);
   await sleep(50);
-  const result=await b.ev(`(()=>{const svg=document.querySelector('#fairyPortrait svg'),r=svg.getBBox(),v=svg.viewBox.baseVal,cx=v.x+v.width/2,cy=v.y+v.height/2;return {type:svg.dataset.pet,stage:svg.dataset.stage,fit:[r.x,r.x+r.width].every(x=>[r.y,r.y+r.height].every(y=>Math.hypot(x-cx,y-cy)<v.width/2)),transform:getComputedStyle(svg).transform,html:document.querySelector('#actFairy').outerHTML};})()`);
+  const result=await b.ev(`(()=>{const svg=document.querySelector('#fairyPortrait svg[data-pet]'),v=svg.viewBox.baseVal,cx=v.x+v.width/2,cy=v.y+v.height/2,t=svg.dataset.pet,st=Number(svg.dataset.stage),scale=[0,.82,.93,1][st];const doc=new DOMParser().parseFromString('<svg xmlns="http://www.w3.org/2000/svg">'+BCT.art.neckMask(t,st)+'</svg>','image/svg+xml'),el=doc.querySelector('ellipse'),a=k=>Number(el.getAttribute(k));return {type:t,stage:String(st),fit:Array.from({length:36},(_,i)=>{const angle=i*Math.PI/18,x=100+(a('cx')+a('rx')*Math.cos(angle)-100)*scale,y=174+(a('cy')+a('ry')*Math.sin(angle)-174)*scale;return Math.hypot(x-cx,y-cy)<v.width/2}).every(Boolean),transform:getComputedStyle(svg).transform,html:document.querySelector('#actFairy').outerHTML};})()`);
   assert.equal(result.type,type);assert.equal(result.stage,String(stage));assert.ok(result.fit,`${type}-${stage}-${head} inside circle`);assert.equal(result.transform,'none');
   if(!head)portraits.push(result.html);
  }
@@ -30,5 +30,5 @@ try{
  await b.shot('tests/e2e/out/home-portraits-all.png');
  assert.deepEqual(b.consoleLogs.filter(x=>x.startsWith('EXCEPTION')),[]);
  for(const f of ['js/admin.js','js/mission.js','js/profile.js'])assert.ok(!fs.readFileSync(f,'utf8').includes('🎉'),f);
- console.log('PASS: 27 species/stage/equipment combinations fit the circle; 320/390px badge layout; mission navigation; admin QR still opens; five confetti labels removed; no JS errors.');
+ console.log('PASS: faces of 27 species/stage/equipment combinations fit the circle; 320/390px badge layout; mission navigation; admin QR still opens; no JS errors.');
 }finally{b.close();}

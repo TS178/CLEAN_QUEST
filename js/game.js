@@ -9,11 +9,11 @@
   const C = () => BCT.CONFIG;
 
   // ---------------- 計算 ----------------
-  // けいけんち・ポイントは 保存しない。受け取った報酬・お掃除・エサ・買った物から 毎回 計算する
+  // メダルは共通の台帳、2匹目を迎えた後の経験値は相棒ごとに管理する。
   const sum = (obj, f) => Object.values(obj || {}).reduce((a, v) => a + f(v), 0);
   const foodXp = (s) => sum(s.food, (f) => f.xp);
   const foodSpent = (s) => sum(s.food, (f) => f.spent);
-  const xp = (s) => sum(s.claims, (c) => c.xp) + foodXp(s);
+  const xp = (s) => Number.isFinite(s.petXp) ? s.petXp : sum(s.claims, (c) => c.xp) + foodXp(s);
   // ポイント（画面では「ポイント」。中の名前は coins のまま）
   const coinsEarned = (s) => sum(s.claims, (c) => c.coins) + ((s.beach && s.beach.points) || 0);
   const coinsSpent = (s) => sum(s.owned, (o) => (o.via === "shop" ? o.price : 0)) + foodSpent(s);
@@ -102,6 +102,7 @@
       if (s.claims[k]) return { ok: false, err: "dup" };
       const before = levelOf(xp(s));
       s.claims[k] = { xp: reward.xp, coins: reward.coins, t: Date.now() };
+      if (Number.isFinite(s.petXp)) s.petXp += reward.xp;
       s.eventId = ev();
       return { ok: true, xp: reward.xp, coins: reward.coins, lvBefore: before, lvAfter: levelOf(xp(s)) };
     });
@@ -137,7 +138,10 @@
   // はじめて ようせいを えらんだとき（赤いリボンを 1かいだけ プレゼント）
   function choosePet(type, name, team, members) {
     return BCT.store.transact((s) => {
+      if (!['dolphin','turtle','hermit'].includes(type)) return {ok:false,err:'species'};
+      if (Object.keys(s.companions || {}).length) return {ok:false,err:'companions'};
       s.pet = { type, name };
+      s.companionOrder = [type];
       s.team = { name: team, members };
       // 別の種類に えらびなおしたら、その種類専用の みためは はずす
       if (s.equip.look) s.equip.look = null;
@@ -155,6 +159,42 @@
       seedBeach(s, Date.now());
       s.seenLv = levelOf(xp(s));
       return { ok: true, gift };
+    });
+  }
+
+  const PET_FIELDS = ['pet','seenLv','equip','affection','toys','habitat'];
+  function snapshot(s) {
+    return {...JSON.parse(JSON.stringify(Object.fromEntries(PET_FIELDS.map(k=>[k,s[k]])))), petXp:xp(s)};
+  }
+  function companionStates(s) {
+    if (!s.pet) return [];
+    const types = [...new Set([...(s.companionOrder || []),s.pet.type,...Object.keys(s.companions || {})])];
+    return types.map(t=>t===s.pet.type?s:s.companions?.[t]?{...s,...s.companions[t]}:null).filter(Boolean);
+  }
+  function canAdopt(s) {
+    const list=companionStates(s);
+    return list.length>0 && list.length<3 && list.every(p=>stage(p)===3);
+  }
+  function selectCompanion(type) {
+    return BCT.store.transact(s=>{
+      if(s.pet?.type===type)return {ok:true};
+      const target=s.companions?.[type];
+      if(!target)return {ok:false,err:'notowned'};
+      s.companions[s.pet.type]=snapshot(s);
+      Object.assign(s,target);delete s.companions[type];
+      return {ok:true};
+    });
+  }
+  function adoptPet(type,name) {
+    return BCT.store.transact(s=>{
+      if(!canAdopt(s))return {ok:false,err:'locked'};
+      if(!['dolphin','turtle','hermit'].includes(type) || companionStates(s).some(p=>p.pet.type===type))return {ok:false,err:'species'};
+      s.companions[s.pet.type]=snapshot(s);
+      s.pet={type,name:String(name || 'ようせい').slice(0,12)};
+      s.petXp=0;s.seenLv=1;s.affection=0;s.toys={};s.habitat={};
+      s.equip={head:null,acc:s.owned.accessory_ribbon?'accessory_ribbon':null,look:null,frame:null};
+      s.companionOrder.push(type);
+      return {ok:true,gift:false};
     });
   }
 
@@ -300,6 +340,7 @@
       const before = levelOf(xp(s));
       o.fed++;
       o.xp += f.xp;
+      if (Number.isFinite(s.petXp)) s.petXp += f.xp;
       return { ok: true, xp: f.xp, food: f, lvBefore: before, lvAfter: levelOf(xp(s)), stock: o.bought - o.fed };
     });
   }
@@ -332,6 +373,7 @@
 
   BCT.game = {
     xp, coins, coinsEarned, coinsSpent, levelOf, stageOf, progressOf, level, stage, maxLevel,
+    companionStates, canAdopt, adoptPet, selectCompanion,
     affection, key, isClaimed, quizCleared, cleanCleared, quizEverCleared,
     owns, toyPlays, poses, shopItems, ownedItems, canBuy, ACHIEVEMENTS,
     claim, buy, equip, choosePet, pet, playToy, quizAnswered, grantAchievements, markSeen,

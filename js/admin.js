@@ -80,6 +80,8 @@
     on("[data-eq]", (b) => { if (b.dataset.id) st.equip[b.dataset.eq] = b.dataset.id; else delete st.equip[b.dataset.eq]; });
     drawPet();
     if(editing)bindDrag();
+    const furniture=document.createElement('section');furniture.className='adm-home-editor card';$('adminBody').append(furniture);
+    BCT.habitatSizing.editor(furniture,st.type);
   }
 
   function positionStatus(message) {
@@ -153,6 +155,6 @@
   BCT.admin = { state: () => JSON.parse(JSON.stringify(st)) };
   BCT.screens.admin = {
     show: render,
-    hide() { placement.cancel();drag=null;editing=false;if (rig) { BCT.petRig.destroy(rig); rig = null; } },
+    hide() { placement.cancel();BCT.habitatSizing.cancel();drag=null;editing=false;if (rig) { BCT.petRig.destroy(rig); rig = null; } },
   };
 })();

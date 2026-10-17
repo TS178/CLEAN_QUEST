@@ -199,7 +199,7 @@
       for (const el of document.querySelectorAll(".bin")) if (inRect(el.getBoundingClientRect(), x, y, 8)) return { bin: el.dataset.bin, el };
       return null;
     }
-    return inRect(BCT.home.petRect(), x, y, 16) ? { pet: true } : null;
+    return BCT.companionUI.targets().find(t=>inRect(t.r,x,y,8)) || null;
   }
   // はじいた むきに ある ゴミばこ（ようせい）を さがす
   function targetBySwipe(kind, x, y) {
@@ -212,7 +212,7 @@
     const dir = Math.atan2(vy, vx);
     const cands = kind === "trash"
       ? [...document.querySelectorAll(".bin")].map((el) => ({ bin: el.dataset.bin, el, r: el.getBoundingClientRect() }))
-      : [{ pet: true, r: BCT.home.petRect() }];
+      : BCT.companionUI.targets();
     let best = null;
     for (const c of cands) {
       const cx = (c.r.left + c.r.right) / 2, cy = (c.r.top + c.r.bottom) / 2;
@@ -258,7 +258,7 @@
     const tgt = targetAt(kind, e.clientX, e.clientY) || targetBySwipe(kind, e.clientX, e.clientY);
     if (!tgt) return flyGhost(drag.home, false);
     if (kind === "trash") sortTo(id, tgt.bin, tgt.el);
-    else feedPet(id);
+    else feedPet(id,tgt.type);
   });
   document.addEventListener("pointercancel", cancelDrag);
 
@@ -271,10 +271,11 @@
     const f = e.target.closest("[data-food]");
     if (f && f.classList.contains("empty")) return ui.show("shop", "food");
   });
-  $("pet").addEventListener("click", (e) => {
-    if (selected && selected.kind === "food") {
+  $("petPlayArea").addEventListener("click", (e) => {
+    const target=e.target.closest('.pet');
+    if (target && selected && selected.kind === "food") {
       e.stopImmediatePropagation(); // なでる では なく エサ
-      feedPet(selected.id);
+      feedPet(selected.id,target.dataset.type);
     }
   }, true);
 
@@ -331,7 +332,12 @@
   }
 
   // ---------------- エサを あげる ----------------
-  async function feedPet(id) {
+  let feeding=false;
+  async function feedPet(id,type) {
+    if(feeding)return {ok:false,err:'busy'};
+    if(type && type!==BCT.store.get().pet.type && !BCT.companionUI.choose(type,'home')){if(drag)flyGhost(drag.home,false);return {ok:false,err:'busy'};}
+    feeding=true;
+    try {
     select(null);
     const r = game.feed(id);
     if (!r.ok) {
@@ -351,7 +357,8 @@
       await BCT.afterGain();
     }
     return r;
+    } finally {feeding=false;}
   }
 
-  BCT.beach = { show, hide, render, tick, sortTo, feedPet, select, funPun };
+  BCT.beach = { show, hide, render, tick, sortTo, feedPet, select, funPun, isFeeding:()=>feeding };
 })();

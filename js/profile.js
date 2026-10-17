@@ -55,6 +55,7 @@
       </div>`;
 
     $("meEdit").onclick = editNames;
+    const roster=document.createElement('section');roster.className='card';$('meTop').prepend(roster);BCT.companionUI.picker(roster,'me');
   }
 
   async function editNames() {

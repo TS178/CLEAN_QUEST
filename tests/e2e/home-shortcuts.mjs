@@ -38,9 +38,9 @@ try{
     for(const [stage,level] of [[1,1],[2,3],[3,5]]){
       await b.ev(`BCT.store.transact(s=>{s.pet.type='${type}';s.food={drop_blue:{bought:100,fed:100,spent:0,xp:BCT.CONFIG.levels[${level-1}]}};s.seenLv=${level};});BCT.ui.show('home');true`);
       await sleep(100);
-      assert.equal(await b.ev(`document.querySelector('#fairyPortrait svg').dataset.pet`),type);
-      assert.equal(await b.ev(`document.querySelector('#fairyPortrait svg').dataset.stage`),String(stage));
-      assert.ok(await b.ev(`document.querySelector('#habitatPortrait img').src.endsWith('habitat_${type}.webp')`));
+      assert.equal(await b.ev(`document.querySelector('#fairyPortrait svg[data-pet]').dataset.pet`),type);
+      assert.equal(await b.ev(`document.querySelector('#fairyPortrait svg[data-pet]').dataset.stage`),String(stage));
+      assert.ok(await b.ev(`document.querySelector('#habitatPortrait image').getAttribute('href')===BCT.HABITAT_SPRITES.habitat_${type}.src`));
       // Both translation and all reaction layers are inside the area below the shortcuts.
       for(const effect of ['joy','eat','special','playing']){
         await b.ev(`document.querySelector('#pet').classList.add('${effect}','close');true`);

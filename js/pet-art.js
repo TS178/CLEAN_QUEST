@@ -24,11 +24,19 @@
   };
   const SIZE = {
     head_straw:[84,58],head_marine:[68,49],head_flower:[41,30],head_shell:[40,33],head_crown:[55,44],reward_clean_hat:[74,59],
-    accessory_ribbon:[43,31],accessory_scarf:[67,48],accessory_pendant:[32,34],accessory_korogaki:[52,60],accessory_badge:[28,28],reward_guardian_medal:[28,43]
+    accessory_ribbon:[43,31],accessory_scarf:[67,48],accessory_pendant:[46,52],accessory_korogaki:[52,60],accessory_badge:[28,28],reward_guardian_medal:[28,43]
   };
   const ITEM_ART = Object.fromEntries(Object.entries(SIZE).map(([id,[w,h]]) => [id, () => sprite(id,-w/2,BCT.itemOf(id).slot==='head'?-h+11:-h*.3,w,h)]));
   function placed(id,a) {
     return ITEM_ART[id] ? `<g data-item="${id}" transform="translate(${a.x} ${a.y}) rotate(${a.r}) scale(${a.s})">${ITEM_ART[id]()}</g>` : '';
+  }
+  // Hide only accessory pixels behind the head; the original face/blink stays untouched.
+  const NECK_HEAD={dolphin:[[119,97,44,30],[134,87,38,29],[148,94,33,31]],turtle:[[142,100,34,26],[154,85,29,25],[162,73,27,25]],hermit:[[146,129,32,25],[142,116,30,26],[132,124,30,25]]};
+  const isNeckItem=id=>['accessory_pendant','accessory_korogaki'].includes(id);
+  function neckMask(type,stage){const [x,y,rx,ry]=NECK_HEAD[type][stage-1];return `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="black"/>`;}
+  function neckPlaced(type,stage,id,a){
+    const content=placed(id,a);if(!isNeckItem(id))return content;
+    const mask=nid('neck');return `<defs><mask id="${mask}" maskUnits="userSpaceOnUse" x="-300" y="-300" width="800" height="800"><rect x="-300" y="-300" width="800" height="800" fill="white"/>${neckMask(type,stage)}</mask></defs><g mask="url(#${mask})">${content}</g>`;
   }
   const LOOK_REGION = {
     dolphin:{
@@ -69,7 +77,7 @@
     let inner=sprite(`${type}-${stage}-${face}`,...BODY_BOX[stage],'xMidYMax meet');
     if(opts.motionLayer==='overlay')inner='';
     if(look&&look.only===type&&LOOK_ART[eq.look])inner+=LOOK_ART[eq.look](stage);
-    inner+=placed(eq.acc,a.acc)+placed(eq.head,a.head);
+    inner+=neckPlaced(type,stage,eq.acc,a.acc)+placed(eq.head,a.head);
     let back='',front='';
     if(p.toy){const [x,y,s]=p.toy;front+=`<g data-item="${key}" transform="translate(${x} ${y}) scale(${s})">${TOY_ART[key]()}</g>`;}
     if(p.fx==='ring'){
@@ -185,6 +193,6 @@
 
   BCT.art = {
     render, itemIcon, icon, eggSvg, seaSvg, frameSvg, frameThumb, FRAME_BANNER, toDataUrl, toImage,
-    ANCHOR, POSE, ITEM_ART, LOOK_ART, TOY_ART, FRAME_ART,
+    ANCHOR, POSE, ITEM_ART, LOOK_ART, TOY_ART, FRAME_ART, neckMask, isNeckItem,
   };
 })();

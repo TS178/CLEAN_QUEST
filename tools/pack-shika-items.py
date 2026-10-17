@@ -1,4 +1,4 @@
-"""Export the six approved Shika designs and update the embedded sprite bundles.
+"""Export the six approved Shika designs plus the tilted crown into sprite bundles.
 
 Run after pack-pet-art.mjs / pack-habitat-art.mjs if rebuilding those atlases.
 Requires Pillow with WebP support. Original approved PNGs remain untouched.
@@ -10,12 +10,13 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "assets/design-proposals/shika-items-20261016"
-OVERRIDES = {"accessory_pendant": ROOT / "assets/item-source/sakuragai-pendant-charm.png"}
+OVERRIDES = {"head_crown": ROOT / "assets/item-source/crown-forward.png"}
 GROUPS = {
     "PET_SPRITES": ("pet-sprites.js", "items", {
         "accessory_pendant": "sakuragai-pendant.png",
         "accessory_korogaki": "korogaki-pochette.png",
         "head_flower": "hamanasu-flower.png",
+        "head_crown": "crown-forward.png",
     }),
     "HABITAT_SPRITES": ("habitat-sprites.js", "habitats", {
         "home_shika_lighthouse": "fukuura-lighthouse.png",

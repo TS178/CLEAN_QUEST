@@ -16,7 +16,7 @@
  * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
  * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.25";
+const APP_VERSION = "1.26";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",
@@ -30,6 +30,9 @@ const FILES = [
   "css/pet-rig.css",
   "css/collection-painted.css",
   "css/ui-design.css",
+  "css/companions.css",
+  "js/companions.js",
+  "js/habitat-sizing.js",
   "assets/ui/medal.webp",
   "assets/ui/beach.webp",
   "assets/ui/camera.webp",

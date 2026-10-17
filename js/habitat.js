@@ -29,9 +29,10 @@
     const s = BCT.store.get();
     if (!s.pet) return;
     $("hbTitle").textContent = `${BCT.HABITATS[s.pet.type]}`;
+    let roster=$('hbRoster');if(!roster){roster=document.createElement('section');roster.id='hbRoster';scene.before(roster);}BCT.companionUI.picker(roster,'habitat');
     $("hbBg").innerHTML = H.habitatBg(s.pet.type);
     $("hbItems").innerHTML = Object.entries(s.habitat).map(([id, p]) =>
-      `<button class="hb-item" data-hb="${id}" style="left:${(p.x * 100).toFixed(1)}%;top:${(p.y * 100).toFixed(1)}%"
+      `<button class="hb-item" data-hb="${id}" style="width:${24*BCT.habitatSizing.get(s.pet.type,id)}%;left:${(p.x * 100).toFixed(1)}%;top:${(p.y * 100).toFixed(1)}%"
         aria-label="${ui.esc(BCT.itemOf(id).name)}">${H.homeItemSvg(id)}</button>`).join("");
     const lv = Math.min(s.seenLv, game.level(s));
     $("hbPetBody").innerHTML = pets.renderState(s, { lv, face: "happy" });
