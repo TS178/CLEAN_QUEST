@@ -53,15 +53,16 @@
         <form class="card" id="nameForm" autocomplete="off">
           <label class="field"><span>ようせいの なまえ（いれなくても OK）</span>
             <input id="inPetName" maxlength="12"></label>
-          <label class="field"><span>たんけんたいの なまえ</span>
+          <label class="field" id="nameTeamField"><span>たんけんたいの なまえ</span>
             <input id="inTeam" maxlength="16" placeholder="れい：うみがめたんけんたい"></label>
-          <label class="field"><span>なんにんで さんか？</span>
+          <label class="field" id="nameMembersField"><span>なんにんで さんか？</span>
             <select id="inMembers">
               <option value="0">えらばない</option>
               <option value="1">1にん</option><option value="2">2にん</option><option value="3">3にん</option>
               <option value="4">4にん</option><option value="5">5にん</option><option value="6">6にん</option>
               <option value="7">7にん</option><option value="8">8にん</option>
             </select></label>
+          <p class="note" id="existingTeamNote" hidden></p>
           <p class="note">※ ほんとうの なまえは いれないでね（ニックネームで OK）。<br>
             ※ きろくは この スマホの なかだけに ほぞんされます。</p>
           <div class="btn-row">

@@ -5,23 +5,50 @@ const b=await launch({port:18400+Math.floor(Math.random()*300),width:390,height:
 const base=process.env.BCT_URL||'http://127.0.0.1:8766/';
 fs.mkdirSync('tests/e2e/out',{recursive:true});
 const ev=b.ev,click=sel=>ev(`document.querySelector(${JSON.stringify(sel)}).click()`);
+async function checkSwimming(count){
+  const samples=[];
+  for(let i=0;i<24;i++){
+    await sleep(900);
+    samples.push(await ev(`BCT.companionUI.targets().map(p=>({type:p.type,x:p.r.left,span:(b=>b.maxX-b.minX)(BCT.companionUI.bounds(p.type))}))`));
+  }
+  assert.equal(samples[0].length,count);
+  for(const p of samples[0]){
+    const xs=samples.map(s=>s.find(x=>x.type===p.type).x),deltas=xs.slice(1).map((x,i)=>x-xs[i]);
+    assert.ok(Math.max(...xs)-Math.min(...xs)>=p.span*.7,`${count} pets: ${p.type} visibly traverses its lane: ${xs}`);
+    assert.ok(deltas.some(x=>x>4)&&deltas.some(x=>x< -4),`${count} pets: ${p.type} swims both ways without waiting 30s: ${xs}`);
+  }
+}
 try{
-  await b.goto(base);await ev(`BCT.game.choosePet('dolphin','いるか','確認隊',1);BCT.ui.show('home')`);
+  await b.goto(base);await click('#eggs [data-type="dolphin"]');await click('#modalBox .mint');
+  assert.equal(await ev(`!document.getElementById('inTeam').disabled&&!document.getElementById('nameTeamField').hidden`),true,'first pet can name the team');
+  await ev(`BCT.game.choosePet('dolphin','いるか','確認隊',1);BCT.ui.show('home')`);
   assert.equal(await ev(`document.querySelectorAll('#petPlayArea>.pet').length`),1);
   await ev(`BCT.game.claim('test','unlock',{xp:1000,coins:10000});BCT.game.markSeen(BCT.game.level(BCT.store.get()));BCT.home.render()`);
   assert.equal(await ev(`document.getElementById('homeAdopt').hidden`),false);
   await click('#homeAdopt');assert.equal(await ev(`document.querySelectorAll('#eggs .egg').length`),2);
   await click('#eggs [data-type="turtle"]');await click('#modalBox .mint');
+  assert.equal(await ev(`document.getElementById('inTeam').disabled&&document.getElementById('nameTeamField').hidden&&document.getElementById('nameMembersField').hidden`),true,'second pet cannot edit team');
+  assert.match(await ev(`document.getElementById('existingTeamNote').textContent`),/確認隊/);
   await ev(`document.getElementById('inPetName').value='かめ';document.getElementById('nameForm').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}))`);
   await sleep(2900);await click('#hatchGo');await sleep(800);
   assert.equal(await ev(`BCT.game.xp(BCT.store.get())`),0);
   assert.equal(await ev(`document.querySelectorAll('#petPlayArea>.pet').length`),2);
+  assert.equal(await ev(`BCT.store.get().team.name`),'確認隊');
+  await checkSwimming(2);
   await b.shot('tests/e2e/out/companions-two.png');
-  await ev(`BCT.game.claim('test','unlock2',{xp:1000,coins:0});BCT.game.markSeen(BCT.game.level(BCT.store.get()));BCT.game.adoptPet('hermit','やどかり');BCT.ui.show('home')`);
+  await ev(`BCT.game.claim('test','unlock2',{xp:1000,coins:0});BCT.game.markSeen(BCT.game.level(BCT.store.get()));BCT.home.render()`);
+  await click('#homeAdopt');await click('#eggs [data-type="hermit"]');await click('#modalBox .mint');
+  assert.equal(await ev(`document.getElementById('inTeam').disabled&&document.getElementById('nameTeamField').hidden`),true,'third pet cannot edit team');
+  await ev(`document.getElementById('inPetName').value='やどかり';document.getElementById('nameForm').dispatchEvent(new Event('submit',{cancelable:true,bubbles:true}))`);
+  await sleep(2900);await click('#hatchGo');await sleep(800);
+  assert.equal(await ev(`BCT.store.get().team.name`),'確認隊');
   await sleep(1200);
   assert.equal(await ev(`document.querySelectorAll('#petPlayArea>.pet').length`),3);
   assert.equal(await ev(`document.querySelectorAll('#fairyPortrait [data-companion]').length`),3);
   assert.equal(await ev(`document.querySelectorAll('#habitatPortrait [data-companion]').length`),3);
+  await checkSwimming(3);
+  const badges=await ev(`(()=>{const r=document.querySelector('.hbg-medal').getBoundingClientRect(),badge=document.getElementById('homeBadges').getBoundingClientRect(),tabs=document.querySelector('.tabs').getBoundingClientRect();return {size:r.width,gap:tabs.top-badge.bottom}})()`);
+  assert.ok(badges.size>=40&&badges.gap>=0&&badges.gap<=18,'larger badges and compact tab gap '+JSON.stringify(badges));
   await b.shot('tests/e2e/out/companions-three.png');
   assert.equal(await ev(`(()=>{const r=document.getElementById('pondShortcuts').getBoundingClientRect();return BCT.companionUI.targets().every(p=>p.r.top>=r.bottom)})()`),true,'pets below shortcuts');
   // The three meshes exist and are active; moving between screens cleans up secondary rigs.

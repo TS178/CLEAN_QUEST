@@ -92,8 +92,8 @@
     const lane=BCT.companionUI.bounds(BCT.store.get().pet.type);
     if(lane){
       const now=Math.max(lane.minX,Math.min(lane.maxX,parseFloat(pet.style.left)||lane.minX));
-      const n=BCT.petRig.nextX(now,lane.minX,lane.maxX,pet.classList.contains('left'),Date.now()-lastTurn>=BCT.petRig.turnEvery(),Math.random());
-      if(n.turned){pet.classList.toggle('left',n.left);lastTurn=Date.now();}
+      const n=BCT.companionUI.nextPosition(now,lane,pet.classList.contains('left'));
+      pet.classList.toggle('left',n.left);
       pet.style.left=n.x+'px';pet.style.top=lane.y+'px';return;
     }
     const half = pet.offsetWidth / 2 || 75;
@@ -443,7 +443,14 @@
     pet.style.setProperty("--pet-size", size + "px");
     pet.style.setProperty("--fit", fit.toFixed(3));
     pet.style.setProperty("--amp", baseAmp * fit);
-    if(lane){pet.style.transition='none';pet.style.left=Math.max(lane.minX,Math.min(lane.maxX,parseFloat(pet.style.left)||lane.minX))+'px';pet.style.top=lane.y+'px';void pet.offsetWidth;pet.style.removeProperty('transition');return;}
+    if(lane){
+      const x=Math.max(lane.minX,Math.min(lane.maxX,parseFloat(pet.style.left)||lane.minX));
+      // Do not interrupt an in-flight swim on an unrelated home refresh.
+      if(pet.style.left!==x+'px'||pet.style.top!==lane.y+'px'){
+        pet.style.transition='none';pet.style.left=x+'px';pet.style.top=lane.y+'px';void pet.offsetWidth;pet.style.removeProperty('transition');
+      }
+      return;
+    }
     // 池が ひくく なったら ようせいを 池の 中へ もどす
     const maxTop = ph - size / 2 - 10, minTop = Math.min(maxTop, size / 2 + 95 * fit + 12);
     const cur = pet.offsetTop, edge = size * .7 + 12;

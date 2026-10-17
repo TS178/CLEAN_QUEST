@@ -1,5 +1,6 @@
 .companion-picker{display:flex;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
 body #scr-home.has-companions .pond{min-height:300px}
+body #scr-home.active{padding-bottom:4px}
 .companion-choice{flex:1;min-width:76px;max-width:160px;display:flex;align-items:center;flex-direction:column;border:2px solid #d2e7df;border-radius:18px;background:#fffaf0;color:#365d59;padding:8px;cursor:pointer;font:inherit;font-weight:700;overflow-wrap:anywhere}
 .companion-choice.on{border-color:#328b7d;background:#e6f7ed;box-shadow:0 2px 0 #abd7c5}
 .companion-choice>span{display:block;width:60px;height:60px;border-radius:50%;overflow:hidden;background:#e3f6ee}

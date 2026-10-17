@@ -42,6 +42,9 @@
     $("inTeam").value = s.team.name || "";
     $("inMembers").value = String(s.team.members || 0);
     $('inTeam').disabled=!!s.pet;$('inMembers').disabled=!!s.pet;
+    $('nameTeamField').hidden=!!s.pet;$('nameMembersField').hidden=!!s.pet;
+    $('existingTeamNote').hidden=!s.pet;
+    $('existingTeamNote').textContent=s.pet?`「${s.team.name || 'たんけんたい'}」の あたらしい相棒だよ。たんけんたいの なまえは そのまま！`:'';
     ui.show("name");
   }
 

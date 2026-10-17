@@ -52,16 +52,24 @@
   function bounds(type){
     const list=game.companionStates(B.store.get()),i=list.findIndex(p=>p.pet.type===type),area=$('petPlayArea');
     if(list.length<2)return null;
-    const lane=area.clientWidth/list.length,size=Math.min(140,lane*.78,area.clientHeight*.65);
+    const lane=area.clientWidth/list.length,size=Math.min(140,lane*.68,area.clientHeight*.65);
     return {minX:lane*i+size/2+3,maxX:lane*(i+1)-size/2-3,y:Math.max(size/2+16,Math.min(area.clientHeight-size/2-12,area.clientHeight*(type==='hermit'?.72:.52))),size};
+  }
+  // Small shared lanes need a full stride and an immediate turn at the edge.
+  // The single-pet wanderer's 30-second turn delay leaves these lanes almost stationary.
+  function nextPosition(x,b,left){
+    const span=Math.max(0,b.maxX-b.minX),now=Math.max(b.minX,Math.min(b.maxX,x));
+    const ahead=left?now-b.minX:b.maxX-now;
+    if(ahead<.5)left=!left;
+    return {x:Math.max(b.minX,Math.min(b.maxX,now+(left?-1:1)*span*.5)),left};
   }
   function step(){
     if(document.hidden||ui.current()!=='home')return;
     for(const [type,o] of swimmers){const b=bounds(type);if(!b)continue;
       o.el.style.setProperty('--pet-size',b.size+'px');
       const now=Math.max(b.minX,Math.min(b.maxX,parseFloat(o.el.style.left)||b.minX));
-      const next=B.petRig.nextX(now,b.minX,b.maxX,o.el.classList.contains('left'),Date.now()-o.turn>B.petRig.turnEvery(),Math.random());
-      if(next.turned){o.el.classList.toggle('left',next.left);o.turn=Date.now();}
+      const next=nextPosition(now,b,o.el.classList.contains('left'));
+      o.el.classList.toggle('left',next.left);
       o.el.style.left=next.x+'px';o.el.style.top=b.y+Math.sin(Date.now()/6000+o.index)*5+'px';
       B.petRig.setActive(o.rig,true);
     }
@@ -77,12 +85,12 @@
         el.style.transition='none';$('petPlayArea').append(el);const b=bounds(p.pet.type);el.style.left=(b.minX+b.maxX)/2+'px';el.style.top=b.y+'px';el.style.setProperty('--pet-size',b.size+'px');void el.offsetWidth;el.style.removeProperty('transition');
         const rig=B.petRig.create({type:p.pet.type,stage:game.stage(p),equip:p.equip,host:el.querySelector('.facing'),track:el,owner:el});
         el.onclick=()=>choose(p.pet.type,'home');el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(p.pet.type,'home');}};
-        swimmers.set(p.pet.type,{el,rig,index,turn:Date.now()});if(rig)B.petRig.setManualSpeed(rig,B.PET_RIG.common.speedRef*.45);B.petRig.prefetch(p.pet.type);
+        swimmers.set(p.pet.type,{el,rig,index});if(rig)B.petRig.setManualSpeed(rig,B.PET_RIG.common.speedRef*.45);B.petRig.prefetch(p.pet.type);
       });step();if(swimmers.size)timer=setInterval(step,3600);
     }
   }
   document.addEventListener('visibilitychange',()=>{for(const o of swimmers.values())B.petRig.setActive(o.rig,!document.hidden&&ui.current()==='home');if(!document.hidden)step();});
   window.addEventListener('resize',step);
   if(window.ResizeObserver)new ResizeObserver(step).observe($('petPlayArea'));
-  B.companionUI={render,stop,bounds,picker,choose,faceSvg,targets:()=>[...document.querySelectorAll('#petPlayArea > .pet')].map(el=>({type:el.dataset.type,el,r:el.getBoundingClientRect(),pet:true}))};
+  B.companionUI={render,stop,bounds,nextPosition,picker,choose,faceSvg,targets:()=>[...document.querySelectorAll('#petPlayArea > .pet')].map(el=>({type:el.dataset.type,el,r:el.getBoundingClientRect(),pet:true}))};
 })();
