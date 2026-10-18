@@ -13,6 +13,7 @@
   const BCT = window.BCT;
   const { $, ui, game, pets } = BCT;
   const H = BCT.homeArt;
+  const TREASURES = {sakura_shell:{name:'さくら貝',src:'assets/beach/sakura-shell.png'},sea_glass:{name:'シーグラス',src:'assets/beach/sea-glass.png'}};
   const layer = $("beachTrash");
   const SAND_TOP = 0.66, SAND_H = 0.29; // ゴミを おく 砂浜の はんい（池の 高さに 対する 割合）
   const SORT_LINES = ["ありがとう！ ピカピカだね", "すごい！ ただしく わけられたね", "うみが よろこんでるよ！", "その ちょうし！"];
@@ -30,6 +31,7 @@
       BCT.home.drawPet();
       BCT.home.say("あれ？ ゴミが ながれついたよ…");
     }
+    if (r.ok && r.treasures && ui.current() === 'home') render();
     return r;
   }
   function show() {
@@ -101,6 +103,10 @@
       return `<button class="trash-piece" data-trash="${d.id}" data-sand-x="${d.x}" data-sand-y="${d.y}" aria-label="${ui.esc(t.name)}"
         style="left:${(d.x * 100).toFixed(1)}%;top:${((SAND_TOP + d.y * SAND_H) * 100).toFixed(1)}%">${H.trashSvg(d.kind)}</button>`;
     }).join("");
+    if (!s.beach.dirt.length) layer.innerHTML += s.beach.treasures.map(t => {
+      const art=TREASURES[t.kind];
+      return `<button type="button" class="beach-treasure" data-treasure="${ui.esc(t.id)}" data-kind="${t.kind}" data-sand-x="${t.x}" data-sand-y="${t.y}" aria-label="${art.name}を ひろう（${BCT.CONFIG.beach.pointsPerTreasure}メダル）"><img src="${art.src}" alt="" draggable="false"></button>`;
+    }).join('');
     if (!$("bins").children.length) {
       $("bins").innerHTML = BCT.BINS.map((b) => `<button class="bin" data-bin="${b.key}" style="--bin:${b.color}" aria-label="${ui.esc(b.name)}の ゴミばこ">
         ${H.binSvg(b.key)}<span>${ui.esc(b.name)}</span></button>`).join("");
@@ -114,11 +120,11 @@
   function layoutTrash() {
     const w = layer.clientWidth, h = layer.clientHeight;
     if (!w || !h) return;
-    layer.querySelectorAll("[data-trash]").forEach((el) => {
+    layer.querySelectorAll("[data-trash], [data-treasure]").forEach((el) => {
       const radius = el.offsetWidth / 2 + 6; // ゆれ・選択時の拡大も含める
       const nx = Number(el.dataset.sandX), ny = Number(el.dataset.sandY);
       const x = Math.max(radius, Math.min(w - radius, nx * w));
-      const y = Math.max(radius, Math.min(h - radius, (SAND_TOP + ny * SAND_H) * h));
+      const y = Math.max(radius, Math.min(h - radius, (el.dataset.treasure ? ny : SAND_TOP + ny * SAND_H) * h));
       el.style.left = x + "px";
       el.style.top = y + "px";
     });
@@ -134,6 +140,7 @@
     $("beachStatus").innerHTML = lv > 0
       ? `<span class="dirt">${BCT.art.icon('dirty')} よごれ ${dots}</span> <b>ゴミを ゴミばこへ ドラッグ！</b>`
       : `<span class="dirt clean">${BCT.art.icon('sparkling')} ピカピカ</span>${mins ? ` <span class="next">つぎの ゴミまで あと ${funPun(mins)}</span>` : ""}`;
+    if (!lv && s.beach.treasures.length) $('beachStatus').innerHTML += `<span class="beach-treasure-hint">貝がら・シーグラスを タップ！ 1つ ${BCT.CONFIG.beach.pointsPerTreasure}メダル</span>`;
   }
   function renderFood() {
     const s = BCT.store.get();
@@ -265,6 +272,8 @@
   // タップ操作：えらんだ ゴミ → ゴミばこ ／ えらんだ エサ → ようせい
   document.addEventListener("click", (e) => {
     if (ui.current() !== "home") return;
+    const treasure=e.target.closest('[data-treasure]');
+    if (treasure) return pickTreasure(treasure);
     const bin = e.target.closest("[data-bin]");
     if (bin && selected && selected.kind === "trash") return sortTo(selected.id, bin.dataset.bin, bin);
     if (e.target.closest("[data-food-shop]")) return ui.show("shop", "food");
@@ -280,6 +289,18 @@
   }, true);
 
   // ---------------- すてる ----------------
+  function pickTreasure(el) {
+    select(null);
+    const origin=el.getBoundingClientRect(),r=game.collectTreasure(el.dataset.treasure);
+    if (!r.ok) {
+      if (r.err==='save') ui.toast('保存できませんでした。もう一度ためしてください。');
+      if (r.err==='dirty') tick();
+      render();return r;
+    }
+    BCT.coinFly?.from(origin);
+    ui.toast(`${TREASURES[r.kind].name}を みつけた！ +${r.points} たんけんたいメダル`);
+    render();ui.refreshHeader();return r;
+  }
   function sortTo(id, binKey, binEl) {
     select(null);
     const r = game.sortTrash(id, binKey);

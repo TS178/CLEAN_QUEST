@@ -32,6 +32,50 @@ function tab(storage) {
 }
 const fresh = () => tab(makeStorage());
 
+function cleanBeach(B) {
+  for (const d of [...B.store.get().beach.dirt]) assert.equal(B.game.sortTrash(d.id,B.beachTrashOf(d.kind).bin).ok,true);
+}
+test('きれいな砂浜の貝2個・シーグラス1個は各5メダルで、別タブや再読み込みで重複しない',()=>{
+  const disk=makeStorage(),B=tab(disk);B.game.choosePet('dolphin','いるか','隊',1);
+  assert.equal(B.store.get().beach.treasures.length,0);cleanBeach(B);
+  const treasures=JSON.parse(JSON.stringify(B.store.get().beach.treasures));
+  assert.deepEqual(treasures.map(t=>t.kind),['sakura_shell','sakura_shell','sea_glass']);
+  const other=tab(disk),xp=B.game.xp(B.store.get()),sorted=B.store.get().beach.sorted,start=B.game.coins(B.store.get());
+  assert.equal(B.game.collectTreasure(treasures[0].id).points,5);
+  assert.equal(other.game.collectTreasure(treasures[0].id).err,'gone');
+  for(const t of treasures.slice(1))assert.equal(other.game.collectTreasure(t.id).points,5);
+  const reload=tab(disk);reload.game.tickBeach();
+  assert.equal(reload.store.get().beach.treasures.length,0);
+  assert.equal(reload.game.coins(reload.store.get()),start+15);
+  assert.equal(reload.game.xp(reload.store.get()),xp);assert.equal(reload.store.get().beach.sorted,sorted);
+  const backup=JSON.parse(JSON.stringify(reload.store.get()));reload.store.replace(backup);reload.game.tickBeach();
+  assert.equal(reload.store.get().beach.treasures.length,0);
+});
+test('ゴミの到着で拾い残しを消し、次の掃除で新しい貝を出す。期限切れは加算しない',()=>{
+  const B=fresh();B.game.choosePet('turtle','かめ','隊',1);cleanBeach(B);
+  const ids=B.store.get().beach.treasures.map(t=>t.id),points=B.store.get().beach.points;
+  B.store.transact(s=>{s.beach.last=Date.now()-B.CONFIG.beach.dirtEveryMin*60000-100;return {ok:true};});
+  assert.equal(B.game.collectTreasure(ids[0]).err,'dirty');assert.equal(B.store.get().beach.points,points);
+  assert.ok(B.game.tickBeach().added>0);assert.equal(B.store.get().beach.treasures.length,0);
+  cleanBeach(B);assert.equal(B.store.get().beach.treasures.length,3);
+  assert.equal(B.store.get().beach.treasureCycle,2);assert.ok(B.store.get().beach.treasures.every(t=>!ids.includes(t.id)));
+});
+test('貝の保存失敗は報酬と拾った状態を巻き戻す',()=>{
+  const disk=makeStorage(),B=tab(disk);B.game.choosePet('hermit','やど','隊',1);cleanBeach(B);
+  const before=JSON.stringify(B.store.get()),id=B.store.get().beach.treasures[0].id;
+  disk.setItem=()=>{throw Error('quota');};assert.equal(B.game.collectTreasure(id).err,'save');
+  assert.deepEqual(JSON.parse(JSON.stringify(B.store.get())),JSON.parse(before));
+});
+test('旧版のきれいな保存データには一度だけ追加し、不正な貝データを除外する',()=>{
+  const disk=makeStorage(),B=tab(disk);B.game.choosePet('dolphin','いるか','隊',1);cleanBeach(B);
+  const old=JSON.parse(JSON.stringify(B.store.get()));delete old.beach.treasures;delete old.beach.treasureCycle;
+  B.store.replace(old);assert.equal(B.game.tickBeach().treasures,true);assert.equal(B.store.get().beach.treasures.length,3);
+  const ids=JSON.parse(JSON.stringify(B.store.get().beach.treasures));tab(disk).game.tickBeach();assert.deepEqual(JSON.parse(JSON.stringify(tab(disk).store.get().beach.treasures)),ids);
+  const bad=JSON.parse(JSON.stringify(B.store.get()));const t=bad.beach.treasures[0];bad.beach.treasures=[t,t,{...t,id:'bad',kind:'unknown'}];
+  B.store.replace(bad);assert.equal(B.store.get().beach.treasures.length,1);
+  old.beach.last=Date.now()-B.CONFIG.beach.dirtEveryMin*60000-100;B.store.replace(old);B.game.tickBeach();assert.equal(B.store.get().beach.treasures.length,0);
+});
+
 test('相棒は順に3匹まで育成でき、経験値・装備・すみかを独立して保存する',()=>{
   const disk=makeStorage(),B=tab(disk),g=B.game,s=()=>B.store.get();
   g.choosePet('dolphin','いるか','探検隊',2);

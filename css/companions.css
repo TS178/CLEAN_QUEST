@@ -5,7 +5,7 @@ body #scr-home.active{padding-bottom:4px}
 .companion-choice.on{border-color:#328b7d;background:#e6f7ed;box-shadow:0 2px 0 #abd7c5}
 .companion-choice>span{display:block;width:60px;height:60px;border-radius:50%;overflow:hidden;background:#e3f6ee}
 .companion-choice svg{width:100%;height:100%}.companion-choice small{font-size:10px;color:#648078}
-#homeAdopt{position:absolute;right:10px;top:14px;z-index:9;max-width:calc(100% - 174px);font-size:11px;padding:8px}
+#homeAdopt{position:absolute;left:12px;top:108px;z-index:9;max-width:calc(100% - 24px);font-size:11px;padding:8px}
 #homeAdopt[hidden]{display:none}
 .companion-name{position:absolute;top:92%;left:50%;transform:translateX(-50%);white-space:nowrap;padding:2px 8px;background:#ffffffe0;border-radius:12px;font-size:10px;color:#365d59;pointer-events:none}
 .companion-swimmer{border:0;background:transparent;cursor:pointer}.companion-swimmer:focus-visible{outline:3px solid #efb75b;border-radius:50%}

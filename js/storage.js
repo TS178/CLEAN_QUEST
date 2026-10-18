@@ -43,7 +43,7 @@
       records: [],            // { id, t, type, lat, lng, acc, photo }
       badges: [],             // { id, t }
       food: {},               // エサID → { bought, fed, spent, xp }（かった数・あげた数・つかったポイント・ふえた けいけんち）
-      beach: { dirt: [], last: 0, points: 0, sorted: 0, cleans: 0, invited: false }, // ホームの ビーチ（js/game.js）
+      beach: { dirt: [], last: 0, points: 0, sorted: 0, cleans: 0, invited: false, treasures: [], treasureCycle: -1 }, // ホームの ビーチ（js/game.js）
       habitat: {},            // すみかの アイテムID → { x, y }（おいた場所 0〜1）
     };
   }
@@ -121,6 +121,7 @@
     }
     if (isObj(s.beach)) {
       const max = BCT.CONFIG.beach.maxLevel * BCT.CONFIG.beach.itemsPerLevel;
+      const treasureIds = new Set();
       b.beach = {
         // Retired paper becomes driftwood, preserving existing pieces and earned totals.
         dirt: (Array.isArray(s.beach.dirt) ? s.beach.dirt : []).filter((d) => isObj(d) && (d.kind === "b_paper" || BCT.beachTrashOf(d.kind))).slice(0, max)
@@ -130,7 +131,13 @@
         sorted: int0(s.beach.sorted),
         cleans: int0(s.beach.cleans),
         invited: s.beach.invited === true,
+        treasureCycle: Number.isSafeInteger(s.beach.treasureCycle) && s.beach.treasureCycle >= 0 ? s.beach.treasureCycle : -1,
+        treasures: (Array.isArray(s.beach.treasures) ? s.beach.treasures : []).filter(t => isObj(t) &&
+          typeof t.id === 'string' && t.id.length > 0 && t.id.length <= 40 && !treasureIds.has(t.id) &&
+          ['sakura_shell','sea_glass'].includes(t.kind) && treasureIds.add(t.id)).slice(0,3)
+          .map(t => ({id:t.id,kind:t.kind,x:unit(t.x),y:unit(t.y)})),
       };
+      if (b.beach.dirt.length || b.beach.treasureCycle !== b.beach.cleans) b.beach.treasures = [];
     }
     if (isObj(s.habitat)) {
       for (const [k, p] of Object.entries(s.habitat)) {

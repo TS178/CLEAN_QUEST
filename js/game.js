@@ -249,6 +249,7 @@
   // ---------------- ビーチの よごれ と 分別 ----------------
   // ゴミを ふやす。ほかの ゴミから なるべく はなれた 場所に おく（かさなると えらびにくい）
   function addDirt(s, n) {
+    if (n > 0) s.beach.treasures = [];
     const kinds = BCT.BEACH_TRASH;
     for (let i = 0; i < n; i++) {
       const k = kinds[Math.floor(Math.random() * kinds.length)];
@@ -269,16 +270,27 @@
     if (!s.beach.dirt.length && !s.beach.sorted) addDirt(s, C().beach.startLevel * C().beach.itemsPerLevel);
     return true;
   }
+  // One saved set per cleanup; collecting the last item never seeds another set.
+  function seedTreasures(s) {
+    if (s.beach.dirt.length || s.beach.cleans < 1 || s.beach.treasureCycle === s.beach.cleans) return false;
+    s.beach.treasureCycle = s.beach.cleans;
+    s.beach.treasures = [
+      {kind:'sakura_shell',x:.18,y:.88},
+      {kind:'sakura_shell',x:.58,y:.94},
+      {kind:'sea_glass',x:.84,y:.87},
+    ].map(t => ({...t,id:BCT.store.newId()}));
+    return true;
+  }
   // 時間が たった分だけ よごす（アプリを とじていた あいだの分も）。よごれ度3 で とまる
   function tickBeach(now) {
     now = now || Date.now();
     return BCT.store.transact((s) => {
       if (!s.pet) return { ok: false, err: "nopet" };
-      if (seedBeach(s, now)) return { ok: true, added: s.beach.dirt.length };
+      if (seedBeach(s, now)) { seedTreasures(s); return { ok: true, added: s.beach.dirt.length }; }
       const B = C().beach;
       const every = B.dirtEveryMin * 60000;
       const steps = Math.floor((now - s.beach.last) / every);
-      if (steps <= 0) return { ok: false, err: "notyet" };
+      if (steps <= 0) return seedTreasures(s) ? {ok:true,added:0,treasures:true} : { ok: false, err: "notyet" };
       const max = B.maxLevel * B.itemsPerLevel;
       const add = Math.min(max - s.beach.dirt.length, steps * B.itemsPerLevel);
       if (add > 0) addDirt(s, add);
@@ -308,9 +320,23 @@
         cleaned = true;
         s.beach.cleans++;
         s.beach.last = Date.now(); // きれいに した時から 次の よごれまで かぞえる
+        seedTreasures(s);
         if (!s.beach.invited) { s.beach.invited = true; first = true; }
       }
       return { ok: true, points: p, cleaned, first, left: s.beach.dirt.length };
+    });
+  }
+
+  function collectTreasure(id) {
+    return BCT.store.transact(s => {
+      if (!s.pet) return {ok:false,err:'nopet'};
+      if (s.beach.dirt.length || !s.beach.last || nextDirtIn(s) === 0) return {ok:false,err:'dirty'};
+      const i = s.beach.treasures.findIndex(t => t.id === id);
+      if (i < 0) return {ok:false,err:'gone'};
+      const [treasure] = s.beach.treasures.splice(i,1);
+      const points = C().beach.pointsPerTreasure;
+      s.beach.points += points;
+      return {ok:true,points,kind:treasure.kind};
     });
   }
 
@@ -377,6 +403,6 @@
     affection, key, isClaimed, quizCleared, cleanCleared, quizEverCleared,
     owns, toyPlays, poses, shopItems, ownedItems, canBuy, ACHIEVEMENTS,
     claim, buy, equip, choosePet, pet, playToy, quizAnswered, grantAchievements, markSeen,
-    foodStock, dirtLevel, nextDirtIn, tickBeach, sortTrash, buyFood, feed, placeHome, removeHome,
+    foodStock, dirtLevel, nextDirtIn, tickBeach, sortTrash, collectTreasure, buyFood, feed, placeHome, removeHome,
   };
 })();
