@@ -65,7 +65,13 @@ try{
   // Aim using elapsed time shown by the HUD, with a tolerance smaller than the opening.
   const elapsed=await ev(`BCT.truckPhysics.C.duration-Number(document.getElementById('tsTime').textContent)`);
   const aim=await ev(`(()=>{const P=BCT.truckPhysics,t=${elapsed}+.6;return {dx:-(P.truckX(t+P.crossing)-P.C.launchX)/P.crossing/P.C.velocityScale,dy:P.C.roadDepth/P.crossing/P.C.velocityScale}})()`);
-  await drag(aim.dx,aim.dy,true);await sleep(1050);
+  await ev(`window.truckFlightCounts=[];window.originalTruckFire=BCT.truckPhysics.fire;BCT.truckPhysics.fire=(s,a)=>{const ok=window.originalTruckFire(s,a);if(ok)window.truckFlightCounts.push(s.shots.length);return ok}`);
+  await drag(aim.dx,aim.dy,true);
+  await drag(0,30,true);
+  await drag(0,30);
+  assert.deepEqual(await ev(`window.truckFlightCounts`),[1,2,3],'touch and mouse can shoot before the first landing');
+  await sleep(200);await b.shot('tests/e2e/out/truck-shoot-rapid.png');
+  await sleep(1200);
   assert.ok(Number(await ev(`document.getElementById('tsScore').textContent`))>=100,'real touch hits moving target');
   await b.shot('tests/e2e/out/truck-shoot-playing.png');
   await tap('#tsPause');const remaining=await ev(`document.getElementById('tsTime').textContent`);await sleep(1100);
@@ -75,7 +81,10 @@ try{
   await tap('#tsResume');
   await ev(`document.getElementById('tsCanvas').focus()`);
   for(let i=0;i<14;i++)await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown',code:'ArrowDown'});
-  await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});await sleep(1300);
+  await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});
+  await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});
+  assert.equal(await ev(`window.truckFlightCounts.at(-1)`),2,'keyboard can fire while a shot is airborne');
+  await sleep(1300);
   assert.ok(await ev(`document.getElementById('tsLive').textContent.includes('おしい')`),'keyboard weak shot misses');
   await ev(`void BCT.ui.modal('<p>設定テスト</p>',[{label:'とじる',value:true}])`);
   await sleep(100);assert.ok(await ev(`!!document.getElementById('tsResume')`),'modal pauses game');

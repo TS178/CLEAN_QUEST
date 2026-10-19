@@ -54,17 +54,17 @@
       if(s.aim){
         for(let t=.08;t<=P.flightTime;t+=.065){const p=P.point(s.aim,t);oval(p.x,C.launchY-p.d-p.h,2.6,2.6,'#fffef1');}
         c.strokeStyle='#bd956b';c.lineWidth=3;c.beginPath();c.moveTo(C.launchX-20,C.launchY);c.lineTo(C.launchX+s.aim.dx,C.launchY+s.aim.dy);c.lineTo(C.launchX+20,C.launchY);c.stroke();
-        trash(C.launchX+s.aim.dx,C.launchY+s.aim.dy,s.outcomes.length,-s.aim.dx*.008);
+        trash(C.launchX+s.aim.dx,C.launchY+s.aim.dy,s.fired,-s.aim.dx*.008);
         label('はなして シュート！',180,352,12,'#735b36');
-      } else if(!s.shot&&s.phase!=='result') {
-        trash(C.launchX,C.launchY,s.outcomes.length,0,1.15);
+      } else if(['ready','playing','paused'].includes(s.phase)) {
+        trash(C.launchX,C.launchY,s.fired,0,1.15);
         label('↓ ひっぱる',180,435,12,'#735b36');
       }
-      if(s.shot){
-        const a=s.time-s.shot.start,p=P.point(s.shot,a),sc=1-p.d/1000;
+      for(const shot of s.shots){
+        const a=s.time-shot.start,p=P.point(shot,a),sc=1-p.d/1000;
         oval(p.x,C.launchY-p.d,10*sc,4*sc,'#746d4933');
-        if(!reduced)for(let i=1;i<=7;i++){const ta=a-i*.025;if(ta<0)continue;const q=P.point(s.shot,ta);oval(q.x,C.launchY-q.d-q.h,3-i*.3,3-i*.3,`rgba(241,255,244,${.7-i*.08})`);}
-        trash(p.x,C.launchY-p.d-p.h,s.shot.kind,reduced?0:a*8,sc);
+        if(!reduced)for(let i=1;i<=7;i++){const ta=a-i*.025;if(ta<0)continue;const q=P.point(shot,ta);oval(q.x,C.launchY-q.d-q.h,3-i*.3,3-i*.3,`rgba(241,255,244,${.7-i*.08})`);}
+        trash(p.x,C.launchY-p.d-p.h,shot.kind,reduced?0:a*8,sc);
       }
       if(f&&age<1.15){
         c.save();c.globalAlpha=Math.min(1,(1.15-age)*3);
@@ -73,7 +73,7 @@
           label('SUCCESS!',180,210-(reduced?0:age*9),27,'#2c8062');
           label(res.combo>1?`${res.combo} コンボ！`:'ナイス シュート！',180,233,13,'#537c52');
         }else{
-          oval(f.x,259,20+age*15,7,'#d6b98499');trash(f.x,250,Math.max(0,s.outcomes.length-1),age*.5,.6);
+          oval(f.x,259,20+age*15,7,'#d6b98499');trash(f.x,250,f.kind,age*.5,.6);
           label('おしい！ もういちど',180,211,20,'#8b6745');
           label('ゴミは はまべで かいしゅう',180,232,11,'#8b6745');
         }c.restore();

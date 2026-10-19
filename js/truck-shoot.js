@@ -105,7 +105,7 @@
     const position=e=>{const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*C.width/r.width,y:(e.clientY-r.top)*C.height/r.height};};
     const updateAim=e=>{const p=position(e);round.aim=P.aim(p.x-C.launchX,p.y-C.launchY);paint();};
     canvas.addEventListener('pointerdown',e=>{
-      if(e.button!==0||pointer!==null||round.phase!=='playing'||round.shot||round.time<round.nextAt)return;
+      if(e.button!==0||pointer!==null||round.phase!=='playing')return;
       const p=position(e);if(Math.hypot(p.x-C.launchX,p.y-C.launchY)>48)return;
       e.preventDefault();pointer=e.pointerId;canvas.setPointerCapture(pointer);unlockSound();
     },opt);
@@ -119,7 +119,7 @@
     canvas.addEventListener('keydown',e=>{
       if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','Escape'].includes(e.key))return;
       e.preventDefault();if(e.key==='Escape'){pause();return;}
-      if(round.phase!=='playing'||round.shot)return;
+      if(round.phase!=='playing')return;
       const a=round.aim||P.aim(0,90);
       if(e.key===' '){process(Math.max(0,(performance.now()-last)/1000));last=performance.now();P.fire(round,a);unlockSound();}
       else round.aim=P.aim(a.dx+(e.key==='ArrowLeft'?6:e.key==='ArrowRight'?-6:0),Math.max(20,a.dy+(e.key==='ArrowUp'?4:e.key==='ArrowDown'?-4:0)));

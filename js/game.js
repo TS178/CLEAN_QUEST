@@ -112,7 +112,7 @@
   function finishTruckShoot(round) {
     if (!BCT.truckPhysics || !round || round.phase !== 'result' || !Number.isFinite(round.time) || round.time < BCT.truckPhysics.C.duration ||
       typeof round.runId !== 'string' || !/^[a-zA-Z0-9-]{1,60}$/.test(round.runId) || !Array.isArray(round.outcomes) ||
-      round.outcomes.length > 200 || round.outcomes.some(v => typeof v !== 'boolean')) return { ok: false, err: 'round' };
+      round.outcomes.some(v => typeof v !== 'boolean')) return { ok: false, err: 'round' };
     const result = BCT.truckPhysics.result(round.outcomes);
     return BCT.store.transact(s => {
       const k = key('truck', round.runId);

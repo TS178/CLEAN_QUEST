@@ -29,11 +29,12 @@
       baseCoins: [0, 10, 25, 50][stars], bonus, coins: [0, 10, 25, 50][stars] + bonus };
   }
   function create(runId) {
-    return { runId, phase: 'ready', time: 0, shot: null, outcomes: [], nextAt: 0, feedback: null, aim: null };
+    return { runId, phase: 'ready', time: 0, shots: [], fired: 0, outcomes: [], feedback: null, aim: null };
   }
   function fire(s, direction) {
-    if (s.phase !== 'playing' || s.time >= C.duration || s.shot || s.time < s.nextAt || !direction) return false;
-    s.shot = { ...direction, start: s.time, checked: false, kind: s.outcomes.length % trashKinds.length };
+    if (s.phase !== 'playing' || s.time >= C.duration || !direction) return false;
+    s.shots.push({ ...direction, start: s.time, checked: false, id: s.fired,
+      kind: s.fired++ % trashKinds.length });
     s.aim = null;
     return true;
   }
@@ -42,26 +43,33 @@
     s.time += Math.max(0, dt);
     const events = [];
     if (s.time >= C.duration) { s.phase = 'settling'; s.aim = null; }
-    const shot = s.shot;
-    if (shot) {
+    const resolved = [];
+    s.shots = s.shots.filter(shot => {
       const age = s.time - shot.start;
       if (!shot.checked && age >= crossing) {
         shot.checked = true;
         const p = point(shot, crossing);
         // Evaluate both moving bodies at the exact crossing, even after a slow frame.
         if (Math.abs(p.x - truckX(shot.start + crossing)) <= C.halfWidth - 5 && Math.abs(p.d - C.roadDepth) <= C.halfDepth - 5) {
-          s.outcomes.push(true); s.shot = null; s.nextAt = s.time + .22;
-          s.feedback = { ok: true, at: s.time, x: p.x, y: C.launchY - p.d - p.h };
-          events.push('hit');
+          resolved.push({ ok: true, at: shot.start + crossing, id: shot.id, kind: shot.kind,
+            x: p.x, y: C.launchY - p.d - p.h });
+          return false;
         }
       }
-      if (s.shot && age >= flightTime) {
-        s.outcomes.push(false); s.shot = null; s.nextAt = s.time + .25;
-        s.feedback = { ok: false, at: s.time, x: Math.max(25, Math.min(335, point(shot, flightTime).x)), y: 240 };
-        events.push('miss');
+      if (age >= flightTime) {
+        resolved.push({ ok: false, at: shot.start + flightTime, id: shot.id, kind: shot.kind,
+          x: Math.max(25, Math.min(335, point(shot, flightTime).x)), y: 240 });
+        return false;
       }
+      return true;
+    });
+    // Resolve by arrival time, even when one slow frame contains several landings.
+    resolved.sort((a,b) => a.at - b.at || a.id - b.id);
+    for (const feedback of resolved) {
+      s.outcomes.push(feedback.ok); s.feedback = feedback;
+      events.push(feedback.ok ? 'hit' : 'miss');
     }
-    if (s.phase === 'settling' && !s.shot) { s.phase = 'result'; events.push('end'); }
+    if (s.phase === 'settling' && !s.shots.length) { s.phase = 'result'; events.push('end'); }
     return events;
   }
   B.truckPhysics = { C, truckX, point, crossing, flightTime, trashKinds, aim, result, create, fire, advance };
