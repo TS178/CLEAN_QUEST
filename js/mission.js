@@ -51,6 +51,14 @@
     $("missionBody").innerHTML = `
       ${eventOpen ? `<button class="btn block sea" id="msQr" style="margin-bottom:12px">イベント しゅうりょう QRコード</button>` : ""}
 
+      <div class="card truck-entry">
+        <span class="truck-entry-icon" aria-hidden="true">🚛</span>
+        <h3>ゴミしゅうしゅうしゃ シュート！</h3>
+        <p class="note">ひっぱって ポン！ りくの くるまに ゴミを とどけよう。<br>45びょうの チャレンジ。あそぶたびに ごほうび！</p>
+        <button class="btn block mint" id="msTruck">シュートに ちょうせん！</button>
+        <p class="note">さいこう ${s.truckShoot.bestScore.toLocaleString('ja-JP')}てん ／ ${s.truckShoot.bestCombo}コンボ</p>
+      </div>
+
       <div class="card">
         <h3>${BCT.art.icon("quiz")} うみクイズ <span class="count">${qDone} / ${BCT.QUIZ.length}</span></h3>
         <p class="note one-line">1もんクリアごとに${BCT.medal.amount(R.quiz.coins, '+')}枚。まちがえてもへらないよ。</p>
@@ -85,6 +93,7 @@
 
       ${badgesHtml(s)}`;
     if (nq) $("msNext").onclick = () => openQuiz(nq.id);
+    $("msTruck").onclick = () => ui.show('truck-shoot');
     $("msReview").onclick = openReview;
     if ($("msQr")) $("msQr").onclick = () => BCT.profile.showQr();
     $("missionBody").querySelector("[data-go-cap]").onclick = () => ui.show("capture");

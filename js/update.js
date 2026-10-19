@@ -6,11 +6,12 @@
  *   ほかの おしらせ・しんかの 演出・たまご・AR・さつえいの あいだは、おわるまで まってから 出す。
  * - 「あとで」を えらんだ ときは、設定の バージョンの したに「こうしん する」ボタンを 出す。
  * - 版の 番号は service-worker.js の APP_VERSION（「1.○○」）だけで きめる。画面には それを そのまま 出す。
- * - アプリを ひらいた とき・10分いじょう たってから もどってきた ときに、新しい 版が ないか たしかめる。
+ * - 画像の読み込みを待たず起動時に確認。表示中は1分ごと、復帰時は前回から15秒以上なら確認する。
  */
 (function () {
   const BCT = window.BCT;
-  const CHECK_MS = 10 * 60 * 1000;
+  const CHECK_MS = 60 * 1000;
+  const RETURN_MS = 15 * 1000;
   const WAIT_SCREENS = ["egg", "name", "hatch", "ar", "photo"];
   let reg = null;
   let waiting = null;     // 「こうしん する」を まっている 新しい 版
@@ -18,6 +19,9 @@
   let refreshing = false;
   let prompting = false;
   let lastCheck = 0;
+  let checking = null;
+  const watched = new WeakSet();
+  const offered = new WeakSet();
   const listeners = [];
 
   const can = () => "serviceWorker" in navigator && location.protocol !== "file:";
@@ -49,6 +53,8 @@
 
   // ほかの ことを している あいだは まつ
   function busy() {
+    if (!BCT.ui || !BCT.ui.current() || document.visibilityState === 'hidden') return true;
+    if (BCT.truckShoot && BCT.truckShoot.busy()) return true;
     const m = document.getElementById("modal");
     if (m && m.classList.contains("show")) return true;
     const evo = document.getElementById("evo");
@@ -59,18 +65,26 @@
   async function prompt(worker) {
     waiting = worker;
     listeners.forEach((fn) => { try { fn(); } catch (e) { console.error(e); } });
-    if (prompting) return;
+    if (prompting || offered.has(worker)) return;
     prompting = true;
-    while (busy()) await sleep(1000);
-    if (waiting !== worker || asked) { prompting = false; return; }
-    const next = await ask(worker);
-    const ok = await BCT.ui.modal(
+    try {
+      while (busy()) await sleep(250);
+      if (waiting !== worker || asked || worker.state === 'redundant') return;
+      const next = await ask(worker);
+      // A game or dialog may have opened while the worker answered.
+      while (busy()) await sleep(250);
+      if (waiting !== worker || asked || worker.state === 'redundant') return;
+      offered.add(worker);
+      const ok = await BCT.ui.modal(
       `<h3 class="keep">🔄 あたらしい バージョンが あります</h3>
        <p class="lead keep" style="text-align:center">${next ? `バージョン ${BCT.ui.esc(next)}<br>` : ""}こうしん すると、あたらしい ないようで ひらきなおします。<br>そだてた ようせいや きろくは そのまま だよ。</p>`,
       [{ label: "あとで", cls: "ghost", value: false }, { label: "こうしん する", cls: "mint", value: true }]
     );
-    prompting = false;
-    if (ok) apply();
+      if (ok) apply();
+    } finally {
+      prompting = false;
+      if (waiting && waiting !== worker && !offered.has(waiting) && !asked) prompt(waiting);
+    }
   }
 
   // 新しい 版に して ひらきなおす
@@ -84,9 +98,25 @@
   }
 
   function check() {
-    if (!reg) return;
+    if (!reg) return Promise.resolve(false);
+    if (checking) return checking;
     lastCheck = Date.now();
-    reg.update().catch(() => { /* 圏外など。つぎに また */ });
+    checking = reg.update().then(() => {
+      watch(reg.installing);
+      if (reg.waiting && navigator.serviceWorker.controller) prompt(reg.waiting);
+      return true;
+    }).catch(() => false).finally(() => { checking = null; });
+    return checking;
+  }
+
+  function watch(sw) {
+    if (!sw || watched.has(sw)) return;
+    watched.add(sw);
+    const changed = () => {
+      if (sw.state === 'installed' && navigator.serviceWorker.controller) prompt(sw);
+    };
+    sw.addEventListener('statechange', changed);
+    changed();
   }
 
   async function register() {
@@ -98,27 +128,27 @@
         refreshing = true;
         location.reload();
       });
-      reg = await navigator.serviceWorker.register("service-worker.js");
+      reg = await navigator.serviceWorker.register("service-worker.js", { updateViaCache: 'none' });
       if (!reg) return; // 登録 できなかった（プライベート モード・確認用の ブラウザ など）
       if (reg.waiting && navigator.serviceWorker.controller) prompt(reg.waiting);
-      reg.addEventListener("updatefound", () => {
-        const sw = reg.installing;
-        if (!sw) return;
-        sw.addEventListener("statechange", () => {
-          if (sw.state === "installed" && navigator.serviceWorker.controller) prompt(sw);
-        });
-      });
+      reg.addEventListener("updatefound", () => watch(reg.installing));
+      watch(reg.installing); // Installation can start before register() resolves.
       check();
     } catch (e) {
       console.warn("SW", e);
     }
   }
 
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && Date.now() - lastCheck > CHECK_MS) check();
-  });
-  if (document.readyState === "complete") register();
-  else window.addEventListener("load", register);
+  const foregroundCheck = () => {
+    if (document.visibilityState === 'visible' && Date.now() - lastCheck >= RETURN_MS) check();
+  };
+  document.addEventListener('visibilitychange', foregroundCheck);
+  window.addEventListener('pageshow', foregroundCheck);
+  window.addEventListener('focus', foregroundCheck);
+  window.addEventListener('online', () => { if (reg) check(); });
+  if (can()) setInterval(() => {
+    if (document.visibilityState === 'visible' && Date.now() - lastCheck >= CHECK_MS) check();
+  }, CHECK_MS);
 
   BCT.update = {
     version,
@@ -127,4 +157,5 @@
     hasUpdate: () => !!(waiting || (reg && reg.waiting && navigator.serviceWorker.controller)),
     onChange: (fn) => listeners.push(fn),
   };
+  register(); // Do not wait for window.load (images, video, etc.).
 })();

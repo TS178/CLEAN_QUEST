@@ -108,6 +108,27 @@
     });
   }
 
+  // One completed round = one ledger entry. A retry uses the same runId, including zero-score rounds.
+  function finishTruckShoot(round) {
+    if (!BCT.truckPhysics || !round || round.phase !== 'result' || !Number.isFinite(round.time) || round.time < BCT.truckPhysics.C.duration ||
+      typeof round.runId !== 'string' || !/^[a-zA-Z0-9-]{1,60}$/.test(round.runId) || !Array.isArray(round.outcomes) ||
+      round.outcomes.length > 200 || round.outcomes.some(v => typeof v !== 'boolean')) return { ok: false, err: 'round' };
+    const result = BCT.truckPhysics.result(round.outcomes);
+    return BCT.store.transact(s => {
+      const k = key('truck', round.runId);
+      if (s.claims[k]) return { ok: false, err: 'dup' };
+      const t = Date.now();
+      s.claims[k] = { xp: 0, coins: result.coins, t };
+      const stats = s.truckShoot;
+      stats.plays++;
+      stats.bestScore = Math.max(stats.bestScore, result.score);
+      stats.bestCombo = Math.max(stats.bestCombo, result.maxCombo);
+      stats.lastResult = { runId: round.runId, score: result.score, hits: result.hits, misses: result.misses,
+        maxCombo: result.maxCombo, stars: result.stars, coins: result.coins, t };
+      return { ok: true, ...result };
+    });
+  }
+
   function buy(id) {
     return BCT.store.transact((s) => {
       const chk = canBuy(s, id);
@@ -398,7 +419,7 @@
   }
 
   BCT.game = {
-    xp, coins, coinsEarned, coinsSpent, levelOf, stageOf, progressOf, level, stage, maxLevel,
+    xp, coins, coinsEarned, coinsSpent, levelOf, stageOf, progressOf, level, stage, maxLevel, finishTruckShoot,
     companionStates, canAdopt, adoptPet, selectCompanion,
     affection, key, isClaimed, quizCleared, cleanCleared, quizEverCleared,
     owns, toyPlays, poses, shopItems, ownedItems, canBuy, ACHIEVEMENTS,

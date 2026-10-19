@@ -101,6 +101,7 @@
     const s = o.state;
     if (s.records != null && !Array.isArray(s.records)) return "ゴミの きろくが こわれています。";
     if (s.claims != null && !isObj(s.claims)) return "ごほうびの きろくが こわれています。";
+    if (s.truckShoot != null && !isObj(s.truckShoot)) return "シュートゲームの きろくが こわれています。";
     if (s.owned != null && !isObj(s.owned)) return "アイテムの きろくが こわれています。";
     if (s.pet != null && !isObj(s.pet)) return "ようせいの きろくが こわれています。";
     if (s.companions != null && !isObj(s.companions)) return "相棒の きろくが こわれています。";

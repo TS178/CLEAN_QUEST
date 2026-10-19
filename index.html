@@ -17,6 +17,7 @@
   <meta name="apple-mobile-web-app-title" content="クリーンクエスト">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/truck-shoot.css">
   <link rel="stylesheet" href="css/collection.css">
   <link rel="stylesheet" href="css/ar.css">
   <link rel="stylesheet" href="css/beach.css">
@@ -112,6 +113,10 @@
       <section class="screen" id="scr-mission">
         <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button><b class="sub-title" id="msTitle">ミッションを クリアしよう！</b></div>
         <div id="missionBody"></div>
+      </section>
+
+      <section class="screen" id="scr-truck-shoot" aria-label="ゴミ収集車シュートゲーム">
+        <div id="truckShootBody"></div>
       </section>
 
       <!-- ひろう（きろく と ちず） -->
@@ -366,6 +371,9 @@
   <script src="js/beach.js"></script>
   <script src="js/habitat.js"></script>
   <script src="js/mission.js"></script>
+  <script src="js/truck-shoot-physics.js"></script>
+  <script src="js/truck-shoot-view.js"></script>
+  <script src="js/truck-shoot.js"></script>
   <script src="js/capture.js"></script>
   <script src="js/map.js"></script>
   <script src="js/shop.js"></script>

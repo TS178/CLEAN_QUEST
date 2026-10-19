@@ -16,7 +16,7 @@
  * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
  * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.29";
+const APP_VERSION = "1.30";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",
@@ -24,6 +24,7 @@ const FILES = [
   "operator.html",
   "manifest.json",
   "css/app.css",
+  "css/truck-shoot.css",
   "css/collection.css",
   "css/ar.css",
   "css/beach.css",
@@ -92,6 +93,9 @@ const FILES = [
   "js/beach.js",
   "js/habitat.js",
   "js/mission.js",
+  "js/truck-shoot-physics.js",
+  "js/truck-shoot-view.js",
+  "js/truck-shoot.js",
   "js/capture.js",
   "js/map.js",
   "js/shop.js",
