@@ -26,6 +26,17 @@ test('moving opening is hit on descent with identical outcomes at high and low f
   const s=P.create('short');s.phase='playing';P.fire(s,P.aim(0,30));P.advance(s,2);
   assert.deepEqual([...s.outcomes],[false]);
 });
+test('rim grazes count on all sides, but shots beyond the forgiving opening still miss',()=>{
+  const cases=[[31,0,true],[-31,0,true],[0,25,true],[0,-25,true],
+    [31,25,true],[-31,-25,true],[33,0,false],[-33,0,false],[0,27,false],[0,-27,false]];
+  for(const dt of [1/120,1/30,2])for(const [x,d,hit] of cases){
+    const s=P.create('rim');s.phase='playing';s.time=4;
+    const direction=P.aim(-(P.truckX(s.time+P.crossing)+x-P.C.launchX)/P.crossing/P.C.velocityScale,
+      (P.C.roadDepth+d)/P.crossing/P.C.velocityScale);
+    P.fire(s,direction);while(s.shots.length)P.advance(s,dt);
+    assert.deepEqual([...s.outcomes],[hit],`offset ${x}, ${d}, timestep ${dt}`);
+  }
+});
 test('last shot counts after 60 seconds; firing at the deadline and while paused is blocked',()=>{
   assert.equal(P.C.duration,60);
   const s=P.create('last');s.phase='playing';s.time=P.C.duration-.01;P.fire(s,aligned(s));

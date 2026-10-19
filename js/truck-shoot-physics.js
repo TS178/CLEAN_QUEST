@@ -2,7 +2,7 @@
 (function () {
   const B = window.BCT;
   const C = Object.freeze({ duration: 60, width: 360, height: 520, launchX: 180, launchY: 385,
-    gravity: 480, lift: 275, openingHeight: 58, roadDepth: 273, halfWidth: 29, halfDepth: 23,
+    gravity: 480, lift: 275, openingHeight: 58, roadDepth: 273, halfWidth: 29, halfDepth: 23, rimAllowance: 3,
     maxPull: 116, velocityScale: 3.2, star2: 600, star3: 1200 });
   const truckX = t => 180 + 101 * Math.sin(t * .65 + .004 * t * t);
   const trashKinds = Object.freeze(B.BEACH_TRASH.map(t => t.key));
@@ -50,7 +50,8 @@
         shot.checked = true;
         const p = point(shot, crossing);
         // Evaluate both moving bodies at the exact crossing, even after a slow frame.
-        if (Math.abs(p.x - truckX(shot.start + crossing)) <= C.halfWidth - 5 && Math.abs(p.d - C.roadDepth) <= C.halfDepth - 5) {
+        // Count rim grazes too; the trash does not need to fit entirely inside the opening.
+        if (Math.abs(p.x - truckX(shot.start + crossing)) <= C.halfWidth + C.rimAllowance && Math.abs(p.d - C.roadDepth) <= C.halfDepth + C.rimAllowance) {
           resolved.push({ ok: true, at: shot.start + crossing, id: shot.id, kind: shot.kind,
             x: p.x, y: C.launchY - p.d - p.h });
           return false;

@@ -82,6 +82,7 @@ try{
   await ev(`document.getElementById('tsCanvas').focus()`);
   for(let i=0;i<14;i++)await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown',code:'ArrowDown'});
   await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});
+  for(let i=0;i<14;i++)await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown',code:'ArrowDown'});
   await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});
   assert.equal(await ev(`window.truckFlightCounts.at(-1)`),2,'keyboard can fire while a shot is airborne');
   await sleep(1300);
