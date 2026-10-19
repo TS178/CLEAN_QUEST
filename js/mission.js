@@ -52,9 +52,9 @@
       ${eventOpen ? `<button class="btn block sea" id="msQr" style="margin-bottom:12px">イベント しゅうりょう QRコード</button>` : ""}
 
       <div class="card truck-entry">
-        <span class="truck-entry-icon" aria-hidden="true">🚛</span>
-        <h3>ゴミしゅうしゅうしゃ シュート！</h3>
-        <p class="note">ひっぱって ポン！ りくの くるまに ゴミを とどけよう。<br>45びょうの チャレンジ。あそぶたびに ごほうび！</p>
+        <img class="truck-entry-icon" src="assets/truck-shoot/recycling-truck-v1.webp" alt="" aria-hidden="true" width="66" height="44">
+        <h3>ゴミシュート！</h3>
+        <p class="note">ひっぱってシュート！<br>りくの くるまに ゴミを とどけよう。<br>${BCT.truckPhysics.C.duration}びょうの チャレンジ。<br>あそぶごとに${BCT.art.icon('coin')}ごほうび！</p>
         <button class="btn block mint" id="msTruck">シュートに ちょうせん！</button>
         <p class="note">さいこう ${s.truckShoot.bestScore.toLocaleString('ja-JP')}てん ／ ${s.truckShoot.bestCombo}コンボ</p>
       </div>

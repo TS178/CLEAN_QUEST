@@ -1,6 +1,4 @@
-.truck-entry { background:linear-gradient(135deg,#e5f5e9,#fff4d7); border:2px solid #96bd9c; }
-.truck-entry h3 { color:#25564a; }
-.truck-entry .truck-entry-icon {font-size:32px;float:right}
+.truck-entry .truck-entry-icon {width:66px;height:44px;object-fit:contain;float:right;margin-left:8px}
 body.truck-game .tabs {display:none}
 body.truck-game .app {padding-bottom:env(safe-area-inset-bottom)}
 .truck-shell { max-width:clamp(240px,calc((100svh - 290px) * .6923),480px); margin:auto; }

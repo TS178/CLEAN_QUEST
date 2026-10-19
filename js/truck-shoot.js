@@ -26,7 +26,7 @@
     const r=P.result(round.outcomes);
     view.draw(round,B.ui.reducedMotion());
     $('tsTime').textContent=Math.max(0,Math.ceil(C.duration-round.time));
-    $('tsTime').classList.toggle('urgent',round.time>=35);
+    $('tsTime').classList.toggle('urgent',round.time>=C.duration-10);
     $('tsScore').textContent=r.score;$('tsCombo').textContent=r.combo;
     const f=round.feedback,mood=round.aim?'aim':f&&round.time-f.at<1.1?(f.ok?'hit':'miss'):'idle';
     if(mood!==petMood){petMood=mood;$('tsPet').dataset.mood=mood;$('tsPet').innerHTML=petArt[mood==='hit'?'happy':'normal'];}
@@ -57,7 +57,7 @@
   }
   function panel(html){$('tsOverlay').hidden=false;$('tsOverlay').innerHTML=`<div class="truck-panel">${html}</div>`;}
   function readyPanel(){
-    panel(`<div class="truck-eyebrow">BEACH CLEAN CHALLENGE</div><h2>ゴミしゅうしゅうしゃ<br>シュート！</h2><p>ゴミを <b>したに ひっぱって</b> はなそう。<br>りくを はしる くるまの <b>あな</b>が ゴール！</p><p>45びょうで はまべを きれいにしよう。<br>★3 は <b>1,200てん ＋ ミスなし</b></p><button class="btn block mint" id="tsStart">あそぶ！</button><p class="truck-note">★1：10枚 ／ ★2：25枚 ／ ★3：50枚<br>れんぞく せいこうで ボーナスも！</p>`);
+    panel(`<div class="truck-eyebrow">BEACH CLEAN CHALLENGE</div><h2>ゴミシュート！</h2><p>ゴミを <b>したに ひっぱって</b> はなそう。<br>りくを はしる くるまの <b>あな</b>が ゴール！</p><p>${C.duration}びょうで はまべを きれいにしよう。<br>★3 は <b>1,200てん ＋ ミスなし</b></p><button class="btn block mint" id="tsStart">あそぶ！</button><p class="truck-note">★1：10枚 ／ ★2：25枚 ／ ★3：50枚<br>れんぞく せいこうで ボーナスも！</p>`);
     $('tsStart').onclick=()=>{round.phase='playing';resume();};
   }
   function pausePanel(){
@@ -97,7 +97,7 @@
     const state=B.store.get();
     petArt={normal:B.art.render({type:state.pet?.type||'dolphin',stage:B.game.stage(state),equip:state.equip,motion:false}),happy:B.art.render({type:state.pet?.type||'dolphin',stage:B.game.stage(state),equip:state.equip,pose:'smile',motion:false})};
     petMood='';
-    $('truckShootBody').innerHTML=`<div class="truck-shell"><div class="truck-toolbar"><button class="btn small ghost" id="tsBack">← ミッション</button><button class="btn small ghost" id="tsSound" aria-pressed="${!muted}">おと ${muted?'OFF':'ON'}</button><button class="btn small ghost" id="tsPause">ひとやすみ</button></div><div class="truck-hud"><div><span>のこり</span><b id="tsTime">45</b><small>びょう</small></div><div><span>スコア</span><b id="tsScore">0</b></div><div><span>コンボ</span><b id="tsCombo">0</b></div></div><div class="truck-stage"><canvas id="tsCanvas" width="360" height="520" tabindex="0" aria-label="ゴミを下にドラッグして離すと発射。キーボードは左右キーで方向、上下キーで強さを調整しスペースで発射。"></canvas><div class="truck-pet" id="tsPet" aria-hidden="true"></div><div class="truck-overlay" id="tsOverlay"></div></div><div class="truck-live" id="tsLive" role="status">ゴミを したに ひっぱって はなそう</div><p class="truck-note">ゲームの なかだけで シュートしてね。<br>ほんとうの ゴミは なげずに、ゴミばこへ。</p></div>`;
+    $('truckShootBody').innerHTML=`<div class="truck-shell"><div class="truck-toolbar"><button class="btn small ghost" id="tsBack">← ミッション</button><button class="btn small ghost" id="tsSound" aria-pressed="${!muted}">おと ${muted?'OFF':'ON'}</button><button class="btn small ghost" id="tsPause">ひとやすみ</button></div><div class="truck-hud"><div><span>のこり</span><b id="tsTime">${C.duration}</b><small>びょう</small></div><div><span>スコア</span><b id="tsScore">0</b></div><div><span>コンボ</span><b id="tsCombo">0</b></div></div><div class="truck-stage"><canvas id="tsCanvas" width="360" height="520" tabindex="0" aria-label="ゴミを下にドラッグして離すと発射。キーボードは左右キーで方向、上下キーで強さを調整しスペースで発射。"></canvas><div class="truck-pet" id="tsPet" aria-hidden="true"></div><div class="truck-overlay" id="tsOverlay"></div></div><div class="truck-live" id="tsLive" role="status">ゴミを したに ひっぱって はなそう</div><p class="truck-note">ゲームの なかだけで シュートしてね。<br>ほんとうの ゴミは なげずに、ゴミばこへ。</p></div>`;
     view=B.truckView.create($('tsCanvas'));
     $('tsBack').onclick=()=>B.ui.show('mission');$('tsPause').onclick=pause;
     $('tsSound').onclick=()=>{muted=!muted;unlockSound();$('tsSound').textContent=`おと ${muted?'OFF':'ON'}`;$('tsSound').setAttribute('aria-pressed',String(!muted));};

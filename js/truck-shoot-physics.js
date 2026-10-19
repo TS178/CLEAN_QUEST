@@ -1,7 +1,7 @@
 /* Pure, deterministic 2.5D ballistics. x = left/right, d = inland, h = height. */
 (function () {
   const B = window.BCT;
-  const C = Object.freeze({ duration: 45, width: 360, height: 520, launchX: 180, launchY: 385,
+  const C = Object.freeze({ duration: 60, width: 360, height: 520, launchX: 180, launchY: 385,
     gravity: 480, lift: 275, openingHeight: 58, roadDepth: 273, halfWidth: 29, halfDepth: 23,
     maxPull: 116, velocityScale: 3.2, star2: 600, star3: 1200 });
   const truckX = t => 180 + 101 * Math.sin(t * .65 + .004 * t * t);

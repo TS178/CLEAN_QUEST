@@ -40,7 +40,9 @@ async function drag(dx,dy,touch=false,cancel=false){
 try{
   await b.goto(base);
   await ev(`BCT.game.choosePet('dolphin','いるか','確認隊',1);BCT.ui.show('mission')`);
+  await b.shot('tests/e2e/out/truck-shoot-mission.png');
   await tap('#msTruck');
+  assert.equal(await ev(`document.getElementById('tsTime').textContent`),'60');
   for(const [width,height] of [[320,568],[390,844],[768,1024]]){
     await b.send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:2,mobile:true});await sleep(150);
     assert.ok(await ev(`document.documentElement.scrollWidth<=innerWidth`),`${width}: no horizontal overflow`);
@@ -61,7 +63,7 @@ try{
   await drag(0,90,true,true);await sleep(150);
   assert.equal(await ev(`document.getElementById('tsPet').dataset.mood`),'idle','touch cancel leaves no aim');
   // Aim using elapsed time shown by the HUD, with a tolerance smaller than the opening.
-  const elapsed=await ev(`45-Number(document.getElementById('tsTime').textContent)`);
+  const elapsed=await ev(`BCT.truckPhysics.C.duration-Number(document.getElementById('tsTime').textContent)`);
   const aim=await ev(`(()=>{const P=BCT.truckPhysics,t=${elapsed}+.6;return {dx:-(P.truckX(t+P.crossing)-P.C.launchX)/P.crossing/P.C.velocityScale,dy:P.C.roadDepth/P.crossing/P.C.velocityScale}})()`);
   await drag(aim.dx,aim.dy,true);await sleep(1050);
   assert.ok(Number(await ev(`document.getElementById('tsScore').textContent`))>=100,'real touch hits moving target');
@@ -80,9 +82,9 @@ try{
   await ev(`BCT.ui.closeModal()`);await tap('#tsResume');
   const beach=await ev(`JSON.stringify(BCT.store.get().beach)`);
   await ev(`window.realFinishTruck=BCT.game.finishTruckShoot;BCT.game.finishTruckShoot=()=>{BCT.game.finishTruckShoot=window.realFinishTruck;return {ok:false,err:'save'}}`);
-  // Let the actual 45-second round finish (without changing production timing).
-  console.log('Waiting for the 45-second round to finish.');
-  for(let i=0;i<100;i++){if(await ev(`!!document.getElementById('tsAgain')`))break;await sleep(500);}
+  // Let the actual 60-second round finish (without changing production timing).
+  console.log('Waiting for the 60-second round to finish.');
+  for(let i=0;i<150;i++){if(await ev(`!!document.getElementById('tsAgain')`))break;await sleep(500);}
   await sleep(100);
   assert.equal(await ev(`document.getElementById('tsAgain').disabled`),true,'failed save prevents losing the result');
   assert.equal(await ev(`BCT.store.get().truckShoot.plays`),0);
@@ -105,6 +107,6 @@ try{
   assert.ok(await ev(`BCT.truckShoot.busy()`),'game works offline');
   await tap('#tsPause');
   assert.ok(!b.consoleLogs.some(s=>s.startsWith('EXCEPTION:')),b.consoleLogs.join('\n'));
-  console.log('PASS: touch, keyboard, cancel, inland constraint, layout, pause/navigation/modal, 45s result, save retry, coins, backup, reload, offline.');
+  console.log('PASS: touch, keyboard, cancel, inland constraint, layout, pause/navigation/modal, 60s result, save retry, coins, backup, reload, offline.');
   }
 }finally{b.close();server.closeAllConnections();server.close();}
