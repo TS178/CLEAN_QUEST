@@ -131,6 +131,18 @@
     modalObserver.observe($('modal'),{attributes:true,attributeFilter:['class']});
     if(round.phase==='result')resultPanel();else if(round.phase==='paused')pausePanel();else readyPanel();
     paint();
+    // Keep the clock stopped until all artwork has decoded, including on the first offline visit.
+    const mountedView=view,button=$('tsStart')||$('tsResume'),buttonText=button?.textContent;
+    if(button&&!B.truckView.isReady()){button.disabled=true;button.textContent='えを よみこみちゅう…';}
+    B.truckView.load().then(()=>{
+      if(view!==mountedView||!active())return;
+      if(button?.isConnected){button.disabled=false;button.textContent=buttonText;}
+      paint();
+    }).catch(()=>{
+      if(view!==mountedView||!active())return;
+      $('tsLive').textContent='えを よみこめなかったよ。もういちど ためしてね。';
+      if(button?.isConnected){button.disabled=false;button.textContent='えを よみなおす';button.onclick=mount;}
+    });
   }
   B.truckShoot={busy:()=>active()&&!!round&&round.phase!=='ready'&&(round.phase!=='result'||!paid)};
   B.screens['truck-shoot']={show:mount,hide(){pause();cancelAnimationFrame(raf);raf=0;abort?.abort();modalObserver?.disconnect();view=null;document.body.classList.remove('truck-game');},refresh(){/* Other tabs must not replace the active game DOM. */}};

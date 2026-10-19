@@ -10,7 +10,7 @@ function boot(disk=new Map(), fail=false) {
   const B=context.window.BCT;B.store.load();return {B,storage,disk};
 }
 const {B}=boot(),P=B.truckPhysics;
-function aligned(s) {return P.aim(-(P.truckX(s.time+P.crossing)-180)/P.crossing/3.2,255/P.crossing/3.2);}
+function aligned(s) {return P.aim(-(P.truckX(s.time+P.crossing)-P.C.launchX)/P.crossing/P.C.velocityScale,P.C.roadDepth/P.crossing/P.C.velocityScale);}
 
 test('power and direction stay inland; reverse, small, and invalid pulls do not fire',()=>{
   assert.equal(P.aim(0,-100),null);assert.equal(P.aim(1,5),null);assert.equal(P.aim(NaN,80),null);

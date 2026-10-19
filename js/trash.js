@@ -12,7 +12,7 @@
     { key: "float", name: "うき・ブイ", ico: "🛟", color: "#ff7b54", plastic: true, mission: true },
     { key: "can", name: "かん", ico: "🥫", color: "#f2a03d", plastic: false, mission: true },
     { key: "bin", name: "びん", ico: "🍾", color: "#3fb48a", plastic: false, mission: false },
-    { key: "wood", name: "きのざい", ico: "🪵", color: "#b07a4a", plastic: false, mission: true },
+    { key: "wood", name: "もくざい", ico: "🪵", color: "#b07a4a", plastic: false, mission: true },
     { key: "other", name: "そのほか", ico: "❔", color: "#8a96a8", plastic: false, mission: true },
   ];
   BCT.trashOf = (key) => BCT.TRASH.find((t) => t.key === key) || BCT.TRASH[BCT.TRASH.length - 1];

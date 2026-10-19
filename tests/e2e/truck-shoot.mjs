@@ -19,6 +19,7 @@ try {b=await launch({port:18980,width:390,height:844});}catch(e){server.close();
 fs.mkdirSync('tests/e2e/out',{recursive:true});
 const ev=b.ev;
 async function tap(sel){
+  for(let i=0;i<50;i++) {if(!await ev(`document.querySelector(${JSON.stringify(sel)})?.disabled`))break;await sleep(100);}
   const p=await ev(`(()=>{const e=document.querySelector(${JSON.stringify(sel)});e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
   await b.send('Input.dispatchMouseEvent',{type:'mousePressed',...p,button:'left',clickCount:1});
   await b.send('Input.dispatchMouseEvent',{type:'mouseReleased',...p,button:'left',clickCount:1});
@@ -61,7 +62,7 @@ try{
   assert.equal(await ev(`document.getElementById('tsPet').dataset.mood`),'idle','touch cancel leaves no aim');
   // Aim using elapsed time shown by the HUD, with a tolerance smaller than the opening.
   const elapsed=await ev(`45-Number(document.getElementById('tsTime').textContent)`);
-  const aim=await ev(`(()=>{const P=BCT.truckPhysics,t=${elapsed}+.6;return {dx:-(P.truckX(t+P.crossing)-180)/P.crossing/3.2,dy:255/P.crossing/3.2}})()`);
+  const aim=await ev(`(()=>{const P=BCT.truckPhysics,t=${elapsed}+.6;return {dx:-(P.truckX(t+P.crossing)-P.C.launchX)/P.crossing/P.C.velocityScale,dy:P.C.roadDepth/P.crossing/P.C.velocityScale}})()`);
   await drag(aim.dx,aim.dy,true);await sleep(1050);
   assert.ok(Number(await ev(`document.getElementById('tsScore').textContent`))>=100,'real touch hits moving target');
   await b.shot('tests/e2e/out/truck-shoot-playing.png');
@@ -72,7 +73,7 @@ try{
   await tap('#tsResume');
   await ev(`document.getElementById('tsCanvas').focus()`);
   for(let i=0;i<14;i++)await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown',code:'ArrowDown'});
-  await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});await sleep(1100);
+  await b.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space'});await sleep(1300);
   assert.ok(await ev(`document.getElementById('tsLive').textContent.includes('おしい')`),'keyboard weak shot misses');
   await ev(`void BCT.ui.modal('<p>設定テスト</p>',[{label:'とじる',value:true}])`);
   await sleep(100);assert.ok(await ev(`!!document.getElementById('tsResume')`),'modal pauses game');

@@ -42,7 +42,9 @@ try{
   release();await until(`document.readyState==='complete'`);
   await ev(`BCT.game.choosePet('turtle','かめ','更新テスト',1);BCT.ui.show('mission')`);
   assert.equal(await ev(hasPrompt),false,'initial install is silent');
-  await ev(`BCT.ui.show('truck-shoot');document.getElementById('tsStart').click()`);
+  await ev(`BCT.ui.show('truck-shoot')`);
+  await until(`BCT.truckView.isReady()`);
+  await ev(`document.getElementById('tsStart').click()`);
   const marker=await ev(`window.updateTestMarker='preserved';BCT.game.coins(BCT.store.get())`);
   version='9.91';
   await ev(`window.dispatchEvent(new Event('online'))`);

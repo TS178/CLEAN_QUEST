@@ -2,9 +2,11 @@
 (function () {
   const B = window.BCT;
   const C = Object.freeze({ duration: 45, width: 360, height: 520, launchX: 180, launchY: 385,
-    gravity: 480, lift: 240, openingHeight: 26, roadDepth: 255, halfWidth: 34, halfDepth: 23,
+    gravity: 480, lift: 275, openingHeight: 58, roadDepth: 273, halfWidth: 29, halfDepth: 23,
     maxPull: 116, velocityScale: 3.2, star2: 600, star3: 1200 });
   const truckX = t => 180 + 101 * Math.sin(t * .65 + .004 * t * t);
+  const trashKinds = Object.freeze(B.BEACH_TRASH.map(t => t.key));
+  const flightTime = 2 * C.lift / C.gravity;
   const point = (shot, age) => ({ x: C.launchX + shot.vx * age, d: shot.vd * age,
     h: C.lift * age - C.gravity * age * age / 2 });
   const crossing = (C.lift + Math.sqrt(C.lift ** 2 - 2 * C.gravity * C.openingHeight)) / C.gravity;
@@ -31,7 +33,7 @@
   }
   function fire(s, direction) {
     if (s.phase !== 'playing' || s.time >= C.duration || s.shot || s.time < s.nextAt || !direction) return false;
-    s.shot = { ...direction, start: s.time, checked: false, kind: s.outcomes.length % 3 };
+    s.shot = { ...direction, start: s.time, checked: false, kind: s.outcomes.length % trashKinds.length };
     s.aim = null;
     return true;
   }
@@ -53,14 +55,14 @@
           events.push('hit');
         }
       }
-      if (s.shot && age >= 2 * C.lift / C.gravity) {
+      if (s.shot && age >= flightTime) {
         s.outcomes.push(false); s.shot = null; s.nextAt = s.time + .25;
-        s.feedback = { ok: false, at: s.time, x: Math.max(25, Math.min(335, point(shot, 1).x)), y: 240 };
+        s.feedback = { ok: false, at: s.time, x: Math.max(25, Math.min(335, point(shot, flightTime).x)), y: 240 };
         events.push('miss');
       }
     }
     if (s.phase === 'settling' && !s.shot) { s.phase = 'result'; events.push('end'); }
     return events;
   }
-  B.truckPhysics = { C, truckX, point, crossing, aim, result, create, fire, advance };
+  B.truckPhysics = { C, truckX, point, crossing, flightTime, trashKinds, aim, result, create, fire, advance };
 })();
