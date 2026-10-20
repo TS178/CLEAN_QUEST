@@ -80,7 +80,7 @@ try {
   await sleep(400);
   check("「あとで」なら 設定に「こうしん する」ボタン", await ev(`!document.getElementById('setUpdate').hidden`));
   await ev(`window.__beforeReload = 1; document.getElementById('setUpdateGo').click(); true`);
-  check("「こうしん する」→ ひらきなおして 新しい 版", await waitFor(`!window.__beforeReload && !!window.BCT && !!BCT.update`, 15000) &&
+  check("「こうしん する」→ ひらきなおして 新しい 版", await waitFor(`!window.__beforeReload && !!window.BCT && !!BCT.update && document.readyState==='complete' && !!BCT.backup`, 15000) &&
     (await waitFor(`BCT.update.version().then(v=>v===${JSON.stringify(NEXT)})`, 8000)));
   check("こうしん しても そだてた データは そのまま", await ev(`(()=>{const s=BCT.store.get();return s.pet.name==='テスト'&&BCT.game.coins(s)===70})()`));
 
@@ -121,7 +121,7 @@ try {
   check("もういちど たしかめる", (await modalText()).includes("ほんとうに もどしますか"));
   await ev(`window.__beforeReload = 1; true`);
   await clickModal("もどす");
-  check("もどすと ひらきなおして もとの ようせい・メダル・記録", await waitFor(`!window.__beforeReload && !!window.BCT && !!BCT.store.get().pet`, 10000) &&
+  check("もどすと ひらきなおして もとの ようせい・メダル・記録", await waitFor(`!window.__beforeReload && !!window.BCT && document.readyState==='complete' && !!BCT.backup && !!BCT.store.get().pet`, 10000) &&
     (await ev(`(()=>{const s=BCT.store.get();return s.pet.name==='テスト'&&s.team.name==='テストたい'&&BCT.game.coins(s)===70&&s.records.length===1})()`)));
   check("写真も もどる", await ev(`BCT.store.getPhoto('rec1').then(b=>!!b&&b.size>100)`));
   check("「バックアップから もどしました」", await waitFor(`!!document.querySelector('body > .toast') && document.querySelector('body > .toast').textContent.includes('もどしました')`, 4000));

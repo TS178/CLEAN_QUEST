@@ -106,11 +106,11 @@ try {
   await shot("03-mission");
   check("ミッション画面に 英語の かざり・見出し・番号ボタンは ない", await ev(`(()=>{const m=document.getElementById('missionBody');return !/SMALL STEPS/i.test(m.textContent)&&!m.querySelector('h2')&&!m.querySelector('.qchip')&&!/エサ/.test(m.textContent)})()`));
   check("ミッション：「← ホーム」の よこに「ミッションを クリアしよう！」（まえの 説明文は ない）", await ev(`(()=>{const h=document.querySelector('#scr-mission .home-back').getBoundingClientRect(),t=document.getElementById('msTitle');const r=t.getBoundingClientRect();return t.textContent==='ミッションを クリアしよう！'&&r.left>h.right&&Math.abs((r.top+r.height/2)-(h.top+h.height/2))<=6&&!document.querySelector('.mission-lead')&&!document.getElementById('missionBody').textContent.includes('かえるよ')})()`));
-  const oneLine = (sel) => `(()=>{const e=document.querySelector('${sel}');if(!e)return false;const r=document.createRange();r.selectNodeContents(e);const t=[...r.getClientRects()].filter(x=>x.width>0).map(x=>Math.round(x.top+x.height/2));return Math.max(...t)-Math.min(...t)<=6&&e.scrollWidth<=e.clientWidth+1&&!/ /.test(e.textContent.replace(/[+＋]/g,''))})()`;
+  const oneLine = (sel, i = 0) => `(()=>{const e=document.querySelectorAll('${sel}')[${i}];if(!e)return false;const r=document.createRange();r.selectNodeContents(e);const t=[...r.getClientRects()].filter(x=>x.width>0).map(x=>Math.round(x.top+x.height/2));return Math.max(...t)-Math.min(...t)<=6&&e.scrollWidth<=e.clientWidth+1&&!/ /.test(e.textContent.replace(/[+＋]/g,''))})()`;
   for (const [w, h] of [[412, 900], [390, 844], [360, 640]]) {
     await b.send("Emulation.setDeviceMetricsOverride", { width: w, height: h, deviceScaleFactor: 2, mobile: true });
     await sleep(200);
-    check(`ミッション：クイズ・そうじの 説明は スペース なしで 1行（${w}px）`, (await ev(oneLine("#missionBody .card:nth-of-type(1) .note.one-line"))) && (await ev(oneLine("#missionBody .card:nth-of-type(2) .note.one-line"))));
+    check(`ミッション：クイズ・そうじの 説明は スペース なしで 1行（${w}px）`, (await ev(`document.querySelectorAll("#missionBody .note.one-line").length===2`)) && (await ev(oneLine("#missionBody .note.one-line", 0))) && (await ev(oneLine("#missionBody .note.one-line", 1))));
   }
   await b.send("Emulation.setDeviceMetricsOverride", { width: 412, height: 900, deviceScaleFactor: 2, mobile: true });
   await sleep(200);

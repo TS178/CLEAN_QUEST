@@ -59,6 +59,14 @@
         <p class="note">さいこう ${s.truckShoot.bestScore.toLocaleString('ja-JP')}てん ／ ${s.truckShoot.bestCombo}コンボ</p>
       </div>
 
+      ${BCT.plaBustersArt ? `<div class="card pb-entry">
+        <div class="pb-entry-art" aria-hidden="true">${BCT.plaBustersArt.monster({ id: 0, type: "normal", kind: "b_bottle" })}</div>
+        <h3>プラごみバスターズ</h3>
+        <p class="note">はまべに あらわれた プラごみかいじゅうを、<br>ただしい ゴミばこで じょうか！<br>${BCT.plaBustersEngine.C.duration}びょうの スピード チャレンジ。</p>
+        <button class="btn block lilac" id="msPb">バスターズ しゅつどう！</button>
+        <p class="note">${s.plaBusters.plays ? `さいこう ${s.plaBusters.bestScore.toLocaleString("ja-JP")}てん ／ ${s.plaBusters.bestCombo}コンボ` : "まだ あそんで いないよ"}</p>
+      </div>` : ""}
+
       <div class="card">
         <h3>${BCT.art.icon("quiz")} うみクイズ <span class="count">${qDone} / ${BCT.QUIZ.length}</span></h3>
         <p class="note one-line">1もんクリアごとに${BCT.medal.amount(R.quiz.coins, '+')}枚。まちがえてもへらないよ。</p>
@@ -94,6 +102,7 @@
       ${badgesHtml(s)}`;
     if (nq) $("msNext").onclick = () => openQuiz(nq.id);
     $("msTruck").onclick = () => ui.show('truck-shoot');
+    if ($("msPb")) $("msPb").onclick = () => ui.show("plabusters");
     $("msReview").onclick = openReview;
     if ($("msQr")) $("msQr").onclick = () => BCT.profile.showQr();
     $("missionBody").querySelector("[data-go-cap]").onclick = () => ui.show("capture");

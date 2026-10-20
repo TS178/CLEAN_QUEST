@@ -55,6 +55,7 @@
   function busy() {
     if (!BCT.ui || !BCT.ui.current() || document.visibilityState === 'hidden') return true;
     if (BCT.truckShoot && BCT.truckShoot.busy()) return true;
+    if (BCT.plaBusters && BCT.plaBusters.busy()) return true;
     const m = document.getElementById("modal");
     if (m && m.classList.contains("show")) return true;
     const evo = document.getElementById("evo");

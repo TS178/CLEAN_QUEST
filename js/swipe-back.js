@@ -15,7 +15,7 @@
   const standalone = navigator.standalone === true || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
   const EDGE = 24;      // はしから この はばの 中で さわりはじめたら
   const DIST = 70;      // まんなかへ これだけ うごかしたら もどる
-  const SKIP = "#tsCanvas,[data-trash],[data-food],.hb-item,.hb-scene,#phPet,#phStage,#arTouch,.ar-screen,.leaflet-container,input[type=range]";
+  const SKIP = "#tsCanvas,.pb-stage,.pb-pad,[data-trash],[data-food],.hb-item,.hb-scene,#phPet,#phStage,#arTouch,.ar-screen,.leaflet-container,input[type=range]";
   let t = null;
 
   function useEdge(edge) {
