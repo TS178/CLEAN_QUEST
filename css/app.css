@@ -838,3 +838,6 @@ body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 
 }
 @media (prefers-reduced-motion: reduce) { .truck-entry .truck-entry-icon { animation: none; } }
 body.reduce-motion .truck-entry .truck-entry-icon { animation: none; }
+/* 車の アイコンを バスターズの かいじゅうと おなじ くらいの 大きさに（css/truck-shoot.css の 66×44 を 上書き） */
+#missionBody .truck-entry .truck-entry-icon { width: 120px; height: 80px; margin: -6px -4px 4px 8px; }
+#missionBody .truck-entry .note { word-break: keep-all; overflow-wrap: anywhere; }
