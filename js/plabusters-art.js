@@ -1,5 +1,5 @@
 /*
- * プラごみバスターズの 絵（ぜんぶ 自作。外部の 素材は つかわない）
+ * プラごみバスターズの 絵（既存のゴミ素材・自作SVG・生成したごほうびボックス）
  * ------------------------------------------------------------
  * かいじゅうの からだは、アプリに ある ゴミの 絵（BCT.COLLECTION_SPRITES の b_bottle など。ホームの ビーチと おなじ）。
  * その 上に、自作の SVG で かお（おおきな め・ほっぺ・くち）と ちいさな うでを かさねて、こわくない コミカルな かいじゅうに する。
@@ -82,14 +82,12 @@
     </div>`;
   }
 
-  // リサイクルボックス（ふたは .open で ひらく）
+  // ホームの分別ボックス・収集車と同じ画風。左が閉じた状態、右が開いた状態。
   function recycleBox() {
-    return `<svg class="pb-box" viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M14 46 h92 l-8 56 q-1 6 -7 6 h-62 q-6 0 -7 -6 z" fill="#4fbf8f" stroke="#1f6b52" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M44 62 l8 -12 l8 12 M70 70 l6 12 h-14 M38 86 h-12 l6 -12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-      <g class="pb-lid"><rect x="8" y="30" width="104" height="18" rx="8" fill="#6fd6a8" stroke="#1f6b52" stroke-width="4"/>
-        <rect x="48" y="22" width="24" height="10" rx="4" fill="#6fd6a8" stroke="#1f6b52" stroke-width="3"/></g>
-    </svg>`;
+    return `<span class="pb-box" role="img" aria-label="リサイクルボックス">
+      <span class="pb-box-state pb-box-closed"><img src="assets/plabusters/reward-box-v1.webp" width="1024" height="512" alt="" draggable="false"></span>
+      <span class="pb-box-state pb-box-open"><img src="assets/plabusters/reward-box-v1.webp" width="1024" height="512" alt="" draggable="false"></span>
+    </span>`;
   }
 
   // ビーチの ゴミ（よごれた はまべの かざり。きれいに なると きえる）
