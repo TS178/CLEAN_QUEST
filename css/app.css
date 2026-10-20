@@ -820,17 +820,21 @@ body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 
 /* ことばの とちゅうで おりかえさない（管理者モード・さつえいの おしらせ） */
 #adminBody .adm-note, #admQr, #scr-photo .ph-msg { word-break: keep-all; overflow-wrap: anywhere; }
 
-/* ---------- ミッション：ゴミシュートの 車の アイコンも うごかす（バスターズの かいじゅうと おなじく。ゆっくり 左右に いったり きたり・ガタゴト） ---------- */
-.truck-entry .truck-entry-icon { transform-origin: 50% 90%; animation: truckIdle 2.6s ease-in-out infinite; }
-@keyframes truckIdle {
-  0%, 100% { transform: translateX(0) translateY(0) rotate(0); }
-  12% { transform: translateX(3px) translateY(-2px) rotate(-2deg); }
-  25% { transform: translateX(8px) translateY(0) rotate(0); }
-  37% { transform: translateX(5px) translateY(-1.5px) rotate(1deg); }
-  50% { transform: translateX(0) translateY(0) rotate(0); }
-  62% { transform: translateX(-3px) translateY(-2px) rotate(2deg); }
-  75% { transform: translateX(-8px) translateY(0) rotate(0); }
-  87% { transform: translateX(-5px) translateY(-1.5px) rotate(-1deg); }
+/* ---------- ミッション：ゴミシュートの 車の アイコンも うごかす（バスターズの かいじゅうと おなじく）
+   右へ はしる → くるっと 反転 → 左へ はしる → 反転、を くりかえす（ガタゴト 弾む） ---------- */
+.truck-entry .truck-entry-icon { transform-origin: 50% 90%; animation: truckDrive 4.4s ease-in-out infinite; }
+@keyframes truckDrive {
+  0% { transform: translateX(-10px) translateY(0) scaleX(1); }
+  11% { transform: translateX(-5px) translateY(-2px) scaleX(1); }
+  22% { transform: translateX(0) translateY(0) scaleX(1); }
+  33% { transform: translateX(5px) translateY(-2px) scaleX(1); }
+  42%, 46% { transform: translateX(10px) translateY(0) scaleX(1); }
+  50% { transform: translateX(10px) translateY(-1px) scaleX(-1); }
+  61% { transform: translateX(5px) translateY(-2px) scaleX(-1); }
+  72% { transform: translateX(0) translateY(0) scaleX(-1); }
+  83% { transform: translateX(-5px) translateY(-2px) scaleX(-1); }
+  92%, 96% { transform: translateX(-10px) translateY(0) scaleX(-1); }
+  100% { transform: translateX(-10px) translateY(-1px) scaleX(1); }
 }
 @media (prefers-reduced-motion: reduce) { .truck-entry .truck-entry-icon { animation: none; } }
 body.reduce-motion .truck-entry .truck-entry-icon { animation: none; }
