@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>ビーチクリーン探検隊</title>
+  <title>SHIKA QUEST</title>
   <meta name="description" content="はまべの ゴミを ひろって、うみの ようせいを そだてよう。親子で参加するビーチクリーンイベント用のアプリです。">
   <meta name="theme-color" content="#fbfaf6">
   <link rel="manifest" href="manifest.json">
@@ -11,10 +11,10 @@
   <link rel="icon" href="icons/favicon-16.png" type="image/png" sizes="16x16">
   <link rel="icon" href="icons/favicon-48.png" type="image/png" sizes="48x48">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
-  <meta name="application-name" content="クリーンクエスト">
+  <meta name="application-name" content="SHIKA QUEST">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="クリーンクエスト">
+  <meta name="apple-mobile-web-app-title" content="SHIKA QUEST">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/truck-shoot.css">
   <link rel="stylesheet" href="css/plabusters.css">
@@ -25,11 +25,13 @@
   <link rel="stylesheet" href="css/collection-painted.css">
   <link rel="stylesheet" href="css/ui-design.css">
   <link rel="stylesheet" href="css/companions.css">
+  <link rel="stylesheet" href="css/opening.css">
 </head>
-<body>
-  <div class="app no-tabs" id="app">
+<body class="opening-pending">
+  <div id="questOpeningHost"></div>
+  <div class="app no-tabs" id="app" inert>
     <header class="topbar">
-      <div class="title">ビーチクリーン探検隊<small id="tbTeam"></small></div>
+      <div class="title">SHIKA QUEST<small id="tbTeam"></small></div>
       <span class="lv-chip" id="tbLv">Lv1</span>
       <span class="pt-chip coin-chip" id="tbCoin" title="たんけんたいメダル">0</span>
       <!-- 設定（はぐるまの 図形は SHIKA COLLECTION と おなじ 自作の SVG） -->
@@ -39,8 +41,8 @@
     <main>
       <!-- たまご選択 -->
       <section class="screen" id="scr-egg">
-        <div class="brand-mark" aria-hidden="true"><div class="crest"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg></div><p class="eyebrow">A LITTLE FRIEND. A CLEANER SEA.</p><div class="brand-en">BEACH CLEAN</div><span class="brand-sub">EXPLORERS</span></div>
-        <h2>ビーチクリーン探検隊</h2>
+        <img class="quest-brand-logo" src="assets/opening/logo.png" alt="" aria-hidden="true" width="1536" height="1024">
+        <h2>SHIKA QUEST</h2>
         <p class="lead">うみの ようせいの たまごを えらんでね。<br>いっしょに はまべを きれいに しよう！</p>
         <div class="eggs" id="eggs"></div>
         <p class="note" style="text-align:center">たまごを タップすると えらべるよ</p>
@@ -324,6 +326,7 @@
   <script src="js/profile.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/admin.js"></script>
-  <script>BCT.start();</script>
+  <script src="js/opening.js"></script>
+  <script src="js/startup.js"></script>
 </body>
 </html>
