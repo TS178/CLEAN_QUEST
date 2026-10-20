@@ -141,7 +141,7 @@ try {
   await shot("b05-level3");
 
   // ---------- 7. エサを かう（ショップの エサ タブ） ----------
-  await ev(`BCT.game.claim('quiz','zz-beach-pts',{xp:0,coins:300})`);
+  await ev(`BCT.game.claim('quiz','zz-beach-pts',{xp:0,coins:600})`); // ドロップ 30・300、すみか 150（2026-10-20 値上げ）
   await ev(`BCT.ui.show('shop','food')`);
   await sleep(300);
   check("ショップに『すべて』『ドロップ』『すみか』の タブ（「ごはん」と いわない）", await ev(`!!document.querySelector('#shopBody [data-cat=all]') && document.querySelector('#shopBody [data-cat=food]').textContent.includes('ドロップ') && !document.getElementById('shopBody').textContent.includes('ごはん') && !!document.querySelector('#shopBody [data-cat=home]')`));
@@ -164,7 +164,7 @@ try {
   await sleep(300);
   await clickModal("あとで");
   await sleep(300);
-  check("エサを かうと ポイントが へる", await st(`g.foodStock(s,'drop_blue')===1 && g.foodStock(s,'drop_rainbow')===1 && g.coins(s)===315-150`), String(await st(`g.coins(s)`)));
+  check("エサを かうと ポイントが へる", await st(`g.foodStock(s,'drop_blue')===1 && g.foodStock(s,'drop_rainbow')===1 && g.coins(s)===615-330`), String(await st(`g.coins(s)`)));
 
   // ---------- 8. エサを あげる（ドラッグ・タップ）→ 進化 ----------
   await ev(`BCT.ui.show('home')`);
@@ -194,7 +194,7 @@ try {
   // ---------- 9. すみか ----------
   await ev(`BCT.ui.show('shop','home')`);
   await sleep(300);
-  check("すみかは じぶんの ようせい用 3つ", await ev(`[...document.querySelectorAll('#shopBody [data-item]')].map(e=>e.dataset.item).join(',')`) === "home_dolphin_ring,home_dolphin_boat,home_dolphin_tower");
+  check("すみかは じぶんの ようせい用 3つ ＋ 志賀町の おきもの 3つ", (await ev(`[...document.querySelectorAll('#shopBody [data-item]')].map(e=>e.dataset.item).sort().join(',')`)) === ["home_dolphin_ring", "home_dolphin_boat", "home_dolphin_tower", "home_shika_lighthouse", "home_shika_bench", "home_shika_ganmon"].sort().join(","));
   await ev(`document.querySelector('[data-item=home_dolphin_ring]').click()`);
   await sleep(300);
   await clickModal("かう");

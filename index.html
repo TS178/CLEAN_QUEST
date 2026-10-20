@@ -15,7 +15,6 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="クリーンクエスト">
-  <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/truck-shoot.css">
   <link rel="stylesheet" href="css/plabusters.css">
@@ -89,16 +88,6 @@
           <div class="home-coast" aria-hidden="true"><img src="assets/ui/lighthouse-coast.png" alt="" draggable="false"></div>
           <div class="beach-trash" id="beachTrash"></div>
           <div class="pet-play-area" id="petPlayArea"><div class="pet" id="pet"><div class="float"><div class="facing" id="petFacing"><div class="body rig-front" id="petBody"></div></div></div></div></div>
-          <div class="pond-shortcuts" id="pondShortcuts" role="group" aria-label="ようせいと すみか">
-            <button class="pond-shortcut fairy-shortcut" data-go="me" id="actFairy" aria-label="ようせいを みる">
-              <span class="shortcut-circle"><span id="fairyPortrait" aria-hidden="true"></span></span>
-              <span class="shortcut-label">ようせい</span>
-            </button>
-            <button class="pond-shortcut habitat-shortcut" data-go="habitat" id="actHabitat" aria-label="すみかへ いく">
-              <span class="shortcut-circle" id="habitatPortrait" aria-hidden="true"></span>
-              <span class="shortcut-label">すみか</span>
-            </button>
-          </div>
         </div>
         <!-- 分別ゴミばこ と ドロップ（js/beach.js） -->
         <div class="beach-bar">
@@ -123,63 +112,6 @@
       <!-- ミニゲーム：プラごみバスターズ（js/plabusters.js） -->
       <section class="screen" id="scr-plabusters" aria-label="プラごみバスターズ">
         <div id="plaBustersBody"></div>
-      </section>
-
-      <!-- ひろう（きろく と ちず） -->
-      <section class="screen" id="scr-capture">
-        <div class="sub-head"><button class="btn small ghost home-back" data-go="home">← ホーム</button><b class="sub-title" id="capTitle">ゴミを みつけたら きろくしよう</b></div>
-        <div class="seg" role="tablist">
-          <button class="on" data-sub="rec" role="tab"><span data-ui-icon-slot="camera"></span> きろく する</button>
-          <button data-sub="map" role="tab"><span data-ui-icon-slot="map"></span> ちず</button>
-        </div>
-        <div id="subRec">
-          <div class="card">
-            <h3>① しゃしんを とる</h3>
-            <label class="shot-btn" id="shotBtn">
-              <span class="ico"><span data-ui-icon-slot="camera"></span></span><span>タップして しゃしんを とる</span>
-              <input type="file" accept="image/*" capture="environment" id="shotInput">
-            </label>
-            <div id="shotPreview" style="display:none">
-              <img class="preview" id="shotImg" alt="とった しゃしん">
-              <button class="linkish" id="shotRetake"><span data-ui-icon-slot="retake"></span> とりなおす</button>
-            </div>
-            <div class="loc" id="locBox"><span data-ui-icon-slot="location"></span> ばしょは イベントの 日だけ きろく するよ</div>
-            <p class="note">※ あぶない ものは さわらずに、おとなに しらせてね。</p>
-          </div>
-          <div class="card">
-            <h3>② なんの ゴミ？</h3>
-            <div class="types" id="typeGrid"></div>
-            <p class="note" style="margin-bottom:0">★ は まだ みつけていない しゅるい（はじめて きろく すると ごほうび）。
-              びんは われていると あぶないので、ごほうびは ありません。</p>
-          </div>
-          <button class="btn block mint" id="recBtn" disabled>きろく する！</button>
-        </div>
-        <div id="subMap" hidden>
-          <div class="map-lock" id="mapLock" hidden>
-            <div class="ico">🔒</div>
-            <b>ちずは イベントの 日に ひらくよ</b>
-            <p>ふだんは ばしょを きろく しないので、ちずも おやすみ。<br>イベントの 日は、うけつけの QRコードで ひらけるよ。</p>
-            <button class="btn mint" id="mapScan">📷 うけつけの QRコードを よむ</button>
-          </div>
-          <div id="mapArea">
-            <div id="map"></div>
-            <div class="map-off" id="mapOff">
-              <div class="ico">📡</div>
-              <b>いまは ちずを ひょうじ できないよ</b><br>
-              でんぱが もどると ちずが でてくるよ。<br>きろくは したの いちらんで みられるよ。
-            </div>
-            <div class="legend" id="mapLegend"></div>
-            <div class="area-tip" id="areaTip" style="display:none"></div>
-          </div>
-          <div class="card" style="margin-top:14px">
-            <h3>しゅるいべつの かず</h3>
-            <div class="bars" id="mapBars"></div>
-          </div>
-          <div class="card">
-            <h3>きろくの いちらん</h3>
-            <ul class="rec-list" id="recList"></ul>
-          </div>
-        </div>
       </section>
 
       <!-- ショップ -->
@@ -314,9 +246,11 @@
 
     <nav class="tabs">
       <div class="inner">
+        <!-- ようせい・すみか の 丸い 絵は 相棒の かずで かわる（js/companions.js。もとは ホームの 池の 左上の ボタン） -->
+        <button data-go="me" id="actFairy" aria-label="ようせい"><span class="ico"><span class="tab-portrait" id="fairyPortrait" aria-hidden="true"></span></span>ようせい</button>
+        <button data-go="habitat" id="actHabitat" aria-label="すみか"><span class="ico"><span class="tab-portrait" id="habitatPortrait" aria-hidden="true"></span></span>すみか</button>
         <button data-go="home"><span class="ico"><span data-ui-icon-slot="nav-home"></span></span>ホーム</button>
         <button data-go="mission"><span class="ico"><span data-ui-icon-slot="mission"></span></span>ミッション</button>
-        <button data-go="capture"><span class="ico"><span data-ui-icon-slot="capture"></span></span>ひろう</button>
         <button data-go="shop"><span class="ico"><span data-ui-icon-slot="shop"></span></span>ショップ</button>
       </div>
     </nav>
@@ -333,7 +267,6 @@
 
   <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="box" id="modalBox"></div></div>
 
-  <script src="vendor/leaflet/leaflet.js"></script>
   <script src="vendor/qrcode/qrcode.js"></script>
   <script src="js/config.js"></script>
   <script src="js/event-mode.js"></script>
@@ -383,8 +316,6 @@
   <script src="js/plabusters-engine.js"></script>
   <script src="js/plabusters-art.js"></script>
   <script src="js/plabusters.js"></script>
-  <script src="js/capture.js"></script>
-  <script src="js/map.js"></script>
   <script src="js/shop.js"></script>
   <script src="js/dressup.js"></script>
   <script src="js/photo.js"></script>

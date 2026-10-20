@@ -143,7 +143,7 @@ try {
     setInterval(() => { g.fillStyle = n++ % 2 ? '#7fb8c8' : '#86c0cf'; g.fillRect(0, 0, 640, 480); g.fillStyle = '#e9d8a6'; g.fillRect(0, 300, 640, 180); }, 100);
     return c.captureStream(15);
   }; true`);
-  await ev(`BCT.game.claim('quiz','zz-ar-coins',{xp:0,coins:180}); ['toy_ball','toy_bubbles','toy_music'].forEach(id=>BCT.game.buy(id))`);
+  await ev(`BCT.game.claim('quiz','zz-ar-coins',{xp:0,coins:450}); /* おもちゃ 150×3（2026-10-20 値上げ） */ ['toy_ball','toy_bubbles','toy_music'].forEach(id=>BCT.game.buy(id))`);
   const started = await startAR("play");
   check("あそぶ → AR（おもちゃが ならぶ）", started && (await ev(`document.querySelectorAll('#arTray [data-toy]').length===3`)),
     JSON.stringify({ started, dbg: await dbg(), owned: await st(`Object.keys(s.owned)`), tray: await ev(`document.getElementById('arTray').textContent.trim()`), msg: await ev(`document.getElementById('arStartMsg').textContent + ' / start hidden=' + document.getElementById('arStart').hidden + ' / cam disabled=' + document.getElementById('arCam').disabled`) }));

@@ -154,7 +154,7 @@
     const ok1 = await ui.modal(
       `<h3 class="keep">バックアップから もどしますか？</h3>
        <p class="lead keep" style="text-align:center">ほぞんした日：${ui.esc(when)}<br>ようせい：${who}<br>
-         たんけんたいメダル ${g.coins(s).toLocaleString("ja-JP")}枚 ／ ゴミの きろく ${s.records.length}こ</p>
+         たんけんたいメダル ${g.coins(s).toLocaleString("ja-JP")}枚 ／ しょうごう ${BCT.badgesHave(s).length}こ</p>
        <p class="note" style="text-align:center">いまの データは ぜんぶ おきかわります。</p>`,
       [{ label: "やめる", cls: "ghost", value: false }, { label: "もどす", cls: "mint", value: true }]
     );

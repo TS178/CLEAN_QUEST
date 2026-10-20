@@ -67,7 +67,7 @@
   // とくべつ しょうごう：ホームの いちばん したに 小さく 1行（もらった ものは 色、まだの ものは うすく）。ミッションの ものは そのまま
   let badgeKey = "";
   function renderBadges(s) {
-    const have = new Set(s.badges.map((b) => b.id));
+    const have = new Set(BCT.badgesHave(s).map((b) => b.id));
     const key = [...have].sort().join(",");
     if (key === badgeKey && $("homeBadges").childElementCount) return;
     badgeKey = key;
@@ -436,7 +436,8 @@
     const wrap = $("binsWrap"), bins = $("bins");
     const hidden = wrap && wrap.classList.contains("gone") && bins ? bins.getBoundingClientRect().height : 0;
     // アイコンの帯を除いた高さに、ようせいとはねる余白を収める。
-    const available = Math.max(320, pond.clientHeight - hidden) - playArea.offsetTop;
+    // 2026-10-20：池の 丸い ボタンが なくなり 泳ぐ ところが 池の うえまで ひろがったので、池の ほんとうの 高さで はかる（ちいさい スマホで はねても はみ出さない）
+    const available = Math.max(200, pond.clientHeight - hidden - playArea.offsetTop - 40);
     const lane=BCT.companionUI?.bounds(BCT.store.get().pet?.type);
     const size = Math.round(lane?lane.size:Math.max(72, Math.min(190, (available - 34) / 1.5)));
     fit = size / 190;

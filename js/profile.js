@@ -1,4 +1,4 @@
-/* ようせい（もと「じぶん」）：ようせいの すがた・すすみぐあいの 線・みつけた ゴミ・イベントしゅうりょうQR。
+/* ようせい（もと「じぶん」）：ようせいの すがた・すすみぐあいの 線・イベントしゅうりょうQR（「みつけた ゴミ」は 2026-10-20 に なくした）。
    しょうごうは ミッション画面の いちばん した、おうちの かたへ は 設定（右上の はぐるま） */
 (function () {
   const BCT = window.BCT;
@@ -19,8 +19,8 @@
     const lv = g.level(s);
     const a = g.affection(s);
     const p = g.progressOf(g.xp(s));
-    const found = new Set(s.records.map((r) => r.type));
-    const q = g.quizCleared(s), c = g.cleanCleared(s);
+    const q = g.quizCleared(s);
+    const have = BCT.badgesHave(s).length;
 
     // 名前の カード（この したに あそぶ・きせかえ・さつえい の ボタン。index.html の .me-actions）
     $("meTop").innerHTML = `
@@ -40,18 +40,12 @@
         ${bar("なつきど", `<span class="hearts">${Array.from({ length: a.maxStage }, (_, i) => `<span class="${i < a.stage ? "on" : ""}">♥</span>`).join("")}</span>`,
           a.max ? 1 : (a.stage * a.perStage + a.step) / (a.maxStage * a.perStage), a.max ? "MAX" : `なでなで ${a.step}/${a.perStage}`)}
         ${bar("うみクイズ", `${q} / ${BCT.QUIZ.length}`, q / BCT.QUIZ.length)}
-        ${bar("そうじミッション", `${c} / ${BCT.CLEAN_MISSIONS.length}`, c / BCT.CLEAN_MISSIONS.length)}
-        ${bar("しょうごう", `${s.badges.length} / ${BCT.BADGES.length}`, s.badges.length / BCT.BADGES.length)}
+        ${bar("しょうごう", `${have} / ${BCT.BADGES.length}`, have / BCT.BADGES.length)}
         <div class="me-mini">
-          <div><b>${s.records.length}</b><span>きろくした ゴミ</span></div>
+          <div><b>${g.miniCleared(s, true)}</b><span>ゲームを クリア</span></div>
           <div><b>${s.beach.sorted}</b><span>ビーチで わけた</span></div>
           <div><b>${g.poses(s).length}</b><span>おぼえた ポーズ</span></div>
         </div>
-      </div>
-
-      <div class="card">
-        <h3>${BCT.art.icon('found')} みつけた ゴミの しゅるい <span class="count">${BCT.TRASH.filter((t) => found.has(t.key)).length} / ${BCT.TRASH.length}</span></h3>
-        <div class="found painted-found found4">${BCT.TRASH.map((t) => `<span class="found-item ${found.has(t.key) ? "" : "no"}"><span class="clean-art">${BCT.collectionArt.missionIcon(t.key)}</span><span class="found-name">${t.name}</span><small>${found.has(t.key) ? '✓ みつけた' : 'これから'}</small></span>`).join("")}</div>
       </div>`;
 
     $("meEdit").onclick = editNames;
@@ -84,12 +78,11 @@
 
   // ---------- イベント しゅうりょう QR ----------
   // キーは短く。位置情報は入れない（子どもの行動範囲が わかってしまうため）
-  // v2：けいけんち(xp)・そうじミッション数(cm) を入れる。クリーンPt(pt) は なくなった
+  // v2：けいけんち(xp) を入れる。クリーンPt(pt) は なくなった
+  //   2026-10-20：「ひろう」を なくしたので ゴミの きろく（rc・tr・cm）は 入れない。かわりに ミニゲームの さいこう てん（sh・pbs）
   function payload() {
     const s = BCT.store.get();
     const g = BCT.game;
-    const tr = {};
-    s.records.forEach((r) => { tr[r.type] = (tr[r.type] || 0) + 1; });
     return {
       v: 2,
       app: "bct",
@@ -102,10 +95,9 @@
       lv: g.level(s),
       xp: g.xp(s),
       qz: g.quizCleared(s),
-      cm: g.cleanCleared(s),
-      rc: s.records.length,
-      tr,
-      bd: s.badges.map((b) => b.id),
+      sh: (s.truckShoot && s.truckShoot.bestScore) || 0,
+      pbs: (s.plaBusters && s.plaBusters.bestScore) || 0,
+      bd: BCT.badgesHave(s).map((b) => b.id),
       t: Math.floor(Date.now() / 1000),
     };
   }
@@ -139,7 +131,7 @@
       `<h3>おつかれさま！</h3>
        <p class="lead" style="color:var(--ink);margin-bottom:4px">この がめんを <b>うんえいの ひと</b>に みせてね</p>
        <div class="qr-wrap" id="qrWrap"></div>
-       <p class="note" style="text-align:center">🚩 ${ui.esc(p.tm)} ／ Lv${p.lv} ／ クイズ ${p.qz}もん ／ そうじ ${p.cm} ／ ゴミ ${p.rc}こ ／ しょうごう ${p.bd.length}こ</p>
+       <p class="note" style="text-align:center">🚩 ${ui.esc(p.tm)} ／ Lv${p.lv} ／ クイズ ${p.qz}もん ／ しょうごう ${p.bd.length}こ</p>
        <button class="btn block ghost" data-close>とじる</button>`
     );
     try {
@@ -162,7 +154,6 @@
         <p><b>完全無料です。</b>利用者・運営者ともに、利用料・登録料・後日の請求は一切ありません。</p>
         <ul>
           <li>公開：GitHub Pages（GitHub の無料プラン・公開リポジトリ）</li>
-          <li>地図：OpenStreetMap の地図タイル（無料・登録不要）</li>
           <li>保存：この端末の中だけ（サーバー・クラウドは使っていません）</li>
           <li>アクセス解析・広告・有料サービス・課金のしくみは入っていません</li>
           <li>アプリの「たんけんたいメダル」はゲームの中だけのもので、本物のお金では買えません（課金・広告視聴・ガチャはありません）</li>
@@ -171,27 +162,17 @@
         <p class="note">※ 通信料（パケット代）は、ご契約中の携帯電話の料金プランに従います。</p>
 
         <h4>🔒 個人情報について</h4>
-        <p>写真・位置情報・記録は、この端末の中だけに保存され、外部へ送信されません。
-          運営に見せる「イベント終了QR」には位置情報を含めていません。<br>
-          記念撮影のカメラ映像・写真は送信しません。できた画像は、保存するまで端末のメモリの中だけにあります。<br>
-          ※ 「ちず」を開いたときだけ、地図の画像を OpenStreetMap のサーバーから読み込みます
-          （記録や位置情報は送りません。通常のウェブ閲覧と同じく、通信の際に端末のIPアドレス等は相手に伝わります）。</p>
-
-        <h4>🗺️ 地図</h4>
-        <p>地図データ &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>
-          （Open Database License）。地図タイルは OpenStreetMap Foundation が寄付により無償提供しているもので、
-          <a href="https://operations.osmfoundation.org/policies/tiles/" target="_blank" rel="noopener">タイル利用規約</a>に従って利用しています。</p>
+        <p>育成の記録は、この端末の中だけに保存され、外部へ送信されません。位置情報は使いません。<br>
+          記念撮影・AR のカメラ映像・写真は送信しません。できた画像は、保存するまで端末のメモリの中だけにあります。</p>
 
         <h4>📦 使っているソフトウェア</h4>
         <table>
           <tr><th>名前</th><th>ライセンス</th></tr>
-          <tr><td>Leaflet 1.9.4<br><span class="note">© Volodymyr Agafonkin, CloudMade</span></td><td>BSD-2-Clause</td></tr>
           <tr><td>qrcode-generator 2.0.4<br><span class="note">© Kazuhiko Arase</span></td><td>MIT</td></tr>
           <tr><td>jsQR 1.4.0（運営用画面のみ）<br><span class="note">cozmo/jsQR</span></td><td>Apache-2.0</td></tr>
           <tr><td>three.js 0.186.1（AR で なでる・あそぶ）<br><span class="note">© three.js authors</span></td><td>MIT</td></tr>
         </table>
         <p class="note">いずれも無料で利用・再配布できるライセンスです（コピーレフト型のライセンスは使っていません）。</p>
-        <details><summary>Leaflet のライセンス全文</summary><pre data-lic="vendor/leaflet/LICENSE.txt">読み込み中…</pre></details>
         <details><summary>qrcode-generator のライセンス全文</summary><pre data-lic="vendor/qrcode/LICENSE.txt">読み込み中…</pre></details>
         <details><summary>jsQR のライセンス全文</summary><pre data-lic="vendor/jsqr/LICENSE.txt">読み込み中…</pre></details>
         <details><summary>three.js のライセンス全文</summary><pre data-lic="vendor/three/LICENSE.txt">読み込み中…</pre></details>

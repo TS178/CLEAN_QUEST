@@ -44,7 +44,7 @@ try {
   for (const w of [320, 360, 375, 390, 430]) {
     await b.send("Emulation.setDeviceMetricsOverride", { width: w, height: 760, deviceScaleFactor: 2, mobile: true });
     const bad = [];
-    for (const s of ["home", "mission", "capture", "shop", "me", "dress", "habitat", "settings"]) {
+    for (const s of ["home", "mission", "shop", "me", "dress", "habitat", "settings"]) {
       await ev(`BCT.ui.show(${JSON.stringify(s)}); true`);
       await sleep(250);
       const over = await ev(`document.scrollingElement.scrollWidth - innerWidth`);

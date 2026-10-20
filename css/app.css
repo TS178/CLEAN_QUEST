@@ -841,3 +841,14 @@ body.reduce-motion .truck-entry .truck-entry-icon { animation: none; }
 /* 車の アイコンを バスターズの かいじゅうと おなじ くらいの 大きさに（css/truck-shoot.css の 66×44 を 上書き） */
 #missionBody .truck-entry .truck-entry-icon { width: 120px; height: 80px; margin: -6px -4px 4px 8px; }
 #missionBody .truck-entry .note { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* ---------- 下の タブ：ようせい・すみか・ホーム・ミッション・ショップ（2026-10-20。ようせい・すみか は もと ホームの 池の 丸い ボタン） ---------- */
+.tabs button { min-width: 0; padding: 0 2px; white-space: nowrap; }
+.tabs .tab-portrait, .tabs #fairyPortrait, .tabs #habitatPortrait { display: block; width: 34px; height: 34px; border-radius: 50%; overflow: hidden; box-sizing: border-box;
+  border: 2px solid #fff9df; background: radial-gradient(circle at 40% 30%, #f5fff3, #aadcd2); box-shadow: 0 1px 0 #b19b6d, 0 2px 4px #29595b30; }
+.tabs .tab-portrait > svg, .tabs .tab-portrait > img { display: block; width: 100%; height: 100%; }
+.tabs button.active .tab-portrait { border-color: #ffe7a0; box-shadow: 0 0 0 2px #2f8f76, 0 2px 4px #29595b30; }
+@media (max-width: 360px) { .tabs button { font-size: 9.5px; } .tabs .tab-portrait, .tabs #fairyPortrait, .tabs #habitatPortrait { width: 30px; height: 30px; } }
+/* 池の 丸い ボタンが なくなったので、ようせいが およぐ ところを 池の うえまで ひろげる */
+body #scr-home .pet-play-area { top: 8px; }
+body #homeAdopt { top: 12px; }

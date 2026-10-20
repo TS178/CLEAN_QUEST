@@ -5,7 +5,8 @@
  *   はじめて せいかいしたときだけ ごほうび（たんけんたいメダル）。まちがえても へらない。かいせつを 見て もういちど ちょうせん できる。
  *   クリアした もんだいは「ふくしゅう する」で ◀ ▶ を おして めくりながら 見かえせる（こたえと かいせつ）。
  * - いちばん したに とくべつ しょうごう（3れつ。タップで 大きく 見る）。
- * - そうじミッションは ゴミの しゅるいごとに 1かい（「ひろう」で はじめて きろくしたとき）。
+ * - ミッションは ゴミシュート・プラごみバスターズ・うみクイズ の 3つ（そうじミッション＝「ひろう」は 2026-10-20 に なくした）。
+ * - ミニゲームから もどった ときに、とくべつな ごほうび・称号を わたす（afterGain）。
  * - ごほうびの 受け取りは js/game.js の claim()（イベントID と ミッションID で 二重に もらえない）。
  */
 (function () {
@@ -39,12 +40,12 @@
     view = null;
     const s = BCT.store.get();
     const R = BCT.CONFIG.reward;
-    const qDone = game.quizCleared(s), cDone = game.cleanCleared(s);
+    const qDone = game.quizCleared(s), mDone = game.miniCleared(s);
     const nq = nextQuiz(s);
     const ach = [
-      { id: "reward_clean_hat", prog: `${Math.min(1, cDone)}/1` },
+      { id: "reward_clean_hat", prog: `${Math.min(1, mDone)}/1` },
       { id: "reward_guardian_medal", prog: `Lv${game.level(s)}/${game.maxLevel()}` },
-      { id: "reward_event_frame", prog: [`クイズ ${Math.min(qDone, BCT.CONFIG.eventFrameQuiz)}/${BCT.CONFIG.eventFrameQuiz}`, `そうじ ${Math.min(1, cDone)}/1`] },
+      { id: "reward_event_frame", prog: [`クイズ ${Math.min(qDone, BCT.CONFIG.eventFrameQuiz)}/${BCT.CONFIG.eventFrameQuiz}`, `ゲーム ${Math.min(1, mDone)}/1`] },
     ];
     // イベント しゅうりょう QR は イベントの 日だけ（js/event-mode.js）。イベントの 日 いがいは 管理者モードで 確認できる
     const eventOpen = !BCT.eventMode || BCT.eventMode.isOpen();
@@ -75,16 +76,9 @@
         <button class="btn block ghost" id="msReview" ${qDone ? "" : "disabled"} style="margin-top:8px">📖 ふくしゅう する${qDone ? `（${qDone}もん）` : ""}</button>
       </div>
 
-      <div class="card">
-        <h3>${BCT.art.icon("clean")} そうじミッション <span class="count">${cDone} / ${BCT.CLEAN_MISSIONS.length}</span></h3>
-        <p class="note one-line">ゴミのしゅるいごとに、はじめてきろくすると${BCT.medal.amount(R.clean.coins, '+')}枚。</p>
-        <ul class="mlist">${BCT.CLEAN_MISSIONS.map((t) => {
-          const done = game.isClaimed(s, "clean", t.key);
-          return `<li class="${done ? "done" : ""}"><span class="ico clean-art">${BCT.collectionArt.missionIcon(t.key)}</span><span class="nm">${ui.esc(missionName(t))}</span>
-            <span class="st">${done ? "✓ クリア" : BCT.medal.amount(R.clean.coins)}</span></li>`;
-        }).join("")}</ul>
-        <button class="btn block mint" data-go-cap>${BCT.art.icon("capture")} ゴミを きろく しにいく</button>
-        <p class="note" style="margin-bottom:0">⚠ ガラス・はりが ついている もの・おもいもの・いきものは さわらずに、おとなに しらせてね。
+      <!-- ほんとうの ビーチクリーンの やくそく（「ひろう」を なくしても のこす） -->
+      <div class="card safety-card">
+        <p class="note" style="margin:0">⚠ ビーチクリーンの ときは、ガラス・はりが ついている もの・おもいもの・いきものは さわらずに、おとなに しらせてね。
           かいがらや いきものは もちかえらないでね。</p>
       </div>
 
@@ -105,7 +99,6 @@
     if ($("msPb")) $("msPb").onclick = () => ui.show("plabusters");
     $("msReview").onclick = openReview;
     if ($("msQr")) $("msQr").onclick = () => BCT.profile.showQr();
-    $("missionBody").querySelector("[data-go-cap]").onclick = () => ui.show("capture");
     document.querySelectorAll("#missionBody [data-badge]").forEach((b) => (b.onclick = () => showBadge(b.dataset.badge)));
   }
 
@@ -134,7 +127,7 @@
 
   // ---------------- とくべつ しょうごう（3れつ。もらった ものは タップで 大きく） ----------------
   function badgesHtml(s) {
-    const have = new Set(s.badges.map((b) => b.id));
+    const have = new Set(BCT.badgesHave(s).map((b) => b.id));
     return `<div class="card badges-card">
         <h3>${BCT.art.icon("me")} とくべつ しょうごう <span class="count">${have.size} / ${BCT.BADGES.length}</span></h3>
         <div class="badges badges3">${BCT.BADGES.map((b) => `
@@ -238,8 +231,9 @@
   BCT.screens.mission = {
     show(arg) {
       if (arg && arg.quiz) openQuiz(arg.quiz);
-      else if (!view) renderList();
       else renderList();
+      // ミニゲームの あとなど：あたらしい ごほうび・称号が あれば わたして かきなおす
+      if (!(arg && arg.quiz)) BCT.afterGain().then(() => { if (ui.current() === "mission" && !view) renderList(); });
     },
     refresh() { if (!view) renderList(); },
   };

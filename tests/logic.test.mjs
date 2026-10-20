@@ -115,11 +115,14 @@ test('相棒の切替・お迎えは保存失敗時に巻き戻り、不正な�
 });
 // vm の中で作った配列・オブジェクトは「生まれ」が違うので、中身だけ比べる
 const eq = (a, b, m) => assert.deepEqual(JSON.parse(JSON.stringify(a)), b, m);
+let giveSeq = 0;
 const giveCoins = (B, n) => {
-  // テスト用に クイズ報酬を 使って コインを ためる（20枚ずつ）
-  let i = 0;
-  while (B.game.coins(B.store.get()) < n) B.game.claim("quiz", "q" + String(++i).padStart(2, "0"));
+  // テスト用に コインを ためる（足りない ぶんを 1回の 報酬で。2026-10-20 値段を 2〜3ばいに したので クイズ15問では たりない）
+  const need = n - B.game.coins(B.store.get());
+  if (need > 0) B.game.claim("test", "give" + ++giveSeq, { xp: 0, coins: need });
 };
+// ミニゲーム（ゴミシュート・プラごみバスターズ）の 報酬を ためしに 入れる（coins > 0 ＝ ★1いじょう）
+const addGame = (B, kind, run, coins) => B.store.transact((s) => { s.claims[`${B.CONFIG.event.id}:${kind}:${run}`] = { xp: 0, coins, t: 1 }; });
 
 test("紙くずを引き継ぎ、ロープをもえるゴミへ分別できる", () => {
   const storage = makeStorage(), B = tab(storage);
@@ -160,7 +163,7 @@ test("志賀町の共通置物は全種類で購入・配置・再読込でき�
     const ids = ["home_shika_lighthouse", "home_shika_bench", "home_shika_ganmon"];
     assert.equal(B.game.buy(ids[0]).err, "coins");
     assert.equal(B.game.placeHome(ids[0], .2, .3).err, "notowned");
-    giveCoins(B, 500);
+    giveCoins(B, 1500);
     for (const id of ids) {
       const before = B.game.coins(B.store.get());
       assert.equal(B.game.buy(id).ok, true);
@@ -195,7 +198,7 @@ test("ペンダントと花飾りは旧購入情報を継承し、ころ柿ポ�
   assert.equal(R.itemOf(R.store.get().equip.acc).name.replaceAll('\u200b',''), "さくらがいのペンダント");
   assert.equal(R.itemOf(R.store.get().equip.head).name, "ハマナスの はなかざり");
   assert.equal(R.store.get().owned.accessory_pendant.t, 123);
-  giveCoins(R, 60);
+  giveCoins(R, 150);
   assert.equal(R.game.buy("accessory_korogaki").ok, true);
   assert.equal(R.game.equip("acc", "accessory_korogaki").ok, true);
   assert.equal(tab(storage).store.get().equip.acc, "accessory_korogaki");
@@ -268,13 +271,13 @@ test("購入：残高不足・再購入・ほかの種類の専用品・非売�
   g.choosePet("turtle", "かめ", "たい", 1);
   const r0 = g.buy("head_flower");
   assert.equal(r0.err, "coins");
-  assert.equal(r0.need, 20);
-  giveCoins(B, 100);
+  assert.equal(r0.need, 50);
+  giveCoins(B, 250);
   const before = g.coins(B.store.get());
   assert.equal(g.buy("head_flower").ok, true);
-  assert.equal(g.coins(B.store.get()), before - 20);
+  assert.equal(g.coins(B.store.get()), before - 50);
   assert.equal(g.buy("head_flower").err, "owned", "再購入できない");
-  assert.equal(g.coins(B.store.get()), before - 20, "2回目で減らない");
+  assert.equal(g.coins(B.store.get()), before - 50, "2回目で減らない");
   assert.equal(g.buy("dolphin_star").err, "species", "イルカ専用はウミガメでは買えない");
   assert.equal(g.buy("reward_clean_hat").err, "notforsale");
   assert.equal(g.buy("nothing").err, "unknown");
@@ -282,19 +285,28 @@ test("購入：残高不足・再購入・ほかの種類の専用品・非売�
   const after = g.coins(B.store.get());
   assert.ok(after >= 0);
   const r = g.buy("head_crown");
-  if (after < 100) assert.equal(r.err, "coins");
+  if (after < 300) assert.equal(r.err, "coins");
 });
 
-test("通常の参加で 頭40＋専用60＋おもちゃ60＋フレーム20＝180コイン の組み合わせが買える", () => {
+test("値段は 2〜3ばいの きりの いい かず（2026-10-20）", () => {
+  const B = fresh();
+  const shop = B.ITEMS.filter((it) => it.shop);
+  assert.ok(shop.every((it) => [50, 100, 150, 200, 300].includes(it.price)), shop.filter((it) => ![50, 100, 150, 200, 300].includes(it.price)).map((it) => it.id).join());
+  eq(B.CONFIG.foods.map((f) => f.price), [30, 100, 300]);
+  // たかい ドロップほど おとく（けいけんち ÷ 値段）
+  const rate = B.CONFIG.foods.map((f) => f.xp / f.price);
+  assert.ok(rate[0] < rate[1] && rate[1] < rate[2]);
+});
+
+test("通常の参加で 頭100＋専用150＋おもちゃ150＋フレーム50＝450枚 の組み合わせが買える（クイズ15問＋ミニゲーム5かい）", () => {
   const B = fresh();
   const g = B.game;
   g.choosePet("dolphin", "いるか", "たい", 1);
-  // クイズ6問＋そうじ3しゅるい（＝180コイン）
-  ["q01", "q02", "q03", "q04", "q05", "q06"].forEach((q) => g.claim("quiz", q));
-  ["pet", "can", "wood"].forEach((t) => g.claim("clean", t));
-  assert.equal(g.coins(B.store.get()), 180);
+  B.QUIZ.forEach((q) => g.claim("quiz", q.id));
+  for (let i = 1; i <= 5; i++) addGame(B, i % 2 ? "plabusters" : "truck", "run" + i, 35);
+  assert.equal(g.coins(B.store.get()), 300 + 175);
   for (const id of ["head_straw", "dolphin_wave", "toy_ball", "frame_wave"]) assert.equal(g.buy(id).ok, true, id);
-  assert.equal(g.coins(B.store.get()), 0);
+  assert.equal(g.coins(B.store.get()), 25);
 });
 
 test("装着：もっていない物・おもちゃ・ほかの種類の専用品は つけられない。枠ごとに1つ", () => {
@@ -302,7 +314,7 @@ test("装着：もっていない物・おもちゃ・ほかの種類の専用�
   const g = B.game;
   g.choosePet("hermit", "やど", "たい", 1);
   assert.equal(g.equip("head", "head_straw").err, "notowned");
-  giveCoins(B, 200);
+  giveCoins(B, 450);
   g.buy("head_straw");
   g.buy("head_flower");
   g.buy("hermit_dot");
@@ -321,7 +333,7 @@ test("成長しても 買った物と装着は そのまま", () => {
   const B = fresh();
   const g = B.game;
   g.choosePet("dolphin", "いるか", "たい", 1);
-  giveCoins(B, 60);
+  giveCoins(B, 150);
   g.buy("dolphin_star");
   g.equip("look", "dolphin_star");
   g.claim("quiz", "grow", { xp: 500, coins: 0 });
@@ -355,7 +367,7 @@ test("おもちゃ：もっていないと遊べない。同じおもちゃで3�
   g.choosePet("dolphin", "いるか", "たい", 1);
   assert.equal(g.playToy("toy_ball").err, "notowned");
   eq(g.poses(B.store.get()), ["normal", "smile"]);
-  giveCoins(B, 120);
+  giveCoins(B, 300);
   g.buy("toy_ball");
   g.buy("toy_bubbles");
   const unlocked = [1, 2, 3, 4].map(() => g.playToy("toy_ball").unlocked);
@@ -372,8 +384,10 @@ test("達成報酬：おそうじたいの帽子・まもりてメダル・イ�
   const g = B.game;
   g.choosePet("turtle", "かめ", "たい", 1);
   eq(g.grantAchievements(), []);
-  g.claim("clean", "pet");
-  eq(g.grantAchievements(), ["reward_clean_hat"]);
+  addGame(B, "truck", "zero", 0);
+  eq(g.grantAchievements(), [], "★0（メダル 0枚）の ゲームでは もらえない");
+  addGame(B, "plabusters", "r1", 20);
+  eq(g.grantAchievements(), ["reward_clean_hat"], "ミニゲームを ★1いじょうで クリア");
   eq(g.grantAchievements(), [], "2回目はない");
   for (let i = 1; i <= 9; i++) g.claim("quiz", B.QUIZ[i - 1].id);
   eq(g.grantAchievements(), [], "クイズだけでは Lv5 に ならない・クイズは まだ9問");
@@ -383,6 +397,12 @@ test("達成報酬：おそうじたいの帽子・まもりてメダル・イ�
   eq(g.grantAchievements(), ["reward_event_frame"]);
   assert.equal(B.store.get().owned.reward_event_frame.via, "reward");
   assert.equal(g.coins(B.store.get()), 220, "達成報酬で ポイントは 減らない");
+  // ほかの イベントの ミニゲームでは イベントきねんフレームは もらえない
+  const C2 = fresh();
+  C2.game.choosePet("dolphin", "いるか", "たい", 1);
+  C2.store.transact((s) => { s.claims["old-event:truck:x"] = { xp: 0, coins: 30, t: 1 }; });
+  C2.QUIZ.slice(0, 10).forEach((q) => C2.game.claim("quiz", q.id));
+  eq(C2.game.grantAchievements(), [], "ほかの イベントの ゲームは かぞえない");
 });
 
 test("称号は1回だけ。クイズまんてん賞は うみクイズ15問 ぜんぶ 正解で もらえる（5問 つづけて 正解では もらえない）", () => {
@@ -493,9 +513,9 @@ test("エサ：ポイントで かい（たりないと かえない）、あげ
   const r = g.buyFood("drop_blue", 3);
   assert.equal(r.ok, true);
   assert.equal(r.stock, 3);
-  assert.equal(g.coins(B.store.get()), before - 30, "10ポイント × 3");
+  assert.equal(g.coins(B.store.get()), before - 90, "30まい × 3");
   assert.equal(g.buyFood("drop_green").ok, true);
-  assert.equal(g.coins(B.store.get()), before - 70);
+  assert.equal(g.coins(B.store.get()), before - 190);
   assert.equal(g.feed("drop_blue").xp, 10);
   assert.equal(g.feed("drop_green").xp, 50);
   const s = B.store.get();
@@ -510,7 +530,7 @@ test("エサは 1回で 複数レベルを こえても 正しく 進む（レ�
   const B = fresh();
   const g = B.game;
   g.choosePet("hermit", "やど", "たい", 1);
-  giveCoins(B, 280);
+  giveCoins(B, 300);
   g.buyFood("drop_rainbow");
   const r = g.feed("drop_rainbow");
   assert.equal(r.lvBefore, 1);
@@ -584,7 +604,7 @@ test("すみか：じぶんの ようせいの アイテムだけ かえて、�
   g.choosePet("hermit", "やど", "たい", 1);
   assert.equal(g.buy("home_dolphin_ring").err, "species");
   assert.equal(g.placeHome("home_hermit_house", 0.5, 0.5).err, "notowned");
-  giveCoins(B, 100);
+  giveCoins(B, 200);
   assert.equal(g.buy("home_hermit_house").ok, true);
   assert.equal(g.placeHome("home_hermit_house", 0.3, 2).ok, true);
   eq(B.store.get().habitat.home_hermit_house, { x: 0.3, y: 0.95 });
@@ -617,4 +637,27 @@ test("こわれた エサ・ビーチ・すみか の データでも 止まら�
   assert.equal(s.beach.dirt[0].x, 1);
   assert.equal(s.beach.points, 0);
   eq(s.habitat, {}, "もっていない すみかの アイテムは おけない");
+});
+
+test("称号：はじめのいっぽ賞は ミッションの どれか 1つ（ミニゲーム ★1いじょう か クイズ 1もん）。きろくの 称号は なくした（2026-10-20）", () => {
+  const ids = (B) => B.BADGES.map((b) => b.id).join();
+  const A = fresh();
+  assert.equal(ids(A), "first,hakase,perfect,sodate");
+  A.game.choosePet("turtle", "かめ", "たい", 1);
+  assert.ok(!A.checkBadges().some((b) => b.id === "first"));
+  addGame(A, "truck", "zero", 0);
+  assert.ok(!A.checkBadges().some((b) => b.id === "first"), "★0 では もらえない");
+  addGame(A, "truck", "r1", 10);
+  assert.ok(A.checkBadges().some((b) => b.id === "first"), "ゴミシュート ★1");
+  const B = fresh();
+  B.game.choosePet("dolphin", "いるか", "たい", 1);
+  B.game.claim("quiz", B.QUIZ[0].id);
+  assert.ok(B.checkBadges().some((b) => b.id === "first"), "うみクイズ 1もん");
+  const C = fresh();
+  C.game.choosePet("hermit", "やど", "たい", 1);
+  addGame(C, "plabusters", "r1", 15);
+  assert.ok(C.checkBadges().some((b) => b.id === "first"), "バスターズ ★1");
+  // なくした 称号を もっている 古い データ：かぞえない
+  C.store.transact((s) => { s.badges.push({ id: "plahunter", t: 1 }, { id: "meijin", t: 1 }); });
+  eq(C.badgesHave(C.store.get()).map((b) => b.id), ["first"]);
 });

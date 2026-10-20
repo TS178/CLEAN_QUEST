@@ -47,9 +47,9 @@
     <div class="grid">
       <div>
         <div class="card">
-          <h3>⓪ 受付用 QR（この日だけ アプリの「ちず」と「ばしょの きろく」を ひらく）</h3>
-          <p class="note">参加者が スマホの カメラ、または アプリの「ひろう」→「ちず」→「うけつけの QRコードを よむ」で 読むと、その端末で <b>その日の 24時まで</b> ひらきます。
-            ふだん家で使うときは 位置を記録しません。イベントの日付を <code>js/config.js</code> の <code>event.days</code> に書いた日は、QR が なくても 自動で ひらきます。</p>
+          <h3>⓪ 受付用 QR（この日だけ アプリの ミッションに「イベント終了QR」を 出す）</h3>
+          <p class="note">参加者が スマホの カメラ、または アプリの 設定（右上の はぐるま）→「うけつけの QRコードを よむ」で 読むと、その端末で <b>その日の 24時まで</b> イベント終了QR が 出ます。
+            イベントの日付を <code>js/config.js</code> の <code>event.days</code> に書いた日は、QR が なくても 自動で 出ます。</p>
           <div class="recv-qr" id="recvQr"></div>
           <p class="note recv-url" id="recvUrl"></p>
           <button class="btn small ghost" id="recvPrint">この QR を 印刷する</button>
@@ -91,10 +91,6 @@
             <button class="btn small ghost" id="clear">全部消す</button>
           </div>
           <div class="tbl-wrap"><table class="res" id="tbl"></table></div>
-        </div>
-        <div class="card">
-          <h3>種類別のゴミの数（全隊の合計）</h3>
-          <div class="bars" id="bars"></div>
         </div>
         <div class="card">
           <h3>称号ごとの獲得隊数</h3>

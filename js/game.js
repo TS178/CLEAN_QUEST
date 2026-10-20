@@ -51,7 +51,13 @@
   const isClaimed = (s, kind, id) => !!s.claims[key(kind, id)];
   // このイベントで クリアした数
   const quizCleared = (s) => BCT.QUIZ.filter((q) => isClaimed(s, "quiz", q.id)).length;
-  const cleanCleared = (s) => BCT.CLEAN_MISSIONS.filter((t) => isClaimed(s, "clean", t.key)).length;
+  const cleanCleared = (s) => BCT.CLEAN_MISSIONS.filter((t) => isClaimed(s, "clean", t.key)).length; // 「ひろう」は 2026-10-20 に なくした（古い データ用）
+  // ミニゲーム（ゴミシュート・プラごみバスターズ）を ★1いじょうで クリアした かいすう。メダルを もらえた（0枚より おおい）あそび＝★1いじょう
+  //   ever … ほかの イベントの ぶんも かぞえる
+  const miniCleared = (s, ever) => Object.entries(s.claims).filter(([k, c]) =>
+    /:(truck|plabusters):/.test(k) && c.coins > 0 && (ever || k.startsWith(ev() + ":"))).length;
+  // ミッションの どれか 1つを クリア（はじめのいっぽ賞）：ミニゲームを ★1いじょう か うみクイズに 1もん せいかい（これまでの ぶんも）
+  const missionEverCleared = (s) => miniCleared(s, true) > 0 || Object.keys(s.claims).some((k) => /:quiz:/.test(k));
   // これまでの全イベントで 正解した問題（称号用）
   function quizEverCleared(s) {
     const ids = new Set();
@@ -253,9 +259,10 @@
 
   // 達成報酬（非売品）。条件を みたしていて まだ持っていない物を わたす
   const ACHIEVEMENTS = [
-    { id: "reward_clean_hat", test: (s) => cleanCleared(s) >= 1 },
+    // 2026-10-20：そうじミッション（「ひろう」）を なくしたので、ミニゲームで もらえる ように した
+    { id: "reward_clean_hat", test: (s) => miniCleared(s) >= 1 },
     { id: "reward_guardian_medal", test: (s) => level(s) >= maxLevel() },
-    { id: "reward_event_frame", test: (s) => quizCleared(s) >= C().eventFrameQuiz && cleanCleared(s) >= 1 },
+    { id: "reward_event_frame", test: (s) => quizCleared(s) >= C().eventFrameQuiz && miniCleared(s) >= 1 },
   ];
   function grantAchievements() {
     const r = BCT.store.transact((s) => {
@@ -421,7 +428,7 @@
   BCT.game = {
     xp, coins, coinsEarned, coinsSpent, levelOf, stageOf, progressOf, level, stage, maxLevel, finishTruckShoot,
     companionStates, canAdopt, adoptPet, selectCompanion,
-    affection, key, isClaimed, quizCleared, cleanCleared, quizEverCleared,
+    affection, key, isClaimed, quizCleared, cleanCleared, miniCleared, missionEverCleared, quizEverCleared,
     owns, toyPlays, poses, shopItems, ownedItems, canBuy, ACHIEVEMENTS,
     claim, buy, equip, choosePet, pet, playToy, quizAnswered, grantAchievements, markSeen,
     foodStock, dirtLevel, nextDirtIn, tickBeach, sortTrash, collectTreasure, buyFood, feed, placeHome, removeHome,

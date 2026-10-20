@@ -28,8 +28,6 @@
     if (!d || d.app !== "bct") return { err: "ビーチクリーン探検隊のQRではありません" };
     if (d.v !== 2) return { err: "アプリの版が違います（v=" + esc(d.v) + "）。参加者のアプリを開き直してもらってください" };
     if (!d.id) return { err: "端末IDがありません" };
-    const tr = {};
-    BCT.TRASH.forEach((t) => { tr[t.key] = int(d.tr && d.tr[t.key], 9999); });
     const bd = Array.isArray(d.bd) ? d.bd.filter((b) => BCT.badgeOf(b)).slice(0, 50) : [];
     return {
       row: {
@@ -40,11 +38,10 @@
         pn: str(d.pn, 30),
         lv: int(d.lv, 99),
         xp: int(d.xp, 999999),
-        rc: int(d.rc, 99999),
         qz: int(d.qz, 999),
-        cm: int(d.cm, 99),
+        sh: int(d.sh, 9999999),   // ゴミシュートの さいこう てん
+        pbs: int(d.pbs, 9999999), // プラごみバスターズの さいこう てん
         ev: str(d.ev, 60),
-        tr,
         bd,
         t: int(d.t, 4102444800),
         at: Date.now(),
@@ -65,7 +62,7 @@
     save();
     render();
     last.className = "last ok";
-    last.textContent = `✅ ${r.row.tm}（Lv${r.row.lv}・ゴミ${r.row.rc}こ）を${existed ? "上書き" : "追加"}しました`;
+    last.textContent = `✅ ${r.row.tm}（Lv${r.row.lv}・クイズ${r.row.qz}問）を${existed ? "上書き" : "追加"}しました`;
     $("cam").classList.remove("flashok");
     void $("cam").offsetWidth;
     $("cam").classList.add("flashok");
@@ -102,35 +99,25 @@
     $("sum").innerHTML = [
       ["読み取った隊", list.length + " 隊"],
       ["参加人数（入力あり）", people + " 人"],
-      ["ゴミの合計", total((r) => r.rc) + " こ"],
       ["クイズ クリア 合計", total((r) => r.qz) + " 問"],
-      ["そうじミッション 合計", total((r) => r.cm) + " こ"],
       ["称号 合計", total((r) => r.bd.length) + " こ"],
     ].map(([l, v]) => `<div class="stat"><div class="num" style="font-size:18px">${v}</div><div class="lbl">${l}</div></div>`).join("");
 
-    const head = `<tr><th>No.</th><th>隊の名前</th><th>人数</th><th>ようせい</th><th>Lv</th><th>ゴミ</th>
-      ${BCT.TRASH.map((t) => `<th title="${t.name}">${t.ico}</th>`).join("")}
-      <th>クイズ</th><th>そうじ</th><th>称号</th><th>読取</th><th></th></tr>`;
+    const head = `<tr><th>No.</th><th>隊の名前</th><th>人数</th><th>ようせい</th><th>Lv</th>
+      <th>クイズ</th><th>ゴミシュート</th><th>バスターズ</th><th>称号</th><th>読取</th><th></th></tr>`;
     const body = list.map((r, i) => {
       const petName = r.pet ? `${BCT.pets.TYPES[r.pet].motif}` : "";
       const at = new Date(r.at);
       return `<tr><td class="num">${i + 1}</td><td>${esc(r.tm)}</td><td class="num">${r.n || "-"}</td>
         <td>${esc(petName)}${r.pn ? `<br><span class="note">${esc(r.pn)}</span>` : ""}</td>
-        <td class="num">${r.lv}</td><td class="num">${r.rc}</td>
-        ${BCT.TRASH.map((t) => `<td class="num">${r.tr[t.key] || ""}</td>`).join("")}
-        <td class="num">${r.qz}</td><td class="num">${r.cm}</td>
+        <td class="num">${r.lv}</td>
+        <td class="num">${r.qz}</td><td class="num">${r.sh || ""}</td><td class="num">${r.pbs || ""}</td>
         <td>${r.bd.map((b) => `<span class="operator-badge-art" role="img" aria-label="${esc(BCT.badgeOf(b).name)}" title="${esc(BCT.badgeOf(b).name)}">${BCT.collectionArt.badge(b)}</span>`).join("")}</td>
         <td>${at.getHours()}:${String(at.getMinutes()).padStart(2, "0")}</td>
         <td><button class="del" data-del="${esc(r.id)}">削除</button></td></tr>`;
     }).join("");
     $("tbl").innerHTML = head + (body || `<tr><td colspan="99" class="note">まだ読み取っていません</td></tr>`);
 
-    const byType = {};
-    BCT.TRASH.forEach((t) => { byType[t.key] = total((r) => r.tr[t.key] || 0); });
-    const max = Math.max(1, ...Object.values(byType));
-    $("bars").innerHTML = BCT.TRASH.map((t) => `<div class="row"><span class="name">${t.ico} ${t.name}</span>
-      <span class="bar"><div style="width:${(byType[t.key] / max) * 100}%;background:${t.color}"></div></span>
-      <span class="n">${byType[t.key]}</span></div>`).join("");
 
     const byBadge = {};
     BCT.BADGES.forEach((b) => { byBadge[b.id] = list.filter((r) => r.bd.includes(b.id)).length; });
@@ -148,8 +135,8 @@
       if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // Excel の数式として 動かないように
       return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
     };
-    const head = ["No.", "隊の名前", "人数", "ようせい", "ようせいの名前", "Lv", "けいけんち", "ゴミの数",
-      ...BCT.TRASH.map((t) => t.name), "クイズクリア", "そうじミッション", ...BCT.BADGES.map((b) => b.name), "イベントID", "端末ID", "QR作成時刻", "読取時刻"];
+    const head = ["No.", "隊の名前", "人数", "ようせい", "ようせいの名前", "Lv", "けいけんち",
+      "クイズクリア", "ゴミシュート最高点", "バスターズ最高点", ...BCT.BADGES.map((b) => b.name), "イベントID", "端末ID", "QR作成時刻", "読取時刻"];
     const fmt = (ms) => {
       const d = new Date(ms);
       const p = (n) => String(n).padStart(2, "0");
@@ -158,8 +145,8 @@
     const lines = [head.map(cell).join(",")];
     list.forEach((r, i) => {
       lines.push([
-        i + 1, r.tm, r.n || "", r.pet ? BCT.pets.TYPES[r.pet].motif : "", r.pn, r.lv, r.xp, r.rc,
-        ...BCT.TRASH.map((t) => r.tr[t.key] || 0), r.qz, r.cm,
+        i + 1, r.tm, r.n || "", r.pet ? BCT.pets.TYPES[r.pet].motif : "", r.pn, r.lv, r.xp,
+        r.qz, r.sh, r.pbs,
         ...BCT.BADGES.map((b) => (r.bd.includes(b.id) ? "○" : "")),
         r.ev, r.id, r.t ? fmt(r.t * 1000) : "", fmt(r.at),
       ].map(cell).join(","));

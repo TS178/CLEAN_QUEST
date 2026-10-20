@@ -16,7 +16,7 @@
  * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
  * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.39";
+const APP_VERSION = "1.40";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",
@@ -103,8 +103,6 @@ const FILES = [
   "js/plabusters-engine.js",
   "js/plabusters-art.js",
   "js/plabusters.js",
-  "js/capture.js",
-  "js/map.js",
   "js/shop.js",
   "js/dressup.js",
   "js/photo.js",
@@ -117,14 +115,6 @@ const FILES = [
   "icons/icon.svg",
   "icons/icon-192.png",
   "icons/icon-512.png",
-  "vendor/leaflet/leaflet.js",
-  "vendor/leaflet/leaflet.css",
-  "vendor/leaflet/images/layers.png",
-  "vendor/leaflet/images/layers-2x.png",
-  "vendor/leaflet/images/marker-icon.png",
-  "vendor/leaflet/images/marker-icon-2x.png",
-  "vendor/leaflet/images/marker-shadow.png",
-  "vendor/leaflet/LICENSE.txt",
   "vendor/qrcode/qrcode.js",
   "vendor/qrcode/LICENSE.txt",
   "vendor/jsqr/jsQR.js",

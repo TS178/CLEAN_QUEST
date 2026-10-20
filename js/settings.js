@@ -20,18 +20,19 @@
         <h3>おうちの かたへ</h3>
         <label class="ph-check" style="margin-bottom:10px"><input type="checkbox" id="setReduce" ${reduce ? "checked" : ""}> うごきを へらす（アニメーションを みじかく する）</label>
         <button class="btn small ghost block" id="setAbout" style="margin-bottom:10px">このアプリについて（無料・ライセンス）</button>
-        <h4 class="set-sub">ちず・ばしょの きろく</h4>
+        <h4 class="set-sub">イベントの 日</h4>
         <p class="note keep" id="setEvent"></p>
+        <button class="btn small ghost block" id="setEventScan" style="margin-bottom:10px">📷 うけつけの QRコードを よむ</button>
         <h4 class="set-sub">データの バックアップ</h4>
         <div class="btn-row set-backup">
           <button class="btn small ghost" id="setBackup">バックアップを ほぞん</button>
           <button class="btn small ghost" id="setRestore">バックアップから もどす</button>
         </div>
-        <p class="note">きろくは この 端末の 中だけに あります。ファイルに ほぞん しておくと、機種変更や ブラウザの データを けした ときに もどせます（写真も ふくみます）。</p>
+        <p class="note">きろくは この 端末の 中だけに あります。ファイルに ほぞん しておくと、機種変更や ブラウザの データを けした ときに もどせます。</p>
         <button class="btn small ghost block" id="setReset">さいしょから やりなおす</button>
-        <p class="note" style="margin-bottom:0">育成・記録・写真・位置情報は、この端末のブラウザの中だけに保存されています。
+        <p class="note" style="margin-bottom:0">育成の記録は、この端末のブラウザの中だけに保存されています。
           ブラウザのデータを消したり、別のスマホ・別のブラウザで開いたりすると、引き継がれません。
-          イベント終了QRには位置情報を含めていません。記念撮影の写真・カメラ映像はどこにも送信しません。</p>
+          位置情報は使いません。記念撮影の写真・カメラ映像はどこにも送信しません。</p>
       </div>
       <p class="app-version"><button class="ver-btn" id="setVer" aria-label="バージョン">バージョン …</button></p>
       <p class="app-update" id="setUpdate" hidden><button class="btn small mint" id="setUpdateGo">🔄 あたらしい バージョンに こうしん する</button></p>`;
@@ -45,16 +46,19 @@
     $("setUpdateGo").onclick = () => BCT.update.apply();
     showUpdate();
     showEvent();
+    $("setEventScan").onclick = async () => { if (BCT.eventMode && (await BCT.eventMode.scan())) showEvent(); };
     version().then((v) => { if ($("setVer")) $("setVer").textContent = `バージョン ${v}`; });
   }
-  // ちず・ばしょの きろくは イベントの 日だけ（js/event-mode.js）
+  // イベントの 日だけ ミッションに「イベント しゅうりょう QR」（js/event-mode.js）
   function showEvent() {
     const el = $("setEvent");
     if (!el || !BCT.eventMode) return;
     const src = BCT.eventMode.source();
     el.innerHTML = src
-      ? `<b>きょうは つかえます</b>（${src === "date" ? "イベントの 日" : "うけつけの QR で ひらいた。きょうの 24時まで"}）。ゴミを きろく する たびに、ばしょも きろく するか ききます。`
-      : `<b>イベントの 日だけ つかえます。</b>ふだんは ばしょを ききも きろく も しません（家の 位置を のこさない ため）。イベントの 日は 自動で、または うけつけの QR で ひらきます。`;
+      ? `<b>きょうは イベントの 日です</b>（${src === "date" ? "イベントの 日" : "うけつけの QR で ひらいた。きょうの 24時まで"}）。ミッションに「イベント しゅうりょう QRコード」が でます。`
+      : `ミッションの「イベント しゅうりょう QRコード」は <b>イベントの 日だけ</b> でます。イベントの 日は 自動で、または うけつけの QR を よむと でます。`;
+    const b = $("setEventScan");
+    if (b) b.hidden = !!src;
   }
   if (BCT.eventMode) BCT.eventMode.onChange(showEvent);
   function showUpdate() {

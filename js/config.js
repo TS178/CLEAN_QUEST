@@ -71,16 +71,17 @@
     },
     // エサ（アクアドロップ）：たかいほど おとく
     foods: [
-      { id: "drop_blue", name: "アクアドロップ", color: "#4aa8e0", price: 10, xp: 10, note: "まいにち あげる ドロップ" },
-      { id: "drop_green", name: "シャイニードロップ", color: "#3cbf7a", price: 40, xp: 50, note: "ちょっと とくべつ" },
-      { id: "drop_rainbow", name: "レインボードロップ", color: "rainbow", price: 140, xp: 200, note: "しんかの まえに" },
+      // 値段は 2026-10-20 に 2〜3ばいに（10→30・40→100・140→300。たかいほど おとくは そのまま）
+      { id: "drop_blue", name: "アクアドロップ", color: "#4aa8e0", price: 30, xp: 10, note: "まいにち あげる ドロップ" },
+      { id: "drop_green", name: "シャイニードロップ", color: "#3cbf7a", price: 100, xp: 50, note: "ちょっと とくべつ" },
+      { id: "drop_rainbow", name: "レインボードロップ", color: "rainbow", price: 300, xp: 200, note: "しんかの まえに" },
     ],
     affection: {
       perStage: 5, // なでる 5かいで なつきど が1だん あがる
       maxStage: 3,
     },
     toyUnlockPlays: 3, // おなじ おもちゃで 3かい あそぶと ポーズを おぼえる
-    eventFrameQuiz: 10, // イベントきねんフレーム：クイズ この数 ＋ そうじミッション1つ以上
+    eventFrameQuiz: 10, // イベントきねんフレーム：クイズ この数 ＋ ミニゲームを ★1いじょうで 1かい
     photo: { width: 1080, height: 1440 }, // 記念写真の大きさ（たて長 3:4）
   };
   BCT.foodOf = (id) => BCT.CONFIG.foods.find((f) => f.id === id) || null;
