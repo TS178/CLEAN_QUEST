@@ -819,3 +819,18 @@ body .btn.sea { background: #2d6f8f; border-color: #1f4f66; box-shadow: 0 3px 0 
 #shopBody .shop-sticky { margin-left: calc(-1 * var(--shop-gut)); margin-right: calc(-1 * var(--shop-gut)); padding-left: var(--shop-gut); padding-right: var(--shop-gut); }
 /* ことばの とちゅうで おりかえさない（管理者モード・さつえいの おしらせ） */
 #adminBody .adm-note, #admQr, #scr-photo .ph-msg { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* ---------- ミッション：ゴミシュートの 車の アイコンも うごかす（バスターズの かいじゅうと おなじく。ゆっくり 左右に いったり きたり・ガタゴト） ---------- */
+.truck-entry .truck-entry-icon { transform-origin: 50% 90%; animation: truckIdle 2.6s ease-in-out infinite; }
+@keyframes truckIdle {
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0); }
+  12% { transform: translateX(3px) translateY(-2px) rotate(-2deg); }
+  25% { transform: translateX(8px) translateY(0) rotate(0); }
+  37% { transform: translateX(5px) translateY(-1.5px) rotate(1deg); }
+  50% { transform: translateX(0) translateY(0) rotate(0); }
+  62% { transform: translateX(-3px) translateY(-2px) rotate(2deg); }
+  75% { transform: translateX(-8px) translateY(0) rotate(0); }
+  87% { transform: translateX(-5px) translateY(-1.5px) rotate(-1deg); }
+}
+@media (prefers-reduced-motion: reduce) { .truck-entry .truck-entry-icon { animation: none; } }
+body.reduce-motion .truck-entry .truck-entry-icon { animation: none; }
