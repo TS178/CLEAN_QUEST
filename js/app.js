@@ -188,6 +188,15 @@
     applyPrefs();
     const s = BCT.store.load();
     document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => show(b.dataset.go)));
+    // 下の タブの ようせい・すみか：押したら そのまま その 画面へ（2026-10-21 利用者の 指示）。
+    //   js/companions.js の「どの相棒にする？」は 出さない（相棒は ようせい・すみか の 画面の 中で えらびなおせる）。
+    //   document の capture で うけて、ボタンに ついた companions.js の 処理まで とどかせない
+    document.addEventListener("click", (e) => {
+      const t = e.target.closest && e.target.closest(".tabs #actFairy, .tabs #actHabitat");
+      if (!t) return;
+      e.stopPropagation();
+      show(t.dataset.go);
+    }, true);
     // モーダルの中の [data-close] を押したら とじる
     $("modalBox").addEventListener("click", (e) => {
       if (e.target.closest("[data-close]")) {

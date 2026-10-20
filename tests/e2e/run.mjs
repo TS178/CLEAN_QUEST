@@ -156,6 +156,19 @@ try {
   await ev(`document.getElementById('actHabitat').click();true`);
   await sleep(400);
   check("「すみか」タブ → すみか画面", await ev(`BCT.ui.current()==='habitat' && document.getElementById('actHabitat').classList.contains('active')`));
+  // 相棒が 2ひき いても「どの相棒にする？」は 出さずに そのまま 画面へ（えらびなおしは 画面の 中で）
+  await ev(`BCT.ui.show('home');BCT.store.transact(s=>{s.companions={dolphin:{pet:{type:'dolphin',name:'いるか'},petXp:0,seenLv:1,equip:{},affection:0,toys:{},habitat:{}}};s.companionOrder=[s.pet.type,'dolphin']});BCT.ui.show('home');true`);
+  await sleep(400);
+  for (const [id, scr] of [["actFairy", "me"], ["actHabitat", "habitat"]]) {
+    await ev(`BCT.ui.show('home');true`);
+    await sleep(200);
+    await ev(`document.querySelector('#${id} .ico').click();true`);
+    await sleep(400);
+    check(`相棒が 2ひきでも ${scr === "me" ? "ようせい" : "すみか"}タブは えらぶ おしらせ なしで そのまま 画面へ`, await ev(`BCT.ui.current()==='${scr}' && !document.getElementById('modal').classList.contains('show') && BCT.store.get().pet.type==='turtle'`));
+  }
+  check("ようせい画面で 相棒を えらびなおせる", await ev(`BCT.ui.show('me'), document.querySelectorAll('#meTop [data-select-companion]').length===2`));
+  await ev(`BCT.store.transact(s=>{s.companions={};s.companionOrder=[]});BCT.ui.show('home');true`);
+  await sleep(300);
   await shot("05a-tab-habitat");
   // イベントの 日（受付の QR）：ふだんは 出さない
   await ev(`BCT.ui.show('settings');true`);
