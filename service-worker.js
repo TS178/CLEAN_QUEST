@@ -16,7 +16,7 @@
  * 動画は 少しずつ（Range で）読まれるため、ここで まとめて 返すと iPhone で 再生 できない ことが ある。
  * 圏外の ときは 動画が 読めず、いままでの 絵（beach.webp。ここで 保存している）の まま になる。
  */
-const APP_VERSION = "1.43";
+const APP_VERSION = "1.44";
 const CACHE = "bct-" + APP_VERSION;
 const FILES = [
   "./",
@@ -27,8 +27,8 @@ const FILES = [
   "css/truck-shoot.css",
   "css/plabusters.css",
   "assets/plabusters/reward-box-v1.webp",
-  "assets/plabusters/boss-devil.svg",
-  "assets/plabusters/boss-bandit.svg",
+  "assets/plabusters/boss-bag-king.svg",
+  "assets/plabusters/boss-bottle-king.svg",
   "assets/truck-shoot/coast-inland-v1.webp",
   "assets/truck-shoot/recycling-truck-v1.webp",
   "css/collection.css",

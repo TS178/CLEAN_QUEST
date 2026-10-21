@@ -87,10 +87,16 @@ try {
   for(const kind of ['b_bag','b_bottle']){
     await b.ev(`{const r=BCT.plaBusters.debug();r.monster=null;r.spawnIn=0;r.cutin=0;r.sinceBoss=r.bossEvery;document.querySelector('#pbArena').innerHTML='';}`);
     await waitFor(`BCT.plaBusters.debug().monster?.type==='boss'`);
-    await b.ev(`document.querySelector('.pb-villain').decode()`);
+    await b.ev(`document.querySelector('.pb-boss-art').decode()`);
     await sleep(250);await b.shot(`tests/e2e/out/quest-boss-${kind}.png`);
-    assert.equal(await b.ev(`document.querySelectorAll('.pb-crown').length`),0);
-    assert.ok(await b.ev(`document.querySelector('.pb-villain').complete && document.querySelector('.pb-villain').naturalWidth>0`));
+    assert.ok(await b.ev(`document.querySelector('.pb-boss-art').src.endsWith('/boss-${kind==='b_bag'?'bag':'bottle'}-king.svg')`));
+    await b.send('Emulation.setDeviceMetricsOverride',{width:320,height:568,deviceScaleFactor:2,mobile:true});
+    await sleep(150);
+    assert.ok(await b.ev(`(()=>{const stage=document.querySelector('#pbStage').getBoundingClientRect(),boss=document.querySelector('.type-boss').getBoundingClientRect();return boss.top>=stage.top&&boss.bottom<=stage.bottom&&boss.left>=stage.left&&boss.right<=stage.right})()`),'King including crown and HP stays in the small stage');
+    assert.ok(await b.ev(`(()=>{const banner=document.querySelector('.pb-banner').getBoundingClientRect(),art=document.querySelector('.pb-boss-art').getBoundingClientRect();return banner.bottom<=art.top})()`),'Tap banner leaves the king crown unobstructed on a small screen');
+    await b.shot(`tests/e2e/out/quest-king-small-${kind}.png`);
+    await b.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:2,mobile:true});
+    assert.ok(await b.ev(`document.querySelector('.pb-boss-art').complete && document.querySelector('.pb-boss-art').naturalWidth>0`));
     assert.equal(await b.ev(`BCT.plaBusters.debug().monster.kind`),kind);
     await b.ev(`document.querySelector('#pbStage').dispatchEvent(new PointerEvent('pointerdown',{bubbles:true}))`);
     assert.equal(await b.ev(`BCT.plaBusters.debug().monster.hp`),9);
@@ -116,8 +122,11 @@ try {
   await sleep(300);await b.shot('tests/e2e/out/quest-three-star-badges.png');
   const manifest=await (await fetch(base+'manifest.json')).json();
   assert.equal(manifest.name,'しかクエ');assert.equal(manifest.short_name,'しかクエ');
+  assert.ok(manifest.icons.every(icon=>icon.src.endsWith('?v=1.44')));
+  const iconPixels=await b.ev(`(async()=>{const pixels=[];for(const name of ['icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png']){const im=new Image();im.src='icons/'+name;await im.decode();const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const ctx=c.getContext('2d');ctx.drawImage(im,0,0);pixels.push([...ctx.getImageData(0,0,1,1).data]);}return pixels;})()`);
+  assert.ok(iconPixels.every(p=>p.join(',')==='249,227,227,255'),'All PWA/Apple icons have opaque selected pink backgrounds');
   await b.ev(`navigator.serviceWorker.ready`);
-  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.43');return Promise.all(['css/fairy-select.css','assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-devil.svg','assets/plabusters/boss-bandit.svg'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
+  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.44');return Promise.all(['css/fairy-select.css','assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-bag-king.svg','assets/plabusters/boss-bottle-king.svg'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
   assert.ok(cached.every(Boolean));
   // Reload offline: installed metadata, saved awards and all new artwork remain available.
   await b.send('Network.enable');
@@ -127,7 +136,7 @@ try {
   await waitFor(`BCT.ui.current()==='home'`);
   assert.ok(await b.ev(`BCT.store.get().badges.some(b=>b.id==='beach_hero')`));
   assert.equal(await b.ev(`BCT.store.get().plaBusters.bestStars`),3);
-  assert.ok(await b.ev(`(async()=>{for(const p of ['assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-devil.svg','assets/plabusters/boss-bandit.svg']){const im=new Image();im.src=p;await im.decode();if(!im.naturalWidth)return false;}return true;})()`));
+  assert.ok(await b.ev(`(async()=>{for(const p of ['assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-bag-king.svg','assets/plabusters/boss-bottle-king.svg']){const im=new Image();im.src=p;await im.decode();if(!im.naturalWidth)return false;}return true;})()`));
   assert.deepEqual(b.consoleLogs.filter(x=>x.startsWith('EXCEPTION')),[]);
-  console.log('PASS: 3 companions, jump/debounce, cancel/reselect, named adoption without eggs, 4 phone sizes, no Busters scroll (ready/play/result), both villain assets, 3-star imperfect result, persistent title, PWA name and precache.');
+  console.log('PASS: 3 companions, jump/debounce, cancel/reselect, named adoption without eggs, 4 phone sizes, no Busters scroll (ready/play/result), both crowned kings without banner overlap, 3-star imperfect result, persistent title, pink PWA icons, PWA name and offline precache.');
 } finally {b?.close();await new Promise(r=>server.close(r));}

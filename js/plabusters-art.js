@@ -60,10 +60,11 @@
   // かいじゅう 1たい。m … js/plabusters-engine.js の monster
   function monster(m, mood) {
     if (m.type === 'boss') {
-      const villain = m.kind === 'b_bag' ? 'devil' : 'bandit';
-      return `<div class="pb-monster type-boss" data-id="${m.id}" data-kind="${m.kind}">
+      const bag = m.kind === 'b_bag';
+      const ratio = bag ? '348 / 462' : '288 / 481';
+      return `<div class="pb-monster type-boss" data-id="${m.id}" data-kind="${m.kind}" style="--boss-width-limit:${bag ? 51 : 40}cqh">
         <span class="pb-tag boss">${m.name}</span>
-        <div class="pb-mon-body" style="aspect-ratio:280 / 250"><img class="pb-mon-img pb-villain" src="assets/plabusters/boss-${villain}.svg" alt="" draggable="false"></div>
+        <div class="pb-mon-body" style="aspect-ratio:${ratio}"><img class="pb-mon-img pb-boss-art" src="assets/plabusters/boss-${bag ? 'bag' : 'bottle'}-king.svg" alt="" draggable="false"></div>
         <div class="pb-hp" aria-hidden="true">${"<i></i>".repeat(m.hp)}</div></div>`;
     }
     const sp = sprite(m.kind);

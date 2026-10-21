@@ -46,8 +46,8 @@
     b_rope: "ロープ へびー",
   };
   const BOSSES = [
-    { kind: "b_bag", name: "ビニール デビル" },
-    { kind: "b_bottle", name: "ボトル どろぼう" },
+    { kind: "b_bag", name: "ビニールぶくろ キング" },
+    { kind: "b_bottle", name: "ペットボトル キング" },
   ];
   const DANGER = { kind: "b_glass", name: "われびん かいじゅう" };
 
