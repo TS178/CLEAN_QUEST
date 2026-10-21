@@ -122,11 +122,11 @@ try {
   await sleep(300);await b.shot('tests/e2e/out/quest-three-star-badges.png');
   const manifest=await (await fetch(base+'manifest.json')).json();
   assert.equal(manifest.name,'しかクエ');assert.equal(manifest.short_name,'しかクエ');
-  assert.ok(manifest.icons.every(icon=>icon.src.endsWith('?v=1.44')));
+  assert.ok(manifest.icons.every(icon=>icon.src.endsWith('?v=1.45')));
   const iconPixels=await b.ev(`(async()=>{const pixels=[];for(const name of ['icon-192.png','icon-512.png','icon-maskable-512.png','apple-touch-icon.png']){const im=new Image();im.src='icons/'+name;await im.decode();const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const ctx=c.getContext('2d');ctx.drawImage(im,0,0);pixels.push([...ctx.getImageData(0,0,1,1).data]);}return pixels;})()`);
-  assert.ok(iconPixels.every(p=>p.join(',')==='249,227,227,255'),'All PWA/Apple icons have opaque selected pink backgrounds');
+  assert.ok(iconPixels.every(p=>p.join(',')==='248,225,229,255'),'All PWA/Apple icons have opaque selected pink backgrounds');
   await b.ev(`navigator.serviceWorker.ready`);
-  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.44');return Promise.all(['css/fairy-select.css','assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-bag-king.svg','assets/plabusters/boss-bottle-king.svg'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
+  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.45');return Promise.all(['css/fairy-select.css','assets/collection/badge_shoot_master.webp','assets/collection/badge_beach_hero.webp','assets/plabusters/boss-bag-king.svg','assets/plabusters/boss-bottle-king.svg'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
   assert.ok(cached.every(Boolean));
   // Reload offline: installed metadata, saved awards and all new artwork remain available.
   await b.send('Network.enable');
