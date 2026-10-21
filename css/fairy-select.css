@@ -1,0 +1,32 @@
+/* Three companions on a softly lit stage. Keep their row intact on phones. */
+body.fairy-selection { background: #101e2b; }
+body.fairy-selection .app { padding-bottom: 0; background: #101e2b; }
+#scr-egg { min-height: 100svh; min-height: 100dvh; padding: max(34px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom)); color: #fff9e8;
+  background: radial-gradient(ellipse at 50% 72%, #28494d 0, #152a35 42%, #0b1523 82%); }
+#scr-egg.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#scr-egg h2 { font-size: clamp(24px, 6.4vw, 32px); line-height: 1.65; letter-spacing: .04em; text-wrap: balance; color: #fff4d2; margin: 0 6px 8px; text-shadow: 0 2px 12px #0008; }
+#scr-egg h2::after { display: none; }
+#scr-egg .fairy-intro { color: #c4d8da; font-size: 13px; text-align: center; margin: 0; }
+#eggs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 6px; margin: 10px 0 18px; padding-top: 12px; }
+.fairy-choice { position: relative; isolation: isolate; min-width: 0; height: clamp(240px, 44svh, 360px); padding: 0 0 18px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; border: 0; border-radius: 20px; background: transparent; color: #fff6d9; }
+.fairy-spotlight { position: absolute; z-index: -1; inset: 0 0 28px; background: linear-gradient(180deg, #fff9c700, #fff5be18 35%, #fff6c342 95%, #fff9df08); clip-path: polygon(45% 0, 55% 0, 100% 96%, 0 96%); pointer-events: none; }
+.fairy-choice::after { content: ''; position: absolute; z-index: -1; left: 2%; right: 2%; bottom: 64px; height: 28px; border-radius: 50%; background: #fff6c844; box-shadow: 0 0 25px 8px #fff1af22, inset 0 0 12px #fff9e880; }
+.fairy-portrait { display: flex; width: 100%; height: 145px; align-items: flex-end; justify-content: center; margin-bottom: 20px; filter: drop-shadow(0 0 12px #fff2b542); transform-origin: 50% 100%; }
+.fairy-portrait img { width: 100%; max-height: 100%; object-fit: contain; }
+.fairy-choice[data-type=dolphin] .fairy-portrait img { width: 92%; }
+.fairy-choice[data-type=turtle] .fairy-portrait img { width: 94%; }
+.fairy-label { display: block; font-size: clamp(13px, 3.6vw, 18px); font-weight: 800; line-height: 1.45; text-shadow: 0 2px 4px #000; }
+.fairy-label small { display: block; font-size: 11px; font-weight: 500; color: #d7e5df; }
+.fairy-choice:focus-visible { outline: 2px solid #ffe8a0; outline-offset: 2px; }
+.fairy-choice:hover .fairy-portrait { filter: drop-shadow(0 0 16px #fff3b580); }
+.fairy-choice.picked .fairy-portrait { animation: fairyJump .46s ease-out; }
+@keyframes fairyJump { 0%,100% { transform: translateY(0) scale(1); } 20% { transform: scale(1.08,.9); } 55% { transform: translateY(-30px) scale(.96,1.06); } 82% { transform: translateY(0) scale(1.06,.94); } }
+#scr-egg .fairy-hint { color: #e8d9ae; text-align: center; font-size: 13px; margin: 0 0 24px; }
+#fairyBack { color: #fff4d2; border-color: #d9c59266; background: #ffffff0a; }
+.fairy-confirm-portrait { width: 150px; height: 150px; display: grid; place-items: center; margin: 12px auto; }
+.fairy-confirm-portrait img { max-height: 100%; object-fit: contain; }
+.fairy-confirm-name { text-align: center; font-size: 19px; font-weight: 800; }
+.fairy-welcome { width: 230px; animation: fairyJump .6s ease-out; }
+body.reduce-motion .fairy-choice.picked .fairy-portrait, body.reduce-motion .fairy-welcome { animation: none; }
+@media(prefers-reduced-motion: reduce) { .fairy-choice.picked .fairy-portrait, .fairy-welcome { animation: none; } }
+@media(max-height: 600px) { #scr-egg { padding-top: 20px; } #scr-egg h2 { font-size: 23px; } .fairy-choice { height: 210px; } .fairy-portrait { height: 105px; } #scr-egg .fairy-hint { margin-bottom: 8px; } }

@@ -423,6 +423,7 @@
       st.plays++;
       st.bestScore = Math.max(st.bestScore, r.score);
       st.bestCombo = Math.max(st.bestCombo, r.maxCombo);
+      st.bestStars = Math.max(st.bestStars || 0, r.stars);
       st.lastResult = { runId: target.runId, score: r.score, stars: r.stars, coins: r.coins, perfect: r.perfect, clean: r.clean, t };
       return { ok: true, ...r };
     });

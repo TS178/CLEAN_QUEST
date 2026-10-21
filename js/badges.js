@@ -27,6 +27,10 @@
       test: (s) => quizAll(s) >= quizTotal(), prog: (s) => `${quizAll(s)} / ${quizTotal()}` },
     { id: "sodate", name: "そだておや賞", ico: "👑", cond: "ようせいが レベル5に なった",
       test: (s) => BCT.game.level(s) >= BCT.game.maxLevel() },
+    { id: "shoot_master", name: "シュートめいじん賞", ico: "🐢", cond: "ゴミシュートで ★3を かくとく（1,200てん いじょう・ミスなし）",
+      test: (s) => Math.max(s.truckShoot?.bestStars || 0, s.truckShoot?.lastResult?.stars || 0) >= 3 },
+    { id: "beach_hero", name: "はまべのヒーロー賞", ico: "🐚", cond: "プラごみバスターズで ★3を かくとく（18,000てん いじょう）",
+      test: (s) => Math.max(s.plaBusters?.bestStars || 0, s.plaBusters?.lastResult?.stars || 0) >= 3 || (s.plaBusters?.bestScore || 0) >= 18000 },
   ];
 
   // 新しく とれた しょうごうを 保存して かえす（1回で保存。二重には つかない）

@@ -56,12 +56,16 @@
     <path d="M58 6 L50 26 L62 34 L46 52 L58 60 L44 84" fill="none" stroke="#5a2a0a" stroke-width="1.4" stroke-linejoin="round"/>
     <path d="M50 26 L38 22 M46 52 L32 56" fill="none" stroke="#fff" stroke-width="2.4"/>
   </svg>`;
-  const CROWN = `<svg class="pb-crown" viewBox="0 0 80 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M6 40 L10 10 L26 26 L40 4 L54 26 L70 10 L74 40 Z" fill="#ffd34d" stroke="#a0731c" stroke-width="3" stroke-linejoin="round"/>
-    <circle cx="40" cy="30" r="5" fill="#ff7b9c"/><circle cx="20" cy="33" r="3.5" fill="#6ad0ff"/><circle cx="60" cy="33" r="3.5" fill="#6ad0ff"/></svg>`;
 
   // かいじゅう 1たい。m … js/plabusters-engine.js の monster
   function monster(m, mood) {
+    if (m.type === 'boss') {
+      const villain = m.kind === 'b_bag' ? 'devil' : 'bandit';
+      return `<div class="pb-monster type-boss" data-id="${m.id}" data-kind="${m.kind}">
+        <span class="pb-tag boss">${m.name}</span>
+        <div class="pb-mon-body" style="aspect-ratio:280 / 250"><img class="pb-mon-img pb-villain" src="assets/plabusters/boss-${villain}.svg" alt="" draggable="false"></div>
+        <div class="pb-hp" aria-hidden="true">${"<i></i>".repeat(m.hp)}</div></div>`;
+    }
     const sp = sprite(m.kind);
     const f = FACE[m.kind] || FACE.b_bag;
     const face = mood || (m.type === "danger" ? "fear" : m.type === "boss" ? "boss" : "grr");
@@ -73,7 +77,6 @@
     return `<div class="pb-monster type-${m.type}" data-id="${m.id}" data-kind="${m.kind}">
       ${tag}
       <div class="pb-mon-body" style="aspect-ratio:${ratio}">
-        ${m.type === "boss" ? CROWN : ""}
         <img class="pb-mon-img" src="${sp ? sp.src : ""}" alt="" draggable="false">
         ${m.type === "danger" ? CRACK : ""}
         <div class="pb-mon-face" style="left:${f.x * 100}%;top:${f.y * 100}%;width:${f.w * 180 / 100 * 100}%;transform:translate(-50%,-50%) rotate(${f.rot}deg)">${faceSvg(face)}</div>

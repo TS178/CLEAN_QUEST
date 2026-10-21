@@ -32,6 +32,23 @@ function tab(storage) {
 }
 const fresh = () => tab(makeStorage());
 
+test('new game titles use actual stars; busters accepts historic best score and does not require PERFECT',()=>{
+  const disk=makeStorage(),B=tab(disk);
+  B.store.transact(s=>{
+    s.truckShoot.bestScore=9999; s.truckShoot.bestStars=2;
+    s.plaBusters.bestScore=17999;
+  });
+  assert.equal(B.checkBadges().length,0);
+  B.store.transact(s=>{s.plaBusters.bestScore=18000; s.plaBusters.lastResult={runId:'old',stars:1,perfect:false};});
+  assert.ok(B.checkBadges().some(b=>b.id==='beach_hero'));
+  assert.ok(!B.store.get().badges.some(b=>b.id==='shoot_master'));
+  assert.equal(tab(disk).checkBadges().length,0);
+  B.store.transact(s=>{s.truckShoot.lastResult={runId:'legacy-three',stars:3};});
+  const oldSave=tab(disk);
+  assert.equal(oldSave.store.get().truckShoot.bestStars,3);
+  assert.ok(oldSave.checkBadges().some(b=>b.id==='shoot_master'));
+});
+
 function cleanBeach(B) {
   for (const d of [...B.store.get().beach.dirt]) assert.equal(B.game.sortTrash(d.id,B.beachTrashOf(d.kind).bin).ok,true);
 }
@@ -642,7 +659,7 @@ test("こわれた エサ・ビーチ・すみか の データでも 止まら�
 test("称号：はじめのいっぽ賞は ミッションの どれか 1つ（ミニゲーム ★1いじょう か クイズ 1もん）。きろくの 称号は なくした（2026-10-20）", () => {
   const ids = (B) => B.BADGES.map((b) => b.id).join();
   const A = fresh();
-  assert.equal(ids(A), "first,hakase,perfect,sodate");
+  assert.equal(ids(A), "first,hakase,perfect,sodate,shoot_master,beach_hero");
   A.game.choosePet("turtle", "かめ", "たい", 1);
   assert.ok(!A.checkBadges().some((b) => b.id === "first"));
   addGame(A, "truck", "zero", 0);

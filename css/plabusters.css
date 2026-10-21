@@ -60,7 +60,6 @@ body.pb-game .app { padding-bottom: env(safe-area-inset-bottom); }
 @keyframes pbDanger { from { filter: drop-shadow(0 0 0 #ff3b30); } to { filter: drop-shadow(0 0 10px #ff3b30) drop-shadow(0 0 3px #ff3b30); } }
 .pb-monster.type-boss { width: min(60%, 250px); top: 60%; }
 .pb-stage.boss-mode .pb-banner { top: 2%; }
-.pb-crown { position: absolute; left: 50%; top: -12%; width: 34%; transform: translateX(-50%) rotate(-8deg); z-index: 1; filter: drop-shadow(0 2px 1px #0003); }
 .pb-hp { display: flex; gap: 3px; margin-top: 4px; }
 .pb-hp i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f7e; border: 2px solid #fff; box-shadow: 0 1px 2px #0004; transition: transform .15s, opacity .15s; }
 .pb-hp i.off { opacity: .25; transform: scale(.6); background: #888; }
@@ -227,3 +226,45 @@ body.reduce-motion .pb-monster.type-danger .pb-mon-img, body.reduce-motion .pb-s
 }
 .pb-stage.boss-mode .pb-monster.type-boss .pb-tag { display: none; }
 .pb-btn > span { max-width: 100%; }
+
+/* Size the game from the available viewport, rather than summing guessed heights. */
+body.pb-game { overflow: hidden; }
+body.pb-game .app { height: 100svh; height: 100dvh; min-height: 0; display: flex; flex-direction: column; }
+body.pb-game .topbar { position: relative; flex: 0 0 auto; }
+body.pb-game main { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+body.pb-game #scr-plabusters { flex: 1; min-height: 0; padding: 6px 12px 8px; }
+body.pb-game #scr-plabusters.active { display: flex; flex-direction: column; }
+#plaBustersBody { flex: 1; min-height: 0; }
+.pb-shell { height: 100%; display: flex; flex-direction: column; }
+.pb-shell > * { flex-shrink: 0; }
+.pb-shell .pb-stage { flex: 1; height: auto; min-height: 0; container-type: size; }
+.pb-shell .pb-live { font-size: 11px; line-height: 1.35; min-height: 30px; }
+.pb-shell:has(#pbStart) .pb-pad, .pb-shell:has(#pbStart) .pb-live { display: none; }
+.pb-shell:has(#pbStart) .pb-hud, .pb-shell:has(#pbStart) .pb-gauge { display: none; }
+#scr-plabusters .pb-panel h2::after { display: none; }
+#scr-plabusters .pb-panel h2 { font-size: 20px; margin: 2px 0 8px; }
+.pb-panel #pbReadyBack { display: none; } /* The toolbar already provides the same way back. */
+.pb-shell .pb-monster.type-boss { width: min(60%, 250px, 72cqh); }
+.pb-shell.pb-done .pb-hud, .pb-shell.pb-done .pb-gauge, .pb-shell.pb-done .pb-live { display: none; }
+.pb-shell.pb-done .pb-stage { flex: 1; min-height: 60px; max-height: 220px; }
+.pb-done .pb-reward { width: auto; height: 85%; aspect-ratio: 1; top: 50%; }
+.pb-done .pb-perfect { position: absolute; top: 0; left: 50%; transform: translateX(-50%); font-size: 15px; z-index: 1; }
+.pb-done .pb-perfect small { font-size: 12px; }
+.pb-result { margin-top: 6px; padding: 8px 10px; }
+#scr-plabusters .pb-result h2::after { display: none; }
+#scr-plabusters .pb-result h2 { font-size: 17px; margin: 2px 0 4px; }
+.pb-result .btn { display: inline-flex; width: calc(50% - 4px); padding: 8px 4px; min-height: 44px; font-size: 12px; }
+@media(max-height:700px) {
+  .pb-btn { min-height: 60px; padding: 3px 2px; }
+  .pb-btn img { height: 30px; }
+  .pb-adult-ico { font-size: 25px; line-height: 30px; }
+  .pb-result .pb-stars { font-size: 26px; }
+  .pb-result .pb-score b { font-size: 23px; }
+  .pb-result .pb-coins { margin: 3px 0; }
+  .pb-result .pb-coins b { font-size: 17px; }
+  .pb-result .pb-stats { margin: 4px 0; }
+  .pb-result .pb-save { margin: 2px 0; }
+  .pb-panel { padding: 10px; }
+  .pb-panel .pb-rules { font-size: 11px; line-height: 1.4; }
+  .pb-panel .pb-note { font-size: 10px !important; }
+}

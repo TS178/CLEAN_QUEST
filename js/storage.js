@@ -40,8 +40,8 @@
       affection: 0,           // なでた回数（上限あり）
       toys: {},               // おもちゃID → あそび終えた回数
       quiz: { streak: 0, best: 0 }, // まちがえずに つづけて せいかいした数
-      truckShoot: { version: 1, plays: 0, bestScore: 0, bestCombo: 0, lastResult: null },
-      plaBusters: { version: 1, plays: 0, bestScore: 0, bestCombo: 0, lastResult: null }, // ミニゲーム「プラごみバスターズ」（js/plabusters.js）
+      truckShoot: { version: 1, plays: 0, bestScore: 0, bestCombo: 0, bestStars: 0, lastResult: null },
+      plaBusters: { version: 1, plays: 0, bestScore: 0, bestCombo: 0, bestStars: 0, lastResult: null }, // ミニゲーム「プラごみバスターズ」（js/plabusters.js）
       records: [],            // { id, t, type, lat, lng, acc, photo }
       badges: [],             // { id, t }
       food: {},               // エサID → { bought, fed, spent, xp }（かった数・あげた数・つかったポイント・ふえた けいけんち）
@@ -114,7 +114,7 @@
     const int0 = (v) => Math.max(0, Math.floor(num(v, 0)));
     if (isObj(s.truckShoot)) {
       const t = s.truckShoot;
-      b.truckShoot = { version: 1, plays: int0(t.plays), bestScore: int0(t.bestScore), bestCombo: int0(t.bestCombo), lastResult: null };
+      b.truckShoot = { version: 1, plays: int0(t.plays), bestScore: int0(t.bestScore), bestCombo: int0(t.bestCombo), bestStars: Math.min(3, Math.max(int0(t.bestStars), int0(t.lastResult?.stars))), lastResult: null };
       if (isObj(t.lastResult) && typeof t.lastResult.runId === 'string') {
         const r = t.lastResult;
         b.truckShoot.lastResult = { runId: str(r.runId, 60), score: int0(r.score), hits: int0(r.hits), misses: int0(r.misses),
@@ -123,7 +123,7 @@
     }
     if (isObj(s.plaBusters)) {
       const t = s.plaBusters;
-      b.plaBusters = { version: 1, plays: int0(t.plays), bestScore: int0(t.bestScore), bestCombo: int0(t.bestCombo), lastResult: null };
+      b.plaBusters = { version: 1, plays: int0(t.plays), bestScore: int0(t.bestScore), bestCombo: int0(t.bestCombo), bestStars: Math.min(3, Math.max(int0(t.bestStars), int0(t.lastResult?.stars))), lastResult: null };
       if (isObj(t.lastResult) && typeof t.lastResult.runId === "string") {
         const r = t.lastResult;
         b.plaBusters.lastResult = { runId: str(r.runId, 60), score: int0(r.score), stars: Math.min(3, int0(r.stars)), coins: int0(r.coins),

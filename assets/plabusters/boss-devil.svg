@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 250">
+  <defs>
+    <linearGradient id="bag" x2=".8" y2="1"><stop stop-color="#dba1ee"/><stop offset=".5" stop-color="#995ac2"/><stop offset="1" stop-color="#633c90"/></linearGradient>
+    <linearGradient id="wing" y2="1"><stop stop-color="#a96eb7"/><stop offset="1" stop-color="#45345e"/></linearGradient>
+    <linearGradient id="horn" x2=".7" y2="1"><stop stop-color="#fff5c9"/><stop offset="1" stop-color="#df947a"/></linearGradient>
+  </defs>
+  <ellipse cx="143" cy="231" rx="85" ry="12" fill="#273947" opacity=".2"/>
+  <g stroke="#43304f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Ragged bat wings, visibly different from a normal bag. -->
+    <path d="M85 105Q45 58 10 75Q18 98 11 137Q38 121 48 151Q61 129 88 157Z" fill="url(#wing)"/>
+    <path d="M195 105Q235 58 270 75Q262 98 269 137Q242 121 232 151Q219 129 192 157Z" fill="url(#wing)"/>
+    <path d="M79 116L22 85M201 116L258 85" fill="none" stroke="#d5a2d9" stroke-width="3"/>
+    <path d="M201 186Q255 221 261 171" fill="none" stroke="#744c92" stroke-width="9"/>
+    <path d="M246 173L262 151L273 178Z" fill="#a06ac2"/>
+    <path d="M82 65Q66 42 83 14Q89 37 109 47M172 47Q194 37 198 14Q217 42 200 65" fill="url(#horn)"/>
+    <!-- Bag handles, folds and torn hem remain recognizable as rubbish. -->
+    <path d="M77 78L83 57Q89 44 106 50L113 77Q140 85 167 77L174 50Q191 44 197 57L203 78Q228 111 222 165L213 211L186 204L168 222L145 212L121 224L101 207L74 214L59 167Q52 111 77 78Z" fill="url(#bag)"/>
+    <path d="M88 65L94 79M184 64L179 80M77 103Q66 144 80 179M204 105Q217 151 203 179" fill="none" stroke="#f0caf7" stroke-width="6" opacity=".65"/>
+    <path d="M90 119Q111 111 127 127L123 145Q98 151 90 133Z" fill="#fff5d9"/>
+    <path d="M190 119Q169 111 153 127L157 145Q182 151 190 133Z" fill="#fff5d9"/>
+    <ellipse cx="115" cy="132" rx="6" ry="10" fill="#41304e" stroke="none"/><ellipse cx="165" cy="132" rx="6" ry="10" fill="#41304e" stroke="none"/>
+    <path d="M87 110L127 122M193 110L153 122" fill="none" stroke-width="8"/>
+    <path d="M108 164Q140 184 174 159Q159 204 130 193Q114 187 108 164Z" fill="#482b50"/>
+    <path d="M117 171L126 184L130 176M159 171L159 184L168 165" fill="#fff5d9" stroke-width="2"/>
+    <path d="M86 187L96 199M188 190L178 206" fill="none" stroke="#4b315f" stroke-width="3"/>
+  </g>
+</svg>

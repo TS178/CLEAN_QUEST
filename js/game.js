@@ -129,6 +129,7 @@
       stats.plays++;
       stats.bestScore = Math.max(stats.bestScore, result.score);
       stats.bestCombo = Math.max(stats.bestCombo, result.maxCombo);
+      stats.bestStars = Math.max(stats.bestStars || 0, result.stars);
       stats.lastResult = { runId: round.runId, score: result.score, hits: result.hits, misses: result.misses,
         maxCombo: result.maxCombo, stars: result.stars, coins: result.coins, t };
       return { ok: true, ...result };

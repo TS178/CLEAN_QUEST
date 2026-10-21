@@ -10,6 +10,21 @@ function boot(disk=new Map(), fail=false) {
   const B=context.window.BCT;B.store.load();return {B,storage,disk};
 }
 const {B}=boot(),P=B.truckPhysics;
+test('three-star title survives a later failed round, reload and duplicate claims without extra rewards',()=>{
+  const {B,disk}=boot(); B.game.choosePet('turtle','かめ','隊',1);
+  const round={runId:'three-stars',phase:'result',time:P.C.duration,outcomes:Array(15).fill(true)};
+  assert.equal(B.game.finishTruckShoot(round).stars,3);
+  B.game.finishTruckShoot({runId:'later-zero',phase:'result',time:P.C.duration,outcomes:[false]});
+  const reloaded=boot(disk).B;
+  assert.equal(reloaded.store.get().truckShoot.lastResult.stars,0);
+  assert.equal(reloaded.store.get().truckShoot.bestStars,3);
+  const coins=reloaded.game.coins(reloaded.store.get());
+  assert.ok(reloaded.checkBadges().some(b=>b.id==='shoot_master'));
+  assert.equal(reloaded.game.coins(reloaded.store.get()),coins);
+  assert.equal(reloaded.checkBadges().length,0);
+  assert.equal(reloaded.game.finishTruckShoot(round).err,'dup');
+  assert.ok(boot(disk).B.store.get().badges.some(b=>b.id==='shoot_master'));
+});
 function aligned(s) {return P.aim(-(P.truckX(s.time+P.crossing)-P.C.launchX)/P.crossing/P.C.velocityScale,P.C.roadDepth/P.crossing/P.C.velocityScale);}
 
 test('power and direction stay inland; reverse, small, and invalid pulls do not fire',()=>{

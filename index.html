@@ -7,14 +7,14 @@
   <meta name="description" content="はまべの ゴミを ひろって、うみの ようせいを そだてよう。親子で参加するビーチクリーンイベント用のアプリです。">
   <meta name="theme-color" content="#fbfaf6">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
-  <link rel="icon" href="icons/favicon-16.png" type="image/png" sizes="16x16">
-  <link rel="icon" href="icons/favicon-48.png" type="image/png" sizes="48x48">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
-  <meta name="application-name" content="SHIKA QUEST">
+  <link rel="icon" href="icons/favicon-32.png?v=1.43" type="image/png" sizes="32x32">
+  <link rel="icon" href="icons/favicon-16.png?v=1.43" type="image/png" sizes="16x16">
+  <link rel="icon" href="icons/favicon-48.png?v=1.43" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=1.43" sizes="180x180">
+  <meta name="application-name" content="しかクエ">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="SHIKA QUEST">
+  <meta name="apple-mobile-web-app-title" content="しかクエ">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/truck-shoot.css">
   <link rel="stylesheet" href="css/plabusters.css">
@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="css/ui-design.css">
   <link rel="stylesheet" href="css/companions.css">
   <link rel="stylesheet" href="css/opening.css">
+  <link rel="stylesheet" href="css/fairy-select.css">
 </head>
 <body class="opening-pending">
   <div id="questOpeningHost"></div>
@@ -39,14 +40,13 @@
     </header>
 
     <main>
-      <!-- たまご選択 -->
+      <!-- ようせい選択 -->
       <section class="screen" id="scr-egg">
-        <img class="quest-brand-logo" src="assets/opening/logo.png" alt="" aria-hidden="true" width="1536" height="1024">
-        <h2>SHIKA QUEST</h2>
-        <p class="lead">うみの ようせいの たまごを えらんでね。<br>いっしょに はまべを きれいに しよう！</p>
+        <h2>いっしょにぼうけんするようせいをえらぼう！</h2>
+        <p class="fairy-intro">きみと であうのを まっていたよ。</p>
         <div class="eggs" id="eggs"></div>
-        <p class="note" style="text-align:center">たまごを タップすると えらべるよ</p>
-        <div class="onboarding-foot"><svg class="ui-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g stroke="#354942" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20Q7 8 15 11q6 2 2 7 8 2 12-8v14Q19 31 3 25Z" fill="#5d99aa"/><path d="M4 24q8-8 15-2t10-3M5 17q5-8 9-3" fill="none" stroke="#fff9e3"/><circle cx="24" cy="6" r="3" fill="#e3b963"/></g></svg>ちいさな一歩が、うみの未来に。</div>
+        <p class="fairy-hint">きになる ようせいを タップしてね</p>
+        <button type="button" class="btn ghost" id="fairyBack" hidden>ホームに もどる</button>
       </section>
 
       <!-- なまえ入力 -->

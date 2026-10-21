@@ -54,8 +54,8 @@ try {
   assert.equal(await b.ev('BCT.ui.current()'),'home');
   assert.deepEqual(await b.ev('({pet:BCT.store.get().pet,claims:BCT.store.get().claims,owned:BCT.store.get().owned})'),before);
   await b.shot('tests/e2e/out/quest-opening-home.png');
-  assert.equal(await b.ev('BCT.update.version()'),'1.42');
-  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.42');return Promise.all(['css/opening.css','js/opening.js','js/startup.js','assets/opening/logo.png','assets/opening/shore.webp','assets/opening/dolphin.webp','assets/opening/turtle.webp','assets/opening/hermit.webp'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
+  assert.equal(await b.ev('BCT.update.version()'),'1.43');
+  const cached=await b.ev(`(async()=>{const c=await caches.open('bct-1.43');return Promise.all(['css/opening.css','js/opening.js','js/startup.js','assets/opening/logo.png','assets/opening/shore.webp','assets/opening/dolphin.webp','assets/opening/turtle.webp','assets/opening/hermit.webp'].map(async p=>!!(await c.match(new URL(p,location.href).href))))})()`);
   assert.ok(cached.every(Boolean),'All opening resources cached');
   await b.send('Network.enable');
   await b.send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
@@ -76,7 +76,7 @@ try {
   await sleep(500);
   assert.equal(await b.ev('BCT.ui.current()'),'home');
   assert.deepEqual(b.consoleLogs.filter(x=>x.startsWith('EXCEPTION')),[]);
-  console.log('PASS: opening sequence, fresh egg selection, returning home, saved pet/rewards/items, double click, reduced motion, skip, service worker 1.42 and offline startup.');
+  console.log('PASS: opening sequence, fresh egg selection, returning home, saved pet/rewards/items, double click, reduced motion, skip, service worker 1.43 and offline startup.');
 } finally {
   b?.close();
   await new Promise(resolve=>server.close(resolve));

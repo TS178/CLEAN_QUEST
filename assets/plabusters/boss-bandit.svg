@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 250">
+  <defs>
+    <linearGradient id="bottle" x2=".8" y2="1"><stop stop-color="#c2f2ef"/><stop offset=".55" stop-color="#60b4be"/><stop offset="1" stop-color="#37738d"/></linearGradient>
+    <linearGradient id="sack" x2=".7" y2="1"><stop stop-color="#d6b586"/><stop offset="1" stop-color="#a67e56"/></linearGradient>
+    <linearGradient id="hood" x2="1" y2="1"><stop stop-color="#74718b"/><stop offset="1" stop-color="#34364e"/></linearGradient>
+  </defs>
+  <ellipse cx="143" cy="232" rx="94" ry="12" fill="#273947" opacity=".2"/>
+  <g stroke="#343b50" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Loot sack with discarded bottle and can. -->
+    <path d="M207 112L220 79L239 85L228 117" fill="#9bdbda"/><path d="M218 78L239 84" stroke="#577a9b" stroke-width="9"/>
+    <path d="M190 108L185 85L207 83L210 109" fill="#c0c6c9"/>
+    <path d="M197 112Q168 129 174 188Q178 218 215 215Q250 219 260 190Q266 143 234 116L242 103L195 102Z" fill="url(#sack)"/>
+    <path d="M198 116L236 117M213 129Q194 159 203 196" fill="none" stroke="#f0d1a3" stroke-width="4"/>
+    <path d="M229 151L243 160M236 148L226 165" fill="none" stroke="#815f44" stroke-width="3"/>
+    <path d="M76 186L60 219Q66 234 94 225L103 198M145 198L157 224Q177 232 188 218L171 188" fill="#414157"/>
+    <path d="M82 94Q54 110 44 153L61 171L87 139M171 115Q192 113 205 132L195 153L168 140" fill="none" stroke="#414157" stroke-width="17"/>
+    <path d="M43 150Q25 145 27 164Q32 181 50 172L61 161Z" fill="#e5edf0"/>
+    <path d="M193 136Q200 121 213 135Q224 150 208 160L195 155Z" fill="#e5edf0"/>
+    <!-- Squat bottle body and striped thief shirt. -->
+    <path d="M94 52L153 52L154 78Q181 93 180 118L177 193Q173 211 143 211L100 211Q77 208 73 191L72 118Q72 91 94 78Z" fill="url(#bottle)"/>
+    <path d="M84 151Q126 162 177 149L177 190Q128 205 78 188Z" fill="#f4ecda"/>
+    <path d="M80 164Q128 177 176 162M79 183Q127 195 176 181" fill="none" stroke="#535266" stroke-width="9"/>
+    <path d="M88 94L82 117M91 200L107 202" stroke="#e1fffa" stroke-width="5"/>
+    <!-- Knotted headscarf and black eye mask instead of a crown. -->
+    <path d="M87 66Q76 18 125 18Q172 15 168 65Q125 51 87 66Z" fill="url(#hood)"/>
+    <path d="M169 53L197 37L187 66L203 80L169 73Z" fill="#57546e"/>
+    <path d="M86 60Q125 47 169 62" fill="none" stroke="#908ba5" stroke-width="7"/>
+    <path d="M83 99Q105 83 126 98Q149 82 171 98L169 125Q147 138 127 121Q105 140 83 125Z" fill="#363348"/>
+    <path d="M92 103L116 108Q107 124 95 115ZM160 103L138 108Q146 124 157 115Z" fill="#fff5dc" stroke-width="2"/>
+    <path d="M110 142Q130 157 151 135" fill="none" stroke-width="4"/>
+    <path d="M136 144L143 151L147 140" fill="#fff" stroke-width="2"/>
+  </g>
+</svg>
